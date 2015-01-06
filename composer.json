@@ -1,5 +1,5 @@
 {
-    "name": "m1ke/easy-site",
+    "name": "m1ke/easy-site-utils",
     "description": "A functional set of utilities for PHP websites",
     "license": "MIT",
     "require": {
