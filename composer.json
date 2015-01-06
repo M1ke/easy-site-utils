@@ -1,0 +1,12 @@
+{
+    "name": "m1ke/easy-site",
+    "description": "A functional set of utilities for PHP websites",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "phpmailer/phpmailer": "5.2.*"
+    },
+    "require-dev": {
+        "m1ke/git-php-lint": "1.0.0"
+    }
+}
