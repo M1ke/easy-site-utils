@@ -221,7 +221,7 @@ function redirect_url($url=null,$debug=false){
 	if (empty($url)){
 		$url=$_SERVER['HTTP_REFERER'];
 	}
-	if (!empty(LOG_REDIRECTS)){
+	if (defined('LOG_REDIRECTS')){
 		log_file($url,'redirect');
 	}
 	if ($debug){
