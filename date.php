@@ -316,7 +316,7 @@ function custom_date($date=null,$format=null,$sep=' at '){
 		$stamp=string_time($date,$error);
 	}
 	if (empty($stamp)){
-		return false;
+		return '';
 	}
 	return custom_date_format($stamp,$format,$sep);
 }
