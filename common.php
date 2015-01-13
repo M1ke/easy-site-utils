@@ -198,7 +198,7 @@ function local(){
 
 function log_file($log,$var=null,$file=null,$overwrite=false){
 	$file=log_file_location($file);
-	$log='----Logged on '.date('r').' ----'.PHP_EOL.PHP_EOL.'$'.$var.': '.(is_array($log) ? print_r($log,true) : $log).PHP_EOL.PHP_EOL;
+	$log='----Logged on '.date('r').' ----'.PHP_EOL.PHP_EOL.'$'.$var.': '.((is_array($log) or is_object($log)) ? print_r($log,true) : $log).PHP_EOL.PHP_EOL;
 	file_save_($file,$log,$overwrite);
 	return true;
 }
