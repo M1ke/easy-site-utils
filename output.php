@@ -16,7 +16,7 @@ function csv_output($data,$filename='download',$to_screen=false){
 }
 
 function echo_array($array,$return=false,$comment=false){
-	if (!defined('BETA') and empty($_SERVER['shell']) and (function_exists('developer') and !developer())){
+	if (!defined('BETA') and empty($_SERVER['SHELL']) and (function_exists('developer') and !developer())){
 		return false;
 	}
 	$html=print_r($array,true);
