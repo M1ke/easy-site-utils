@@ -210,6 +210,21 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$needle='string';
 		$this->assertTrue(in_string($needle,$haystack));
 	}
+	function testMultipleInString(){
+		$haystack='this is a string with things in it';
+		$needle=['string','thing'];
+		$this->assertTrue(in_string($needle,$haystack));
+	}
+	function testOneOfMultipleInString(){
+		$haystack='this is a string with things in it';
+		$needle=['strong','thing'];
+		$this->assertTrue(in_string($needle,$haystack));
+	}
+	function testAllMultipleInString(){
+		$haystack='this is a string with things in it';
+		$needle=['strong','thing'];
+		$this->assertTrue(!in_string($needle,$haystack,true));
+	}
 	function testInStringCase(){
 		$haystack='this is a StrIng with things in it';
 		$needle='string';

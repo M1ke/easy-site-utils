@@ -232,11 +232,12 @@ function invert_name($name,$sep=',',$cap=false){
 	return $name;
 }
 
-function in_string($needle,$haystack){
+function in_string($needle,$haystack,$multiple_and=false){
 	if (is_array($needle)){
-		$result=true;
+		$result=$multiple_and;
 		foreach ($needle as $sub_needle){
-			$result=(in_string($sub_needle,$haystack) && $result);
+			$in_string=in_string($sub_needle,$haystack);
+			$result=$multiple_and ? ($in_string && $result) : ($result || $in_string);
 		}
 	}
 	else {
