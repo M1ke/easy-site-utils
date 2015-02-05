@@ -113,6 +113,16 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$is_phone=make_phone($num);
 		$this->assertTrue($is_phone);
 	}
+	function testMakePhoneTooShort(){
+		$num='00';
+		$is_phone=make_phone($num);
+		$this->assertFalse($is_phone);
+	}
+	function testMakePhoneTooShort2(){
+		$num='00-44-33';
+		$is_phone=make_phone($num);
+		$this->assertFalse($is_phone);
+	}
 
 	// Phone country
 	function testPhoneCountryReturnsSameIfNoCode(){

@@ -389,7 +389,7 @@ function make_phone(&$num,$blank=false,&$nat=null){
 	$copy=str_replace(array(' ','-'),'',$num);
 	$nat='';
 	if (strlen($num)>0){
-		if (strlen($copy)>14){
+		if (strlen($copy)>15 or strlen($copy)<8){
 			return false;
 		}
 		$pattern="/(\+|00)?(44)?([\d]{11})/";
