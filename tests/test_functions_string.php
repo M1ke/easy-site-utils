@@ -118,6 +118,11 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$is_phone=make_phone($num);
 		$this->assertFalse($is_phone);
 	}
+	function testMakePhoneBlankAllowed(){
+		$num='';
+		$is_phone=make_phone($num,true);
+		$this->assertTrue($is_phone);
+	}
 	function testMakePhoneTooShort(){
 		$num='00';
 		$is_phone=make_phone($num);
