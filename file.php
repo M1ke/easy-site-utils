@@ -43,7 +43,10 @@ function file_delete($file){
 }
 
 function file_load($file,$serialize=false){
-	$fh=@fopen($file,'r');
+	if (!is_readable($file)){
+		return false;
+	}
+	$fh=fopen($file,'r');
 	if (!empty($fh)){
 		$string=fread($fh,filesize($file));
 		fclose($fh);
@@ -76,15 +79,16 @@ function file_save($file,$string,$overwrite=false){
 	return file_save_($file,$string,$overwrite);
 }
 function file_save_($file,$string,$overwrite){
-	$fh=@fopen($file,$overwrite ? 'w' : 'a');
-	if (!empty($fh)){
-		fwrite($fh,$string);
-		fclose($fh);
-		return true;
-	}
-	else {
+	if (!is_writable($file)){
 		return false;
 	}
+	$fh=fopen($file,$overwrite ? 'w' : 'a');
+	if (empty($fh)){
+		return false;
+	}
+	fwrite($fh,$string);
+	fclose($fh);
+	return true;
 }
 
 function file_store($id,$params,&$error=null){
