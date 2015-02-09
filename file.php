@@ -82,7 +82,7 @@ function file_save_($file,$string,$overwrite){
 	if (file_exists($file) and !is_writable($file)){
 		return false;
 	}
-	$fh=fopen($file,$overwrite ? 'w' : 'a');
+	$fh=@fopen($file,$overwrite ? 'w' : 'a');
 	if (empty($fh)){
 		return false;
 	}
