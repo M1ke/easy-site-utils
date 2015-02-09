@@ -27,11 +27,15 @@ function dir_tree($dir,$root=null){
 }
 
 function file_delete($file){
-	if (file_exists($file)){
-		$fh=fopen($file,'w');
-		fclose($fh);
-		unlink($file);
+	if (!file_exists($file)){
+		return true;
 	}
+	$fh=@fopen($file,'w');
+	if (empty($fh)){
+		return false;
+	}
+	fclose($fh);
+	unlink($file);
 	return true;
 }
 
