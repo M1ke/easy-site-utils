@@ -30,7 +30,10 @@ function file_delete($file){
 	if (!file_exists($file)){
 		return true;
 	}
-	$fh=@fopen($file,'w');
+	if (!is_writable($file)){
+		return false;
+	}
+	$fh=fopen($file,'w');
 	if (empty($fh)){
 		return false;
 	}
