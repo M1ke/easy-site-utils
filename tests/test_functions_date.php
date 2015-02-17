@@ -124,6 +124,39 @@ class TestDates extends PHPUnit_Framework_TestCase {
 	function testStringToTime24hPm(){
 		$time='14:24pm';
 		make_time($time);
-		$this->assertEquals($time,'14:24:00');
+		$this->assertEquals($time,'14:24pm');
+	}
+
+	// sql_dat
+	function testSqlDatUTC(){
+		$date='2015-02-13';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
+	}
+	function testSqlDatUK(){
+		$date='13/02/2015';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
+	}
+	function testSqlDatUKShort(){
+		$date='1/2/15';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-01',$dat);
+	}
+	function testSqlDatUKDot(){
+		$date='13.02.2015';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
+	}
+	function testSqlDatUSA(){
+		define('DATE_USA',true);
+		$date='02/13/2015';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
+	}
+	function testSqlDatYmd(){
+		$date='2015/02/13';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
 	}
 }
