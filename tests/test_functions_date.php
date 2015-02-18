@@ -154,9 +154,8 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('2015-02-13',$dat);
 	}
 	function testSqlDatUSA(){
-		define('DATE_USA',true);
 		$date='02/13/2015';
-		$dat=sql_dat($date);
+		$dat=sql_dat($date,$error,true);
 		$this->assertEquals('2015-02-13',$dat);
 	}
 	function testSqlDatYmd(){

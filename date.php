@@ -454,12 +454,12 @@ function month_limits($month,$year,$months=1){
 	return $limits;
 }
 
-function sql_dat($date,&$error=null){
+function sql_dat($date,&$error=null,$date_usa=false){
 	if (empty($date)){
 		return false;
 	}
 	if (!is_numeric($date)){
-		$stamp=string_time($date,$error);
+		$stamp=string_time($date,$error,$date_usa);
 		if ($stamp===false){
 			return false;
 		}
@@ -471,12 +471,12 @@ function sql_dat($date,&$error=null){
 	return $date;
 }
 
-function sql_date($date,&$error=null){
+function sql_date($date,&$error=null,$date_usa=false){
 	if (empty($date)){
 		return false;
 	}
 	if (!is_numeric($date)){
-		$stamp=string_time($date,$error);
+		$stamp=string_time($date,$error,$date_usa);
 		if ($stamp===false){
 			return false;
 		}
@@ -503,13 +503,13 @@ function sql_time($time,$stamp=null,&$error=null){
 	return $time;
 }
 
-function string_time($date,&$error=null){
+function string_time($date,&$error=null,$date_usa=false){
 	if (substr_count($date,'/')==1){
 		$date='01/'.$date;
 	}
 	$date=preg_replace('/(?<![0-9])([0-9]{1,2})-([0-9]{1,2})-([0-9]{2,4})/','$1/$2/$3',$date);
 	$date=preg_replace('/(?<![0-9])([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{2,4})/','$1/$2/$3',$date);
-	if (!defined('DATE_USA')){ // converts date to USA m/d/y format
+	if (!defined('DATE_USA') and !$date_usa){ // converts date to USA m/d/y format
 		$date=preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\//','$2/$1/',$date);
 	}
 	$stamp=strtotime($date);
