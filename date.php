@@ -510,7 +510,7 @@ function string_time($date,&$error=null,$date_usa=false){
 	$date=preg_replace('/(?<![0-9])([0-9]{1,2})-([0-9]{1,2})-([0-9]{2,4})/','$1/$2/$3',$date);
 	$date=preg_replace('/(?<![0-9])([0-9]{1,2})\.([0-9]{1,2})\.([0-9]{2,4})/','$1/$2/$3',$date);
 	if (!defined('DATE_USA') and !$date_usa){ // converts date to USA m/d/y format
-		$date=preg_replace('/([0-9]{1,2})\/([0-9]{1,2})\//','$2/$1/',$date);
+		$date=preg_replace('/(?<![0-9])([0-9]{1,2})\/([0-9]{1,2})\//','$2/$1/',$date);
 	}
 	$stamp=strtotime($date);
 	if (empty($stamp)){

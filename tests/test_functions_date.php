@@ -158,8 +158,18 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$dat=sql_dat($date,$error,true);
 		$this->assertEquals('2015-02-13',$dat);
 	}
+	function testSqlDatUSAShort(){
+		$date='2/1/15';
+		$dat=sql_dat($date,$error,true);
+		$this->assertEquals('2015-02-01',$dat);
+	}
 	function testSqlDatYmd(){
 		$date='2015/02/13';
+		$dat=sql_dat($date);
+		$this->assertEquals('2015-02-13',$dat);
+	}
+	function testSqlDatYmdShort(){
+		$date='2015/2/13'; // cant do short year in this format - would just be silly!
 		$dat=sql_dat($date);
 		$this->assertEquals('2015-02-13',$dat);
 	}
