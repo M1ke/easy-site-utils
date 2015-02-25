@@ -72,6 +72,14 @@ function valid_same(&$p,&$error=null,$valid=null){
 	return true;
 }
 
+function valid_same_anon(&$p,&$error=null,$valid=null){
+	if ($p[$valid['_input']]!=$p[$valid['same']]){
+		$error=!empty($valid['msg']) ? $valid['msg'] : 'This must be the same as the value above.';
+		return false;
+	}
+	return true;
+}
+
 function validate($validate,&$p=null,&$errors=null,$type=null,$clear=false){
 	$checked=array();
 	// this has to be done at the start as func validators may add new keys that are permitted
