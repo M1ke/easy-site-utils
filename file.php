@@ -46,9 +46,13 @@ function file_load($file,$serialize=false){
 	if (!is_readable($file)){
 		return false;
 	}
+	$size=filesize($file);
+	if (empty($size)){
+		return '';
+	}
 	$fh=fopen($file,'r');
 	if (!empty($fh)){
-		$string=fread($fh,filesize($file));
+		$string=fread($fh,$size);
 		fclose($fh);
 	}
 	return $serialize ? unserialize($string) : $string;
