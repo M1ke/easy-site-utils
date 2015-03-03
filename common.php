@@ -139,7 +139,7 @@ function is_binary($number){
 }
 
 function is_coord($lat,$lng){
-	return ($lat!=0 or $lng!=0);
+	return is_numeric($lat) and is_numeric($lng) and ($lat!=0 or $lng!=0);
 }
 
 function is_mobile($agent=null,$session=true,$make_mobile=false){
