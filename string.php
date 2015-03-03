@@ -277,7 +277,7 @@ function make_email(&$string,$blank=false){
 	if (strlen($string)>0){
 		$string=strtolower(trim($string));
 		$string=str_replace('\u0040','@',$string);
-		$pattern="/\b[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\b(?!\S)/";
+		$pattern="/\b['a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}\b(?!\S)/";
 		$result=preg_match($pattern,$string,$matches,PREG_OFFSET_CAPTURE);
 		$matches=end($matches);
 		if ($result>0 and end($matches)==0){

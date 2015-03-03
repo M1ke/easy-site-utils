@@ -8,7 +8,7 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(make_email($email));
 	}
 	function testComplexEmail(){
-		$email='inferno.m1ke_test@m1ke.test-test.me';
+		$email='inferno.m1ke_test\'@m1ke.test-test.me';
 		$this->assertTrue(make_email($email));
 	}
 	function testNoDomain(){
@@ -20,7 +20,7 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$this->assertFalse(make_email($email));
 	}
 	function testInvalidChar(){
-		$email='me@m1>ke.me';
+		$email='me@m1\'ke.me';
 		$this->assertFalse(make_email($email));
 	}
 	function testProceedingInvalidChar(){
