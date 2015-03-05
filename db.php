@@ -31,6 +31,9 @@ function create_field(&$field,&$error){
 			$type=" TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
 			$field['default']="CURRENT_TIMESTAMP";
 		break;
+		case 'point':
+			$type=" POINT";
+		break;
 		case 'polygon':
 			$type=" POLYGON";
 		break;
