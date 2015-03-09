@@ -31,12 +31,12 @@ function youtube_video_id($url,$validate=false){
 	}
 	parse_str(parse_url( $url, PHP_URL_QUERY ), $vars );
 	if (!empty($vars['v'])){
-			$out=$vars['v'];
+		$out=$vars['v'];
 	}
 	else {
-			$regex="/.*\/{0,2}(?:w{3}\.)*(?:youtube\.com|youtu\.be)\/(?:v\/|embed\/)*([^\&\?\/]+)/";
-			preg_match($regex,$url,$match);
-			$out=$match[1];
+		$regex="/.*\/{0,2}(?:w{3}\.)*(?:youtube\.com|youtu\.be)\/(?:v\/|embed\/)*([^\&\?\/]+)/";
+		preg_match($regex,$url,$match);
+		$out=$match[1];
 	}
 	return $out;
 }
@@ -70,33 +70,24 @@ function youtube_video_valid($youtube_api_key,$video_id,&$error){
 	$ch = curl_init($youtube_url);
 	curl_setopt($ch, CURLOPT_HTTPGET, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+	curl_setopt($ch, CURLOPT_HTTPHEADER,[
 		'Content-Type: application/json',
 		'Accept: application/json'
-		));
+	]);
 	$response=curl_exec($ch);
 	$retcode=curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
 	if ($retcode!=200){
-		$error="Video not found $video_id";
+		throw new Exception("Video not found $video_id");
 	}
-	else {
-		$result=json_decode($response,true,10);
-		$item_details=$result['items'];
-		if (!empty($item_details)){
-			$item=$item_details[0];
-			if (!empty($item)){
-				if ($item['status']['privacyStatus']=='public'){
-					return true;
-				}
-				else {
-					$error="Video is private $video_id";
-				}
-			}
-		}
-		else {
-			$error="Video not valid $video_id";
-		}
+	$result=json_decode($response,true,10);
+	$item_details=$result['items'];
+	if (empty($item_details)){
+		throw new Exception("Video not valid $video_id");
 	}
-	return false;
+	$item=$item_details[0];
+	if (empty($item) or $item['status']['privacyStatus']!='public'){
+		throw new Exception("Video is private $video_id");
+	}
+	return true;
 }
