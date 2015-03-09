@@ -255,23 +255,6 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$needle='panda';
 		$this->assertTrue(!in_string($needle,$haystack));
 	}
-
-	function testYoutubeVideoId(){
-		$youtube_urls=[
-			['url'=>'http://youtu.be/HKK5-uIfh2I','id'=>'HKK5-uIfh2I'],
-			['url'=>'https://youtu.be/_UZ92FPv_Ko','id'=>'_UZ92FPv_Ko'],
-			['url'=>'http://www.youtube.com/watch?v=XVH2ZFkqjSU&feature=mfu_in_order&list=UL','id'=>'XVH2ZFkqjSU'],
-			['url'=>'https://www.youtube.com/watch?v=fe7y9X3-GIU&feature=youtu.be','id'=>'fe7y9X3-GIU'],
-			['url'=>'http://www.youtube.com/watch?v=VV0dBqapdkc','id'=>'VV0dBqapdkc'],
-			['url'=>'http://www.youtube.com/embed/mz4vWHLwbPE','id'=>'mz4vWHLwbPE'],
-			['url'=>'https://www.youtube.com/embed/1NUbUYrVuPA','id'=>'1NUbUYrVuPA'],
-			['url'=>'http://www.youtube.com/v/OaYtF1HTYC0','id'=>'OaYtF1HTYC0'],
-			['url'=>'http://www.vistabee.com/en/v/q6h9ok','id'=>''],
-		];
-		foreach($youtube_urls as $test){
-			$this->assertEquals($test['id'],youtube_video_id($test['url']));
-		}
-	}
 }
 
 class TestPlural extends PHPUnit_Framework_TestCase {
