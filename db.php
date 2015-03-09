@@ -157,6 +157,7 @@ function db_update($new,$old,&$out=null,$echo=null){
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
 					if (!@in_array($index,$old[$new_table['title']]['index'])){
+						$index=str_replace(',','`,`',$index);
 						$queries[]="ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 					}
 				}
