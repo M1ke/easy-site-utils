@@ -1,5 +1,4 @@
 <?php
-
 function make_video($url,$protocol='http'){
 	$parse=parse_url_imp($url);
 	if (empty($parse)){
@@ -10,6 +9,27 @@ function make_video($url,$protocol='http'){
 			// creates the variable $v. if YouTube ever change url scheme for 'watch' this will need altering
 			parse_str($parse['arg']);
 			$html.='<object type="application/x-shockwave-flash" style="width:480px; height:385px;" data="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"><param name="movie" value="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"/></object>';
+		break;
+		default:
+			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
+	}
+	return $html;
+}
+
+/*
+ * returns a embed html from a video url
+ */
+function make_youtube_video($url,$protocol='http'){
+	$parse=parse_url_imp($url);
+	if (empty($parse)){
+		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
+	}
+	switch ($parse['domain']){
+		case 'youtu.':
+		case 'youtube.':
+			// creates the variable $v. if YouTube ever change url scheme for 'watch' this will need altering
+			$video_id=youtube_video_id($url,false);
+			$html.='<object type="application/x-shockwave-flash" style="width:480px; height:385px;" data="'.$protocol.'://www.youtube.com/v/'.$video_id.'&color1=0x006699&color2=0x54abd6"><param name="movie" value="'.$protocol.'://www.youtube.com/v/'.$video_id.'&color1=0x006699&color2=0x54abd6"/></object>';
 		break;
 		default:
 			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
@@ -42,45 +62,16 @@ function youtube_video_id($url,$validate=false){
 }
 
 /*
- * returns a embed html from a video url
- */
-function make_youtube_video($url,$protocol='http'){
-	$parse=parse_url_imp($url);
-	if (empty($parse)){
-		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
-	}
-	switch ($parse['domain']){
-		case 'youtu.':
-		case 'youtube.':
-			// creates the variable $v. if YouTube ever change url scheme for 'watch' this will need altering
-			$v=youtube_video_id($url,false);
-			$html.='<object type="application/x-shockwave-flash" style="width:480px; height:385px;" data="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"><param name="movie" value="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"/></object>';
-		break;
-		default:
-		$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
-	}
-	return $html;
-}
-
-/*
  * Returns true if the video id supplied corresponds to a valid and public youtube video
  */
-function youtube_video_valid($youtube_api_key,$video_id,&$error){
+function youtube_video_valid($youtube_api_key,$video_id){
 	$youtube_url="https://www.googleapis.com/youtube/v3/videos?id=$video_id&key=$youtube_api_key&part=status";
-	$ch = curl_init($youtube_url);
-	curl_setopt($ch, CURLOPT_HTTPGET, true);
-	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-	curl_setopt($ch, CURLOPT_HTTPHEADER,[
-		'Content-Type: application/json',
-		'Accept: application/json'
-	]);
-	$response=curl_exec($ch);
-	$retcode=curl_getinfo($ch, CURLINFO_HTTP_CODE);
-	curl_close($ch);
-	if ($retcode!=200){
+	try {
+		$result=http_get_json($youtube_url,10);
+	}
+	catch (Exception $e){
 		throw new Exception("Video not found $video_id");
 	}
-	$result=json_decode($response,true,10);
 	$item_details=$result['items'];
 	if (empty($item_details)){
 		throw new Exception("Video not valid $video_id");

@@ -1,5 +1,21 @@
 <?php
-
+function http_get_json($url,$json_depth=null){
+	$ch = curl_init($url);
+	curl_setopt($ch, CURLOPT_HTTPGET, true);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+	curl_setopt($ch, CURLOPT_HTTPHEADER,[
+		'Content-Type: application/json',
+		'Accept: application/json'
+	]);
+	$response=curl_exec($ch);
+	$retcode=curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($ch);
+	if ($retcode!=200){
+		throw new Exception("CURL failed to return a valid response");
+	}
+	$result=json_decode($response,true,$json_depth);
+	return $result;
+}
 
 function http_post_curl($post,$url,$return=false){
 	//url-ify the data for the POST
