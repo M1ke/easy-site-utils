@@ -39,6 +39,17 @@ function echo_html($html){
 	echo '<pre>'.htmlspecialchars($html).'</pre>';
 }
 
+function echo_shell($string,$eol=true){
+	if (empty($_SERVER['SHELL'])){
+		return false;
+	}
+	if ($string instanceof Exception){
+		$string='E: '.$string->getMessage();
+	}
+	echo $string.($eol ? PHP_EOL : '');
+	return true;
+}
+
 function json_out($data){
 	header('Content-type: application/json');
 	$data=json_encode($data);
