@@ -30,6 +30,7 @@ class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
 			['url'=>'http://www.youtube.com/v/OaYtF1HTYC0','id'=>'DsrykdW0re0', 'pass'=>false],//private video
 			['url'=>'http://www.youtube.com/v/XYZ','id'=>'XYZ', 'pass'=>false],//invalid video
 			['url'=>'http://www.youtube.com/v/','id'=>'', 'pass'=>false],//no video
+			['url'=>'https://www.youtube.com/watch?feature=player_embedded&v=LGbMJYjmyoI', id=>'LGbMJYjmyoI', 'pass'=>false],//video does not exist
 		];
 		$api_key=$argv[2];
 		foreach($youtube_urls as $test){
