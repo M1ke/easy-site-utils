@@ -1,5 +1,5 @@
 <?php
-function http_get_json($url,$json_depth=null){
+function http_get_json($url,$json_depth=512){
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HTTPGET, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
