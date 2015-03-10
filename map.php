@@ -85,7 +85,7 @@ function google_places_nearby($location,$key,$radius=10){
 }
 
 function google_places_vicinity($places){
-	foreach ($places['results'] as $place){
+	foreach ($places as $place){
 		if (empty($place['vicinity'])){
 			continue;
 		}
