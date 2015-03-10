@@ -52,14 +52,49 @@ function geo_town($address,$geocode=null){
 
 function geocode($address,$key=null){
 	$url='https://maps.googleapis.com/maps/api/geocode/json?address='.urlencode($address).'&sensor=false'.(!empty($key) ? '&key='.$key : '');
-	$geocode=@file_get_contents($url);
-	if (!empty($geocode)){
-		$geocode=json_decode($geocode,true);
+	try {
+		$geocode=http_get_json($url);
+		if ($geocode['status']=='ZERO_RESULTS'){
+			throw new Exception('Zero results');
+		}
 	}
-	if ($geocode['status']=='ZERO_RESULTS'){
+	catch (Exception $e){
 		$geocode=false;
 	}
 	return $geocode;
+}
+
+function google_places_process($url,$key){
+	$url.='&key='.$key;
+	$places=http_get_json($url);
+	if ($places['error_message']){
+		throw new Exception('Google Places returned the following error: '.$places['error_message']);
+	}
+	elseif ($places['status']!='OK'){
+		throw new Exception('The request did not return the correct information.');
+	}
+	return $places['results'];
+}
+
+function google_places_nearby($location,$key,$radius=10){
+	if (is_array($location)){
+		$location=$location['lat'].','.$location['lng'];
+	}
+	$url='https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$location.'&radius='.$radius;
+	return google_place_process($url,$key);
+}
+
+function google_places_vicinity($places){
+	foreach ($places['results'] as $place){
+		if (empty($place['vicinity'])){
+			continue;
+		}
+		$vicinity=string_split($place['vicinity']);
+		if (!empty($vicinity)){
+			return end($vicinity);
+		}
+	}
+	return '';
 }
 
 // https://github.com/hannesvdvreken/Point-in-polygon

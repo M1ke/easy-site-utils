@@ -833,6 +833,11 @@ function string_insert($string,$chars,$ins){
 	return $start.$ins.$end;
 }
 
+function string_split($string,$split=','){
+	$string=str_replace([$split.' ',' '.$split],$split,$string);
+	return explode($split,$string);
+}
+
 function string_uncheck($string){
 	$string=stripslashes($string);
 	$string=str_replace(array('&amp;','&#39;','&#39;','&#39;','"','&#8220;','&#8221;','&#233;','&#163;','...','-'),array('&',"'","’","‘",'`','“','”','é','£','…','–'),$string);
