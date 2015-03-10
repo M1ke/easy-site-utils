@@ -156,15 +156,20 @@ function db_update($new,$old,&$out=null,$echo=null){
 			// }
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
-					if (!@in_array($index,$old[$new_table['title']]['index'])){
-						$index=str_replace(',','`,`',$index);
+					$index_name=explode(',',$index);
+					$index_name=$index_name[0];
+					$new_table['index_names'][]=$index_name;
+					$index=str_replace(',','`,`',$index);
+					if (!@in_array($index_name,$old[$new_table['title']]['index'])){
 						$queries[]="ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 					}
 				}
 			}
 			if (is_array($old[$new_table['title']]['index'])){
 				foreach ($old[$new_table['title']]['index'] as $index){
-					if (!@in_array($index,$new_table['index'])){
+					$index_name=explode(',',$index);
+					$index_name=$index_name[0];
+					if (!@in_array($index_name,$new_table['index_names'])){
 						$queries[]="ALTER TABLE `{$new_table['title']}` DROP INDEX `$index`";
 					}
 				}
