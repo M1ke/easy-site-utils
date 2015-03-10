@@ -84,6 +84,11 @@ function google_places_nearby($location,$key,$radius=10){
 	return google_places_process($url,$key);
 }
 
+function google_places_text($query,$key,$radius=10){
+	$url='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$query.'&radius='.$radius;
+	return google_places_process($url,$key);
+}
+
 function google_places_vicinity($places){
 	foreach ($places as $place){
 		if (empty($place['vicinity'])){
