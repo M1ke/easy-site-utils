@@ -20,10 +20,6 @@ function make_video($url,$protocol='http'){
  * returns a embed html from a video url
  */
 function make_youtube_video($url,$params){
-	if (empty($params['protocol'])){
-		$params['protocol']='http';
-	}
-
 	$query=http_build_query($params);
 	$parse=parse_url_imp($url);
 	if (empty($parse)){
@@ -33,7 +29,7 @@ function make_youtube_video($url,$params){
 		case 'youtu.':
 		case 'youtube.':
 			$video_id=youtube_video_id($url,false);
-			$html.='<iframe width="480" height="385" frameborder="0" src="'.$params['protocol'].'://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
+			$html.='<iframe width="480" height="385" frameborder="0" src="https://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
 		break;
 		default:
 			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
