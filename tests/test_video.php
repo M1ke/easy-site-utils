@@ -20,6 +20,16 @@ class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
 		}
 	}
 
+	private static function isVideoValid($api_key,$video){
+		try {
+			return youtube_video_valid($api_key,$video,$error);
+		}
+		catch(Exception $e){
+			//echo 'Invalid video '.$video;
+			return false;
+		}
+	}
+
 	/*
 	 * Must supply your own YOUTUBE API key on command line to this test
 	 */
@@ -34,7 +44,7 @@ class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
 		];
 		$api_key=$argv[2];
 		foreach($youtube_urls as $test){
-			$this->assertEquals($test['pass'],youtube_video_valid($api_key,$test['id'],$error));
+			$this->assertEquals($test['pass'],self::isVideoValid($api_key,$test['id']));
 		}
 	}
 
