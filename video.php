@@ -19,7 +19,8 @@ function make_video($url,$protocol='http'){
 /*
  * returns a embed html from a video url
  */
-function make_youtube_video($url){
+function make_youtube_video($url,$params){
+	$query=http_build_query($params);
 	$parse=parse_url_imp($url);
 	if (empty($parse)){
 		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
@@ -27,9 +28,8 @@ function make_youtube_video($url){
 	switch ($parse['domain']){
 		case 'youtu.':
 		case 'youtube.':
-			// creates the variable $v. if YouTube ever change url scheme for 'watch' this will need altering
 			$video_id=youtube_video_id($url,false);
-			$html.='<object type="application/x-shockwave-flash" style="width:480px; height:385px;" data="//www.youtube.com/v/'.$video_id.'&color1=0x006699&color2=0x54abd6"><param name="movie" value="//www.youtube.com/v/'.$video_id.'&color1=0x006699&color2=0x54abd6"/></object>';
+			$html.='<iframe width="480" height="385" frameborder="0" src="https://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
 		break;
 		default:
 			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
