@@ -21,6 +21,8 @@ function make_video($url,$protocol='http'){
  */
 function make_youtube_video($url,$params){
 	$query=http_build_query($params);
+	$width=isset($params['width'])?$params['width']:'480';
+	$height=isset($params['height'])?$params['height']:'385';
 	$parse=parse_url_imp($url);
 	if (empty($parse)){
 		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
@@ -29,7 +31,7 @@ function make_youtube_video($url,$params){
 		case 'youtu.':
 		case 'youtube.':
 			$video_id=youtube_video_id($url,false);
-			$html.='<iframe width="480" height="385" frameborder="0" src="https://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
+			$html.='<iframe width="'.$width.'" height="'.$height.'" frameborder="0" src="https://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
 		break;
 		default:
 			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
