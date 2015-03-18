@@ -57,6 +57,14 @@ function file_load($file,$serialize=false){
 	}
 	return $serialize ? unserialize($string) : $string;
 }
+function file_load_json($file){
+	$string=file_load($file);
+	$json=json_decode($string,true);
+	if (empty($json)){
+		throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
+	}
+	return $json;
+}
 // deprecated
 function get_file($filename){
 	return file_load($filename);
@@ -79,6 +87,12 @@ function file_output($file_path,$mime=null,$file_name=null){
 function file_save($file,$string,$overwrite=false){
 	if (is_array($string)){
 		$string=serialize($string);
+	}
+	return file_save_($file,$string,$overwrite);
+}
+function file_save_json($file,$string,$overwrite=false,$pretty=false){
+	if (is_array($string)){
+		$string=json_encode($string,$pretty);
 	}
 	return file_save_($file,$string,$overwrite);
 }
