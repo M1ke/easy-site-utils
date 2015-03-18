@@ -133,6 +133,15 @@ function array_remove($needle,Array $haystack){
 	return $haystack;
 }
 
+function array_remove_empty(Array $arr){
+	foreach ($arr as $key => $val){
+		if (empty($val)){
+			unset($arr[$key]);
+		}
+	}
+	return $arr;
+}
+
 // inserts an item into an array at a specified key without creating a new array
 function array_slip($arr,$assign,$overwrite_or_val=true,$overwrite=true){
 	if (!is_array($assign)){
