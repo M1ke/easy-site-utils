@@ -1,14 +1,12 @@
 <?php
-
-
-function decimal_ratio($decimal,$sep=':'){
+function decimal_ratio($decimal, $sep=':'){
 	$num=array(0,0);
 	do {
 		$num[1]++;
-		$num[0]=$num[1]*$decimal;
+		$num[0] = $num[1]*$decimal;
 	}
 	while (!is_whole($num[0]));
-	$ratio=implode($sep,$num);
+	$ratio = implode($sep, $num);
 	return $ratio;
 }
 
@@ -17,10 +15,10 @@ function is_decimal($num){
 }
 
 function is_even($n){
-	return ($n % 2 == 0);
+	return ($n%2 == 0);
 }
 
-function is_number(&$number,$blank=null){
+function is_number(&$number, $blank=null){
 	if (@strlen($number)>0){
 		$number=trim($number);
 		if (is_numeric($number)){
@@ -39,7 +37,7 @@ function is_number(&$number,$blank=null){
 	}
 }
 
-function is_positive(&$number,$blank=null){
+function is_positive(&$number, $blank=null){
 	if (@strlen($number)>0){
 		$number=trim($number);
 		if ($number>0 and is_numeric($number)){
@@ -56,7 +54,7 @@ function is_positive(&$number,$blank=null){
 	return false;
 }
 
-function is_positive_safe($number,$blank=null){
+function is_positive_safe($number, $blank=null){
 	if (@strlen($number)>0){
 		return ($number>0 and is_numeric($number));
 	}
@@ -73,7 +71,7 @@ function is_whole($num){
 
 function num_position($num){
 	$string=(string)$num;
-	$end=substr($string,strlen($string)-1);
+	$end=substr($string, strlen($string)-1);
 	switch ($end){
 		case '1':
 			return $num.'st';
@@ -89,11 +87,16 @@ function num_position($num){
 	}
 }
 
-function ratio_decimal($ratio,$sep=':'){
-	$num=explode($sep,$ratio);
+function ratio_decimal($ratio, $sep=':'){
+	$num=explode($sep, $ratio);
 	return $num[1]==0 ? 1 : $num[0]/$num[1];
 }
 
+function round_custom($num, $precision = 5, $func = 'round'){
+	return $precision * $func($num / $precision);
+}
+
+// These just seem lazy, should likely check for use and remove them
 function round_down($num){
 	return floor($num);
 }
