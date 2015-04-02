@@ -1,5 +1,5 @@
 <?php
-function decimal_ratio($decimal, $sep=':'){
+function decimal_ratio($decimal, $sep = ':'){
 	$num=array(0,0);
 	do {
 		$num[1]++;
@@ -18,9 +18,9 @@ function is_even($n){
 	return ($n%2 == 0);
 }
 
-function is_number(&$number, $blank=null){
+function is_number(&$number, $blank = null){
 	if (@strlen($number)>0){
-		$number=trim($number);
+		$number = trim($number);
 		if (is_numeric($number)){
 			return true;
 		}
@@ -28,8 +28,8 @@ function is_number(&$number, $blank=null){
 			$result=word_to_number($number);
 		}
 	}
-	if (!empty($result) or $blank){
-		$number=false;
+	if (!empty($result) || $blank){
+		$number = false;
 		return true;
 	}
 	else {
@@ -37,10 +37,10 @@ function is_number(&$number, $blank=null){
 	}
 }
 
-function is_positive(&$number, $blank=null){
+function is_positive(&$number, $blank = null){
 	if (@strlen($number)>0){
 		$number=trim($number);
-		if ($number>0 and is_numeric($number)){
+		if ($number>0 && is_numeric($number)){
 			return true;
 		}
 		else {
@@ -48,18 +48,18 @@ function is_positive(&$number, $blank=null){
 		}
 	}
 	elseif ($blank){
-		$number=false;
+		$number = false;
 		return true;
 	}
 	return false;
 }
 
-function is_positive_safe($number, $blank=null){
+function is_positive_safe($number, $blank = null){
 	if (@strlen($number)>0){
-		return ($number>0 and is_numeric($number));
+		return ($number>0 && is_numeric($number));
 	}
 	elseif ($blank){
-		$number=false;
+		$number = false;
 		return true;
 	}
 	return false;
@@ -70,8 +70,8 @@ function is_whole($num){
 }
 
 function num_position($num){
-	$string=(string)$num;
-	$end=substr($string, strlen($string)-1);
+	$string = (string)$num;
+	$end = substr($string, strlen($string)-1);
 	switch ($end){
 		case '1':
 			return $num.'st';
@@ -87,8 +87,8 @@ function num_position($num){
 	}
 }
 
-function ratio_decimal($ratio, $sep=':'){
-	$num=explode($sep, $ratio);
+function ratio_decimal($ratio, $sep = ':'){
+	$num = explode($sep, $ratio);
 	return $num[1]==0 ? 1 : $num[0]/$num[1];
 }
 

@@ -13,7 +13,7 @@ function dir_list_files($path){
 	return $files;
 }
 
-function dir_tree($dir, $root=null){
+function dir_tree($dir, $root = null){
 	foreach ($dir as $name => $sub){
 		$name = $root.$name;
 		if (!file_exists($name)){
@@ -42,7 +42,7 @@ function file_delete($file){
 	return true;
 }
 
-function file_load($file, $serialize=false){
+function file_load($file, $serialize = false){
 	if (!is_readable($file)){
 		return false;
 	}
@@ -75,7 +75,7 @@ function get_file($filename){
 	return file_load($filename);
 }
 
-function file_output($file_path, $mime=null, $file_name=null){
+function file_output($file_path, $mime = null, $file_name = null){
 	if (empty($file_name)){
 		$file_name = substr_after($file_path,'/');
 	}
@@ -116,7 +116,7 @@ function file_save_($file, $string, $overwrite){
 	return true;
 }
 
-function file_store($id, $params, &$error=null){
+function file_store($id, $params, &$error = null){
 	$out = $params['out'].$id.(!empty($params['ext']) ? '.'.$params['ext'] : '');
 	if (!copy($params['in'], $out)){
 		$error = 'The file was uploaded but could not be stored. The file "'.$params['in'].'" could not be copied to "'.$out.'".';
@@ -125,7 +125,7 @@ function file_store($id, $params, &$error=null){
 	return true;
 }
 
-function file_types($check, $file_types=null){
+function file_types($check, $file_types = null){
 	if (empty($file_types)){
 		$file_types = array('pdf','doc','xls','ppt','docx','xlsx','pptx','mp3','jpeg','jpg','png','avi','mov','mpg','mpeg','mp4','3gs','wmv','asx');
 	}
@@ -145,7 +145,7 @@ function file_valid($file, &$error, $file_types = null){
 	}
 }
 
-function folder_copy($src, $dst, $recurse=true){
+function folder_copy($src, $dst, $recurse = true){
     $dir=opendir($src);
 	if (!empty($dir)){
 		@mkdir($dst);
