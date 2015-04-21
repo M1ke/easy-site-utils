@@ -58,14 +58,17 @@ function file_load($file, $serialize = false){
 	return $serialize ? unserialize($string) : $string;
 }
 
-function file_load_json($file){
+function file_load_json($file, $throw_on_error = true){
 	$string = file_load($file);
 	if (empty($string)){
 		return [];
 	}
 	$json = json_decode($string, true);
-	if (empty($json)){
-		throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
+	if ($json===false){
+		if ($throw_on_error){
+			throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
+		}
+		$json=[];
 	}
 	return $json;
 }
