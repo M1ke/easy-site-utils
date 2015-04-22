@@ -125,7 +125,7 @@ function array_oned(&$arr,$assoc,$pre){
 	unset($arr[$assoc]);
 }
 
-function array_rand(Array $arr){
+function array_random(Array $arr){
 	$keys = array_keys($arr);
 	$key = $keys[rand(0, count($keys)-1)];
 	return $arr[$key];
