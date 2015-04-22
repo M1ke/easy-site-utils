@@ -99,7 +99,7 @@ function file_save($file, $string, $overwrite = false){
 	return file_save_($file, $string, $overwrite);
 }
 
-function file_save_json($file, $string, $overwrite = false, $pretty = false){
+function file_save_json($file, $string, $overwrite = true, $pretty = false){
 	if (is_array($string)){
 		$string = json_encode($string,$pretty);
 	}
