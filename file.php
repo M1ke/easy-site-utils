@@ -64,7 +64,7 @@ function file_load_json($file, $throw_on_error = true){
 		return [];
 	}
 	$json = json_decode($string, true);
-	if ($json===false){
+	if ($json===null){
 		if ($throw_on_error){
 			throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
 		}
