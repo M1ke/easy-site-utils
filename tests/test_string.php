@@ -257,20 +257,20 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 	}
 
         function testStartWith(){
-                $this->assertTrue(startsWith("abcdef", "ab"));
-                $this->assertFalse(startsWith("abcdef", "cd"));
-                $this->assertFalse(startsWith("abcdef", "ef"));
-                $this->assertTrue(startsWith("abcdef", ""));
-                $this->assertFalse(startsWith("", "abcdef"));
+                $this->assertTrue(starts_with("abcdef", "ab"));
+                $this->assertFalse(starts_with("abcdef", "cd"));
+                $this->assertFalse(starts_with("abcdef", "ef"));
+                $this->assertTrue(starts_with("abcdef", ""));
+                $this->assertFalse(starts_with("", "abcdef"));
 
         }
 
         function testEndsWith(){
-                $this->assertFalse(endsWith("abcdef", "ab"));
-                $this->assertFalse(endsWith("abcdef", "cd"));
-                $this->assertTrue(endsWith("abcdef", "ef"));
-                $this->assertTrue(endsWith("abcdef", ""));
-                $this->assertFalse(endsWith("", "abcdef"));
+                $this->assertFalse(ends_with("abcdef", "ab"));
+                $this->assertFalse(ends_with("abcdef", "cd"));
+                $this->assertTrue(ends_with("abcdef", "ef"));
+                $this->assertTrue(ends_with("abcdef", ""));
+                $this->assertFalse(ends_with("", "abcdef"));
 
         }
 }

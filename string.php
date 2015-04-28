@@ -1067,12 +1067,12 @@ function zero_pad($num){
 	return substr($num,strlen($num)-2);
 }
 
-function startsWith($haystack, $needle){
+function starts_with($haystack, $needle){
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
 }
 
-function endsWith($haystack, $needle){
+function ends_with($haystack, $needle){
         $length = strlen($needle);
         if ($length == 0) {
                 return true;
