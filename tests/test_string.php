@@ -255,6 +255,24 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$needle='panda';
 		$this->assertTrue(!in_string($needle,$haystack));
 	}
+
+        function testStartWith(){
+                $this->assertTrue(startsWith("abcdef", "ab"));
+                $this->assertFalse(startsWith("abcdef", "cd"));
+                $this->assertFalse(startsWith("abcdef", "ef"));
+                $this->assertTrue(startsWith("abcdef", ""));
+                $this->assertFalse(startsWith("", "abcdef"));
+
+        }
+
+        function testEndsWith(){
+                $this->assertFalse(endsWith("abcdef", "ab"));
+                $this->assertFalse(endsWith("abcdef", "cd"));
+                $this->assertTrue(endsWith("abcdef", "ef"));
+                $this->assertTrue(endsWith("abcdef", ""));
+                $this->assertFalse(endsWith("", "abcdef"));
+
+        }
 }
 
 class TestPlural extends PHPUnit_Framework_TestCase {
