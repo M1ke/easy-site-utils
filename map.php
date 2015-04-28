@@ -64,9 +64,9 @@ function geocode($address,$key=null){
 	return $geocode;
 }
 
-function google_places_process($url,$key){
-	$url.='&key='.$key;
-	$places=http_get_json($url);
+function google_places_process(&$url, $key){
+	$url .= '&key='.$key;
+	$places = http_get_json($url);
 	if ($places['error_message']){
 		throw new Exception('Google Places returned the following error: '.$places['error_message']);
 	}
@@ -76,17 +76,17 @@ function google_places_process($url,$key){
 	return $places['results'];
 }
 
-function google_places_nearby($location,$key,$radius=10){
+function google_places_nearby($location, $key, $radius=10, &$url = null){
 	if (is_array($location)){
-		$location=$location['lat'].','.$location['lng'];
+		$location = $location['lat'].','.$location['lng'];
 	}
-	$url='https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$location.'&radius='.$radius;
-	return google_places_process($url,$key);
+	$url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$location.'&radius='.$radius;
+	return google_places_process($url, $key);
 }
 
-function google_places_text($query,$key,$radius=10){
-	$url='https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$query.'&radius='.$radius;
-	return google_places_process($url,$key);
+function google_places_text($query, $key, $radius=10, &$url = null){
+	$url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$query.'&radius='.$radius;
+	return google_places_process($url, $key);
 }
 
 function google_places_vicinity($places){

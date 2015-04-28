@@ -140,6 +140,9 @@ function validate($validate,&$p=null,&$errors=null,$type=null,$clear=false){
 				if (!empty($valid['serialize'])){
 					$p[$input]=serialize($p[$input]);
 				}
+				if (!empty($valid['json_encode'])){
+					$p[$input]=json_encode($p[$input]);
+				}
 				if (isset($valid['implode'])){
 					$p[$input]=string_check(implode($valid['implode'],$p[$input]));
 					if (!isset($valid['blank']) and empty($p[$input])){

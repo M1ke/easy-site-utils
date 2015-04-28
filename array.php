@@ -125,12 +125,27 @@ function array_oned(&$arr,$assoc,$pre){
 	unset($arr[$assoc]);
 }
 
+function array_random(Array $arr){
+	$keys = array_keys($arr);
+	$key = $keys[rand(0, count($keys)-1)];
+	return $arr[$key];
+}
+
 function array_remove($needle,Array $haystack){
 	$key=array_search($needle,$haystack);
 	if (!empty($key)){
 		unset($haystack[$key]);
 	}
 	return $haystack;
+}
+
+function array_remove_empty(Array $arr){
+	foreach ($arr as $key => $val){
+		if (empty($val)){
+			unset($arr[$key]);
+		}
+	}
+	return $arr;
 }
 
 // inserts an item into an array at a specified key without creating a new array
