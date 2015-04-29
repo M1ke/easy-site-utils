@@ -100,14 +100,15 @@ function google_places_text($query, $key, $radius = null, &$url = null){
 	return google_places_process($url, $key);
 }
 
-function google_places_vicinity($places){
+function google_places_vicinity($places, Array $ignore = []){
 	foreach ($places as $place){
 		if (empty($place['vicinity'])){
 			continue;
 		}
-		$vicinity=string_split($place['vicinity']);
-		if (!empty($vicinity)){
-			return end($vicinity);
+		$vicinity = string_split($place['vicinity']);
+		$vicinity = end($vicinity);
+		if (!empty($vicinity) && (empty($ignore) || !in_array($vicinity, $ignore))){
+			return $vicinity;
 		}
 	}
 	return '';
