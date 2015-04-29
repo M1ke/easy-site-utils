@@ -81,15 +81,21 @@ function google_places_process(&$url, $key){
 	return $places['results'];
 }
 
-function google_places_nearby($location, $key, $radius=10, &$url = null){
+function google_places_nearby($location, $key, $radius = null, &$url = null){
 	if (is_array($location)){
 		$location = $location['lat'].','.$location['lng'];
+	}
+	if (!is_numeric($radius)){
+		$radius = 10;
 	}
 	$url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$location.'&radius='.$radius;
 	return google_places_process($url, $key);
 }
 
-function google_places_text($query, $key, $radius=10, &$url = null){
+function google_places_text($query, $key, $radius = null, &$url = null){
+	if (!is_numeric($radius)){
+		$radius = 10;
+	}
 	$url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$query.'&radius='.$radius;
 	return google_places_process($url, $key);
 }
