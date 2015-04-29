@@ -66,12 +66,17 @@ function geocode($address,$key=null){
 
 function google_places_process(&$url, $key){
 	$url .= '&key='.$key;
-	$places = http_get_json($url);
-	if ($places['error_message']){
-		throw new Exception('Google Places returned the following error: '.$places['error_message']);
+	try {
+		$places = http_get_json($url);
+	}
+	catch (\Exception $e){
+		throw new \Exception('The request to Google Places failed, the reason given was: "'.$e->getMessage().'"');
+	}
+	if (!empty($places['error_message'])){
+		throw new \Exception('Google Places returned the following error: '.$places['error_message']);
 	}
 	elseif ($places['status']!='OK'){
-		throw new Exception('The request did not return the correct information.');
+		throw new \Exception('The Google Places request returned the status: "'.$places['status'].'".');
 	}
 	return $places['results'];
 }

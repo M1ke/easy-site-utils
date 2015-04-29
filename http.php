@@ -1,5 +1,5 @@
 <?php
-function http_get_json($url,$json_depth=512){
+function http_get_json($url, $json_depth=512){
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HTTPGET, true);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
@@ -7,13 +7,16 @@ function http_get_json($url,$json_depth=512){
 		'Content-Type: application/json',
 		'Accept: application/json'
 	]);
-	$response=curl_exec($ch);
-	$retcode=curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	$response = curl_exec($ch);
+	$retcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 	curl_close($ch);
 	if ($retcode!=200){
-		throw new Exception("CURL failed to return a valid response");
+		throw new \Exception('CURL failed to return a valid response');
 	}
-	$result=json_decode($response,true,$json_depth);
+	$result=json_decode($response, true, $json_depth);
+	if ($result===null){
+		throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
+	}
 	return $result;
 }
 
