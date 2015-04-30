@@ -99,4 +99,19 @@ class TestPolygon extends PHPUnit_Framework_TestCase {
 		$dist=point_distance($a,$b);
 		$this->assertEquals(0,$dist);
 	}
+
+	// Google places
+	function testPlacesVicinity(){
+		$places = [
+			['vicinity' => 'Gilesgate, Durham'],
+		];
+		$this->assertEquals('Durham', google_places_vicinity($places));
+	}
+	function testPlacesVicinityIgnore(){
+		$places = [
+			['vicinity' => 'United Kingdom'],
+			['vicinity' => 'Gilesgate, Durham'],
+		];
+		$this->assertEquals('Durham', google_places_vicinity($places, ['United Kingdom']));
+	}
 }

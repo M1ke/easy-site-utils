@@ -66,37 +66,49 @@ function geocode($address,$key=null){
 
 function google_places_process(&$url, $key){
 	$url .= '&key='.$key;
-	$places = http_get_json($url);
-	if ($places['error_message']){
-		throw new Exception('Google Places returned the following error: '.$places['error_message']);
+	try {
+		$places = http_get_json($url);
+	}
+	catch (\Exception $e){
+		throw new \Exception('The request to Google Places failed, the reason given was: "'.$e->getMessage().'"');
+	}
+	if (!empty($places['error_message'])){
+		throw new \Exception('Google Places returned the following error: '.$places['error_message']);
 	}
 	elseif ($places['status']!='OK'){
-		throw new Exception('The request did not return the correct information.');
+		throw new \Exception('The Google Places request returned the status: "'.$places['status'].'".');
 	}
 	return $places['results'];
 }
 
-function google_places_nearby($location, $key, $radius=10, &$url = null){
+function google_places_nearby($location, $key, $radius = null, &$url = null){
 	if (is_array($location)){
 		$location = $location['lat'].','.$location['lng'];
+	}
+	if (!is_numeric($radius)){
+		$radius = 10;
 	}
 	$url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location='.$location.'&radius='.$radius;
 	return google_places_process($url, $key);
 }
 
-function google_places_text($query, $key, $radius=10, &$url = null){
+function google_places_text($query, $key, $radius = null, &$url = null){
+	if (!is_numeric($radius)){
+		$radius = 10;
+	}
 	$url = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query='.$query.'&radius='.$radius;
 	return google_places_process($url, $key);
 }
 
-function google_places_vicinity($places){
+function google_places_vicinity($places, Array $ignore = []){
 	foreach ($places as $place){
 		if (empty($place['vicinity'])){
 			continue;
 		}
-		$vicinity=string_split($place['vicinity']);
-		if (!empty($vicinity)){
-			return end($vicinity);
+		$vicinity = string_split($place['vicinity']);
+		$vicinity = end($vicinity);
+		if (!empty($vicinity) && (empty($ignore) || !in_array($vicinity, $ignore))){
+			return $vicinity;
 		}
 	}
 	return '';
