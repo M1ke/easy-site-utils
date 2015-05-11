@@ -16,3 +16,4 @@ require __DIR__.'/output.php';
 require __DIR__.'/string.php';
 require __DIR__.'/users.php';
 require __DIR__.'/video.php';
+require __DIR__.'/security.php';
