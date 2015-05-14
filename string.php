@@ -142,7 +142,7 @@ function data_template($string, $keys, $vals){
 
 function data_template_all($string, $vals){
 	$keys = array_keys($vals);
-	return data_template()$string, $keys, $vals);
+	return data_template($string, $keys, $vals);
 }
 
 function file_name($file,$return=null){
