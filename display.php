@@ -67,10 +67,12 @@ function html_data($data,$test_numeric=true){
 	return $html;
 }
 
-function html_implode($arr,$el){
-	if (is_array($arr)){
-		return "<$el>".implode("</$el><$el>",$arr)."</$el>";
+function html_implode($arr, $el, $class = ''){
+	if (!is_array($arr)){
+		return '';
 	}
+	$open_tag = "<$el".(!empty($class) ? "class='$class'" : '').">";
+	return $open_tag.implode("</$el>$open_tag", $arr)."</$el>";
 }
 
 function html_table_cols($cols){

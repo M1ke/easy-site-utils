@@ -21,6 +21,18 @@ class TestDisplay extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($options,'<option value="0">Zero</option><option value="1" selected>One</option><option value="2">Two</option>');
 	}
 
+	// html_implode
+
+	function testHtmlImplode(){
+		$html = html_implode(['Test', 'Test2', 'Test3'], 'span');
+		$this->assertEquals('<span>Test</span><span>Test2</span><span>Test3</span>', $html);
+	}
+
+	function testHtmlImplodeClass(){
+		$html = html_implode(['Test', 'Test2', 'Test3'], 'span', 'bold');
+		$this->assertEquals("<span class='bold'>Test</span><span class='bold'>Test2</span><span class='bold'>Test3</span>", $html);
+	}
+
 	// make_table
 
 	function testMakeTableCsv(){
