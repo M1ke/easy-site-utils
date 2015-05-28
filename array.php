@@ -41,6 +41,14 @@ function array_overwrite($base,$fill){
 	return $arr;
 }
 
+function array_extract(array $arr, $field){
+	$return = [];
+	foreach ($arr as $key => $val){
+		$return[$key] = $val[$field];
+	}
+	return $return;
+}
+
 // places items in a flat array into a multidimensional array based on keys
 function array_id(&$arr,$key,$key2=null,$key3=null){
 	if (is_array($arr)){

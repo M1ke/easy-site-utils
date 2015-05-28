@@ -47,4 +47,24 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		);
 		$this->assertEquals($sorted,$correct);
 	}
+
+	function testArrayExtract(){
+		$two_d = [
+			['title'=>'Test','text'=>'Lorem'],
+			['title'=>'Test 2','text'=>'Ipsum'],
+			['title'=>'Test 3','text'=>'Dolor'],
+		];
+		$extracted = array_extract($two_d, 'text');
+		$this->assertEquals(['Lorem', 'Ipsum', 'Dolor'], $extracted);
+	}
+
+	function testArrayExtractAssoc(){
+		$two_d = [
+			'a' => ['title'=>'Test','text'=>'Lorem'],
+			'b' => ['title'=>'Test 2','text'=>'Ipsum'],
+			'c' => ['title'=>'Test 3','text'=>'Dolor'],
+		];
+		$extracted = array_extract($two_d, 'text');
+		$this->assertEquals(['a'=>'Lorem', 'b'=>'Ipsum', 'c'=>'Dolor'], $extracted);
+	}
 }
