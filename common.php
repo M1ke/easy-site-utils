@@ -97,6 +97,14 @@ function debug_code_error($num,$str,$file,$line,$context){
     if ($fatal) exit(1);
 }
 
+function is_on($define){
+	return defined($define) && $define===true;
+}
+
+function is_off($define){
+	return !is_on($define);
+}
+
 function get_args_smart(Array $args,$n=0){
 	for (;$n<count($args);$n++){
 		if (is_array($args[$n])){

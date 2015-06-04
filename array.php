@@ -41,6 +41,14 @@ function array_overwrite($base,$fill){
 	return $arr;
 }
 
+function array_extract(array $arr, $field){
+	$return = [];
+	foreach ($arr as $key => $val){
+		$return[$key] = $val[$field];
+	}
+	return $return;
+}
+
 // places items in a flat array into a multidimensional array based on keys
 function array_id(&$arr,$key,$key2=null,$key3=null){
 	if (is_array($arr)){
@@ -177,7 +185,7 @@ function array_slip_2d($arr,$slip,$val=null){
 }
 
 // opposite of array_slip, removes one item from an array without creating a new array
-function array_snip($arr,$key){
+function array_snip($arr, $key){
 	unset($arr[$key]);
 	return $arr;
 }
@@ -190,27 +198,29 @@ function array_invert($item,$item_key,&$twod,$inc=false,$ext=''){
 	}
 }
 
-function array_stitch(Array $arr,Array $order,$glue='',$missing=false){
-	$new_arr='';
+function array_stitch(Array $arr, Array $order, $glue = '', $missing = false){
+	$new_arr = '';
 	foreach ($order as $key){
-		$new_arr[]=$arr[$key];
-		unset($arr[$key]);
+		$new_arr[] = $arr[$key];
+		if ($missing){
+			unset($arr[$key]);
+		}
 	}
 	if ($missing){
 		foreach ($arr as $val){
-			$new_arr[]=$val;
+			$new_arr[] = $val;
 		}
 	}
-	return implode($glue,$new_arr);
+	return implode($glue, $new_arr);
 }
 
-function array_stitch_empty(Array $arr,Array $order,$glue=''){
+function array_stitch_empty(Array $arr, Array $order, $glue = ''){
 	foreach ($order as $n => $key){
 		if (empty($arr[$key])){
 			unset($order[$n]);
 		}
 	}
-	return array_stitch($arr,$order,$glue);
+	return array_stitch($arr, $order, $glue);
 }
 
 // inserts an item between specific keys in an array. useful when relying on the iteration order of an array
