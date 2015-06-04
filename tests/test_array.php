@@ -67,4 +67,27 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$extracted = array_extract($two_d, 'text');
 		$this->assertEquals(['a'=>'Lorem', 'b'=>'Ipsum', 'c'=>'Dolor'], $extracted);
 	}
+
+	function testArrayKeysExist(){
+		//Test OR condition
+		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Bmw'=>'2', 'Citroen'=>'4']));
+		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3']));
+		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Volvo'=>'9']));
+		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>null]));
+		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], []));
+		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], [''=>'']));
+		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>'3']));
+		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>null]));
+		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
+		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
+		
+		//Test AND condition
+		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Bmw'=>'2', 'Citroen'=>'4'], true));
+		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3'], true));
+		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Volvo'=>'9'], true));
+		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>'3']));
+		$this->assertFalse(array_keys_exist([], ['Audi'=>'3']));
+		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], []));
+		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], [''=>'']));
+	}
 }
