@@ -447,11 +447,11 @@ function super_implode($sep,$arr,$assoc){
 	return $temp;
 }
 
-//returns true if any of the keys exist in the array
-//by default uses OR condition
-function array_keys_exist($keys, $arr, $and=false){
+// returns true if any of the keys exist in the array
+// by default uses OR condition
+function array_keys_exist($keys, $arr, $and = false){
 	$result = $and;
-	foreach($keys as $key){
+	foreach ($keys as $key){
 		$result = $and ? $result && array_key_exists($key, $arr) : $result || array_key_exists($key, $arr);
 	}
 	return $result;

@@ -8,6 +8,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		2=>array('name'=>'Zeta','email'=>'email@b.com','phone'=>'0757532906'),
 	);
 
+	// array_data_sort
 	function testArraySortName(){
 		$sorted=array_data_sort($this->data,'name');
 		$correct=array(
@@ -48,6 +49,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($sorted,$correct);
 	}
 
+	// array_extract
 	function testArrayExtract(){
 		$two_d = [
 			['title'=>'Test','text'=>'Lorem'],
@@ -68,26 +70,37 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(['a'=>'Lorem', 'b'=>'Ipsum', 'c'=>'Dolor'], $extracted);
 	}
 
-	function testArrayKeysExist(){
-		//Test OR condition
+	// array_keys_exist
+	function testArrayKeysExistOr(){
+		// are in array
 		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Bmw'=>'2', 'Citroen'=>'4']));
 		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3']));
 		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Volvo'=>'9']));
 		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>null]));
+
+		// none in array
 		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], []));
 		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], [''=>'']));
 		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>'3']));
 		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>null]));
-		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
-		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
-		
-		//Test AND condition
+	}
+
+	function testArrayKeysExistAnd(){
+		// all in array
 		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Bmw'=>'2', 'Citroen'=>'4'], true));
+
+		// some in array
 		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3'], true));
 		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi'=>'3', 'Volvo'=>'9'], true));
+
+		// none in array
 		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi'=>'3']));
-		$this->assertFalse(array_keys_exist([], ['Audi'=>'3']));
 		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], []));
 		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], [''=>'']));
+	}
+
+	function testArrayKeysExistEmpty(){
+		$this->assertFalse(array_keys_exist([], ['Audi'=>'3']));
+		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
 	}
 }
