@@ -5,59 +5,62 @@
 */
 
 function count_true($arr){
-	$count=0;
+	$count = 0;
 	foreach ($arr as $item){
-		$count+=$item ? 1 : 0;
+		$count += $item ? 1 : 0;
 	}
 	return $count;
 }
 
-function csv_array($file,$check=false,$delimiter=',',$start=1){
+function csv_array($file, $check = false, $delimiter = ',', $start = 1){
 	if (is_array($file)){
-		$file=$file['tmp_name'];
+		$file = $file['tmp_name'];
 	}
-	$fh=fopen($file,'r');
-	$parsed=array();
+	$fh = fopen($file, 'r');
+	$parsed = [];
 	// might want to improve this; maybe limit it based on number of empty rows?
-	$limit=50000; // limit to 50,000
-	$n=0;
-	while ($parse=fgetcsv($fh,0,$delimiter) and $n<$limit){
-		$parsed[]=$parse;
+	$limit = 50000; // limit to 50,000
+	$n = 0;
+	while ($parse = fgetcsv($fh, 0, $delimiter) && $n<$limit){
+		$parsed[] = $parse;
 		$n++;
 	}
 	fclose($fh);
-	return csv_array_parse($parsed,$check,$start);
+	return csv_array_parse($parsed, $check, $start);
 }
 
-function csv_array_parse($parsed,$check=false,$start=1){
-	$title_line=$parsed[0];
+function csv_array_parse($parsed, $check = false, $start = 1){
+	$arr = [];
+	if (empty($parsed)){
+		return $arr;
+	}
+	$title_line = $parsed[0];
 	foreach ($title_line as $n => $field){
-		$field=trim($field);
-		$field=@strtolower($field);
+		$field = trim($field);
+		$field = @strtolower($field);
 		// $field=first_word($field); // its probably a bad idea to do this - is legacy from old import
 		if (!empty($field)){
-			$title_line[$n]=$field;
+			$title_line[$n] = $field;
 		}
 	}
-	$arr=array();
-	for ($n=$start;$n<count($parsed);$n++){
-		$item=$parsed[$n];
-		$i=0;
+	for ($n = $start; $n<count($parsed); $n++){
+		$item = $parsed[$n];
+		$i = 0;
 		foreach ($title_line as $field){
-			$item[$i]=trim($item[$i]);
-			$arr[$n][$field]=$check ? string_check($item[$i]) : $item[$i];
+			$item[$i] = trim($item[$i]);
+			$arr[$n][$field] = $check ? string_check($item[$i]) : $item[$i];
 			$i++;
 		}
 	}
 	return $arr;
 }
 
-function csv_array_string($string,$check=false,$delimiter=',',$start=1){
-	$string=preg_split("/\r\n|\n|\r/",$string);
+function csv_array_string($string, $check = false, $delimiter = ',', $start = 1){
+	$string = preg_split("/\r\n|\n|\r/", $string);
 	foreach ($string as $line){
-		$parsed[]=str_getcsv($line,$delimiter);
+		$parsed[] = str_getcsv($line, $delimiter);
 	}
-	return csv_array_parse($parsed,$check,$start);
+	return csv_array_parse($parsed, $check, $start);
 }
 
 // This code comes from somewhere online, find where and add a citation
