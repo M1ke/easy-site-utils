@@ -101,7 +101,7 @@ function debug_code_error($num,$str,$file,$line,$context){
 }
 
 function is_on($define){
-	return defined($define) && $define===true;
+	return defined($define) && constant($define)===true;
 }
 
 function is_off($define){
