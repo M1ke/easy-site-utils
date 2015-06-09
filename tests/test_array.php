@@ -103,4 +103,24 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$this->assertFalse(array_keys_exist([], ['Audi'=>'3']));
 		$this->assertFalse(array_keys_exist([], ['Audi'=>null]));
 	}
+
+	// array_pull
+	function testArrayPull1d(){
+		$arr=array('a'=>1,'b'=>2,'c'=>3);
+		$pull=array('a','c');
+		$new=array_pull($arr,$pull);
+		$this->assertEquals($new,array('a'=>1,'c'=>3));
+	}
+	function testArrayPull2d(){
+		$arr=array('a'=>array(1,2),'b'=>array(3,4),'c'=>array(5,6));
+		$pull=array('a','c');
+		$new=array_pull($arr,$pull);
+		$this->assertEquals($new,array('a'=>array(1,2),'c'=>array(5,6)));
+	}
+	function testArrayPull2dAssoc(){
+		$arr=array('a'=>array('i'=>1,'ii'=>2),'b'=>array('iii'=>3,'iv'=>4),'c'=>array('v'=>5,'vi'=>6));
+		$pull=array('a','c');
+		$new=array_pull($arr,$pull);
+		$this->assertEquals($new,array('a'=>array('i'=>1,'ii'=>2),'c'=>array('v'=>5,'vi'=>6)));
+	}
 }

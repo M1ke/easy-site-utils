@@ -13,6 +13,11 @@ function count_true($arr){
 }
 
 function csv_array($file, $check = false, $delimiter = ',', $start = 1){
+	$parsed = csv_file($file, $delimiter);
+	return csv_array_parse($parsed, $check, $start);
+}
+
+function csv_file($file, $delimiter = ','){
 	if (is_array($file)){
 		$file = $file['tmp_name'];
 	}
@@ -26,7 +31,7 @@ function csv_array($file, $check = false, $delimiter = ',', $start = 1){
 		$n++;
 	}
 	fclose($fh);
-	return csv_array_parse($parsed, $check, $start);
+	return $parsed;
 }
 
 function csv_array_parse($parsed, $check = false, $start = 1){
