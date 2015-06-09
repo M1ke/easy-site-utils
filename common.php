@@ -21,7 +21,7 @@ function csv_array($file, $check = false, $delimiter = ',', $start = 1){
 	// might want to improve this; maybe limit it based on number of empty rows?
 	$limit = 50000; // limit to 50,000
 	$n = 0;
-	while ($parse = fgetcsv($fh, 0, $delimiter) && $n<$limit){
+	while (($parse = fgetcsv($fh, 0, $delimiter)) && $n<$limit){
 		$parsed[] = $parse;
 		$n++;
 	}
