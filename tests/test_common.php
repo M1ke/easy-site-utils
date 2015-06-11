@@ -5,6 +5,7 @@ class TestCommon extends PHPUnit_Framework_TestCase {
 
 	protected $csv_files = [
 		'header'=>__DIR__.'/files/csv-header',
+		'no-file'=>__DIR__.'/files/no-file',
 	];
 
 	// csv_file
@@ -16,6 +17,12 @@ class TestCommon extends PHPUnit_Framework_TestCase {
 			['field a','field b',' field c'],
 			['field a2','field b 2','field c2'],
 		], $csv_file);
+	}
+
+	function testCsvNoFile(){
+		$file = $this->csv_files['no-file'];
+		$csv_file = csv_file($file);
+		$this->assertEquals([], $csv_file);
 	}
 
 	// csv_array_parse

@@ -21,8 +21,11 @@ function csv_file($file, $delimiter = ','){
 	if (is_array($file)){
 		$file = $file['tmp_name'];
 	}
-	$fh = fopen($file, 'r');
 	$parsed = [];
+	if (!is_readable($file)){
+		return $parsed;
+	}
+	$fh = fopen($file, 'r');
 	if (empty($fh)){
 		return $parsed;
 	}
