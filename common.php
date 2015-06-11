@@ -23,6 +23,9 @@ function csv_file($file, $delimiter = ','){
 	}
 	$fh = fopen($file, 'r');
 	$parsed = [];
+	if (empty($fh)){
+		return $parsed;
+	}
 	// might want to improve this; maybe limit it based on number of empty rows?
 	$limit = 50000; // limit to 50,000
 	$n = 0;
