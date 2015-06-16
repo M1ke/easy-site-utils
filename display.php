@@ -283,25 +283,28 @@ function html_table_quick($arr){
 	if (empty($arr)){
 		return '';
 	}
-	$args=get_args_smart(func_get_args(),1);
-	$head_overwrite=$args['array'];
-	$process=$args['callable'];
-	$class=$args['string'];
-	$rows=[];
+	$args = get_args_smart(func_get_args(), 1);
+	$head_overwrite = $args['array'];
+	$process = $args['callable'];
+	$class = $args['string'];
+	$rows = [];
 	foreach ($arr as $item){
 		if (is_callable($process)){
-			$item=$process($item);
+			$item = $process($item);
+			if ($item===false){
+				continue;
+			}
 		}
 		if (empty($keys)){
-			$keys=array_keys($item);
+			$keys = array_keys($item);
 		}
-		$rows[]=html_table_cols($item);
+		$rows[] = html_table_cols($item);
 	}
 	if (!empty($head_overwrite)){
-		$keys=array_overwrite($keys,$head_overwrite);
+		$keys = array_overwrite($keys, $head_overwrite);
 	}
-	$thead=make_table_head($keys);
-	$html='<table'.(!empty($class) ? ' class="'.$class.'"' : '').'>'.$thead.'<tbody>'.html_table_rows($rows).'</tbody></table>';
+	$thead = make_table_head($keys);
+	$html = '<table'.(!empty($class) ? ' class="'.$class.'"' : '').'>'.$thead.'<tbody>'.html_table_rows($rows).'</tbody></table>';
 	return $html;
 }
 
