@@ -347,7 +347,7 @@ function validate_input($valid,&$p,&$error){
 			$val=make_html($val,$valid['tags'],!empty($valid['multi_byte']) ? true : false);
 			if ($valid['length']>0){
 				if (strlen($val)<$valid['length']){
-					$error=!empty($valid['msg']) ? $valid['msg'] : 'You must enter a value at least '.($valid['length']==1 ? '1 character' : $valid['length'].' characters.').' long';
+					$error=!empty($valid['msg']) ? $valid['msg'] : 'You must enter a value at least '.($valid['length']==1 ? '1 character' : $valid['length'].' characters').' long';
 				}
 			}
 		break;
