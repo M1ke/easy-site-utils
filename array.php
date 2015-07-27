@@ -456,3 +456,10 @@ function array_keys_exist($keys, $arr, $and = false){
 	}
 	return $result;
 }
+
+function as_array($item){
+	if (!is_array($item)){
+		$item = [$item];
+	}
+	return $item;
+}
