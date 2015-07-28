@@ -46,7 +46,9 @@ function gen_select($db=array('id'=>'','select'=>'','db'=>'','where'=>'','order'
 function html_attrs($attrs){
 	if (is_array($attrs)){
 		foreach ($attrs as $key => $val){
-			$html.=' '.$key.'="'.$val.'"';
+			if (!empty($val)){
+				$html .= ' '.$key.'="'.$val.'"';
+			}
 		}
 	}
 	return $html;
@@ -71,7 +73,7 @@ function html_implode($arr, $el, $class = ''){
 	if (!is_array($arr)){
 		return '';
 	}
-	$open_tag = "<$el".(!empty($class) ? "class='$class'" : '').">";
+	$open_tag = "<$el".(!empty($class) ? " class='$class'" : '').">";
 	return $open_tag.implode("</$el>$open_tag", $arr)."</$el>";
 }
 
@@ -256,27 +258,91 @@ function make_options_($arr,$current_value=null,$vals=null,$order=false){
 }
 
 function make_table_csv($table){
-	$arr=[];
-	foreach ($table['head'] as $key => $head){
+	$arr = [];
+	foreach ($table as $key => $head){
 		if (!empty($head['colspan'])){
-			for ($n=1;$n<$head['colspan'];$n++){
-				$arr[]=$head['title'];
+			for ($n=1; $n<$head['colspan']; $n++){
+				$arr[] = $head['title'];
 			}
 		}
-		$arr[]=$head['title'];
+		$arr[] = $head['title'];
 	}
-	return implode(',',$arr);
+	return implode(',', $arr);
+}
+
+function make_table_head(Array $table, $base_url = '', Array $request = [], Array $extra = []){
+	if (isset($extra['csv'])){
+		return make_table_csv($table);
+	}
+	$return = ['head'=> '', 'order'=> ''];
+	if (empty($table)){
+		return $return;
+	}
+	$return['head'] = [];
+	if (isset($request['sort'])){
+		$order = explode('|', str_replace('%7C', '|', $request['sort']));
+	}
+	$el = !empty($extra['el']) ? $extra['el'] : 'th';
+	foreach ($table as $key => $head){
+		$header_link = false;
+		if (!empty($head['order'])){
+			$current = '';
+			if ($key==$order[0]){
+				$sort = $order[1]=='asc' ? 'desc' : 'asc';
+				$return['order'] = $head['pfx'].$head['order'].' '.strtoupper($order[1]);
+				$current = 'sort-current sort-current-'.$order[1];
+			}
+			elseif ($head['default']==1){
+				$sort = (empty($order[0]) && $head['sort']=='asc') ? 'desc' : 'asc';
+				$default = $head['pfx'].$head['order'].' '.strtoupper($head['sort']);
+			}
+			else {
+				$sort = $head['sort'];
+			}
+			if (!empty($base_url) && empty($head['no'])){
+				$query_string = $request;
+				$query_string['sort'] = $key.'|'.$sort;
+				$url = $base_url.'?'.http_build_query($query_string);
+				$head['class'] .= "sort-$sort $current";
+				$head['title'] = '<a href="'.$url.'">'.$head['title'].'</a>';
+				$header_link = true;
+			}
+		}
+		if ($head['no']){
+			continue;
+		}
+		if (!$header_link){
+			$head['title'] = '<span>'.$head['title'].'</span>';
+		}
+		if (empty($extra['sep'])){
+			$attrs = array_pull($head, ['class', 'hover', 'colspan']);
+			$attrs['data-name'] = $key;
+			$head['title'] = '<'.$el.html_attrs($attrs).'>'.$head['title'].'</'.$el.'>';
+		}
+		$return['head'][] = $head['title'];
+	}
+	$return['head'] = implode($extra['sep'] ?: '', $return['head']);
+
+	if (empty($return['order'])){
+		$return['order'] = isset($default) ? $default : "RAND()";
+	}
+
+	if (!empty($extra['norow'])){
+		return $return;
+	}
+
+	$return['head'] = '<tr'.(!empty($extra['class']) ? ' class="'.$extra['class'].'"' : '').'>'.$return['head'].'</tr>';
+	if ('th'==$el){
+		$return['head'] = '<thead>'.$return['head'].'</thead>';
+	}
+	return $return;
 }
 
 function html_table_head($arr){
-	$html=html_implode($arr,'th');
-	$html='<tr>'.$html.'</tr>';
-	$html='<thead>'.$html.'</thead>';
+	$html = html_implode($arr, 'th');
+	$html = '<tr>'.$html.'</tr>';
+	$html = '<thead>'.$html.'</thead>';
 	return $html;
-}
-// DEPRECATED
-function make_table_head($arr){
-	return html_table_head($arr);
 }
 
 function html_table_quick($arr){
