@@ -90,7 +90,7 @@ function html_table_body($rows,$table,$class=''){
 		$thead=$table['head'];
 	}
 	elseif (is_array($table)){
-		$thead=make_table_head($table);
+		$thead=html_table_head($table);
 	}
 	else {
 		$thead=$table;
@@ -369,7 +369,7 @@ function html_table_quick($arr){
 	if (!empty($head_overwrite)){
 		$keys = array_overwrite($keys, $head_overwrite);
 	}
-	$thead = make_table_head($keys);
+	$thead = html_table_head($keys);
 	$html = '<table'.(!empty($class) ? ' class="'.$class.'"' : '').'>'.$thead.'<tbody>'.html_table_rows($rows).'</tbody></table>';
 	return $html;
 }
