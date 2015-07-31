@@ -431,9 +431,17 @@ function largest_array_count(){
 }
 
 function make_array($count){
-	$arr=array();
-	for ($n=0;$n<$count;$n++){
-		$arr[$n]=1;
+	$arr = [];
+	for ($n = 0; $n<$count; $n++){
+		$arr[$n] = 1;
+	}
+	return $arr;
+}
+
+function number_list($to = 10, $start = 1){
+	$arr = [];
+	for ($n = $start; $n<=$to; $n++){
+		$arr[] = $n;
 	}
 	return $arr;
 }
