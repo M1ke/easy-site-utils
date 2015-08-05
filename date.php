@@ -455,7 +455,7 @@ function month_limits($month,$year,$months=1){
 }
 
 function sql_dat($date,&$error=null,$date_usa=false){
-	if (empty($date)){
+	if (!is_date($date)){
 		return false;
 	}
 	if (!is_numeric($date)){
@@ -472,7 +472,7 @@ function sql_dat($date,&$error=null,$date_usa=false){
 }
 
 function sql_date($date,&$error=null,$date_usa=false){
-	if (empty($date)){
+	if (!is_date($date)){
 		return false;
 	}
 	if (!is_numeric($date)){
