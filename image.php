@@ -6,24 +6,24 @@ class oneImage {
 	private $imgResource;
 	private $imgType;
 	private $imgExt;
-	private $watermarkFile='images/watermark.png';
-	private $watermarkRatio=0.5;
+	private $watermarkFile = 'images/watermark.png';
+	private $watermarkRatio = 0.5;
 
-	public $jpegQuality=75;
+	public $jpegQuality = 75;
 	public $error;
 
-	function __construct($file,$name=null,$create=true){
+	public function __construct($file, $name = null, $create = true){
 		if (is_array($file)){
-			$this->fileIn=$file['tmp_name'];
-			$this->imgName=$file['name'];
+			$this->fileIn = $file['tmp_name'];
+			$this->imgName = $file['name'];
 		}
 		else {
-			$this->fileIn=$file;
+			$this->fileIn = $file;
 			if (empty($name)){
-				$this->imgName=substr($file,strrpos($file,'/'));
+				$this->imgName = substr($file, strrpos($file, '/'));
 			}
 			else {
-				$this->imgName=$name;
+				$this->imgName = $name;
 			}
 		}
 		$this->data();
@@ -31,104 +31,111 @@ class oneImage {
 			return false;
 		}
 	}
-	function __destruct(){
-		imagedestroy($this->imgResource);
+
+	public function __destruct(){
+		if (!empty($this->imgResource)){
+			imagedestroy($this->imgResource);
+		}
 	}
+
 	function copy($fileOut){
-		if (!copy($this->fileIn,$fileOut.'.'.$this->imgExt)){
-			$this->error='No resizing was attempted, but copying the image to "'.$fileOut.'" failed. The most likely cause of this is the folder permissions of the destination folder. Please make sure scripts have access to write in this folder.';
+		if (!copy($this->fileIn, $fileOut.'.'.$this->imgExt)){
+			$this->error = 'No resizing was attempted, but copying the image to "'.$fileOut.'" failed. The most likely cause of this is the folder permissions of the destination folder. Please make sure scripts have access to write in this folder.';
 			return false;
 		}
 		return true;
 	}
+
 	function create(){
-		if (empty($this->imgResource)){
-			switch ($this->imgType){
-				case 'image/gif':
-					$this->imgResource=imagecreatefromgif($this->fileIn);
-				break;
-				case 'image/pjpeg':
-				case 'image/jpeg':
-				case 'image/jpg':
-					$this->imgResource=imagecreatefromjpeg($this->fileIn);
-				break;
-				case 'image/png':
-				case 'image/x-png':
-					$this->imgResource=imagecreatefrompng($this->fileIn);
-					imagealphablending($this->imgResource,true);
-				break;
-			}
-			if (!$this->imgResource){
-				$this->error='The image could not be processed, please try another image. If the error only occurs with one image (or set of similar images) your file(s) may be corrupted. Try opening it in an image editor and saving a new version.';
-				return false;
-			}
+		if (!empty($this->imgResource)){
+			return $this;
+		}
+		switch ($this->imgType){
+			case 'image/gif':
+				$this->imgResource = imagecreatefromgif($this->fileIn);
+			break;
+			case 'image/pjpeg':
+			case 'image/jpeg':
+			case 'image/jpg':
+				$this->imgResource = imagecreatefromjpeg($this->fileIn);
+			break;
+			case 'image/png':
+			case 'image/x-png':
+				$this->imgResource = imagecreatefrompng($this->fileIn);
+				imagealphablending($this->imgResource, true);
+			break;
+		}
+		if (!$this->imgResource){
+			$this->error = 'The image could not be processed, please try another image. If the error only occurs with one image (or set of similar images) your file(s) may be corrupted. Try opening it in an image editor and saving a new version.';
+			return false;
 		}
 		return $this;
 	}
+
 	function crop($options){
 		if (isset($options['ratio'])){
-			$options['ratio']=ratio_decimal($options['ratio']);
+			$options['ratio'] = ratio_decimal($options['ratio']);
 		}
 		if (empty($options['ratio'])){
-			$options['ratio']=1;
+			$options['ratio'] = 1;
 		}
 		switch (true){
 		case  ($options['ratio']<1):
 			if ($this->imgHeight>$this->imgWidth){
-				$options['newwidth']=$this->imgWidth;
-				$options['newheight']=$this->imgWidth/$options['ratio'];
+				$options['newwidth'] = $this->imgWidth;
+				$options['newheight'] = $this->imgWidth/$options['ratio'];
 			}
 			else {
-				$options['newwidth']=$this->imgHeight*$options['ratio'];
-				$options['newheight']=$this->imgHeight;
+				$options['newwidth'] = $this->imgHeight*$options['ratio'];
+				$options['newheight'] = $this->imgHeight;
 			}
 		break;
 		case ($options['ratio']>1):
 			if ($this->imgWidth>$this->imgHeight){
-				$options['newwidth']=$this->imgHeight*$options['ratio'];
-				$options['newheight']=$this->imgHeight;
+				$options['newwidth'] = $this->imgHeight*$options['ratio'];
+				$options['newheight'] = $this->imgHeight;
 			}
 			else {
-				$options['newwidth']=$this->imgWidth;
-				$options['newheight']=$this->imgWidth/$options['ratio'];
+				$options['newwidth'] = $this->imgWidth;
+				$options['newheight'] = $this->imgWidth/$options['ratio'];
 			}
 		break;
 		default:
 			if (empty($options['newwidth'])){
 				if ($this->imgWidth>$this->imgHeight){
-					$options['newwidth']=$this->imgHeight;
+					$options['newwidth'] = $this->imgHeight;
 				}
 				else {
-					$options['newwidth']=$this->imgWidth;
+					$options['newwidth'] = $this->imgWidth;
 				}
 			}
 			if (empty($options['newheight'])){
 				if ($this->imgWidth>$this->imgHeight){
-					$options['newheight']=$this->imgHeight;
+					$options['newheight'] = $this->imgHeight;
 				}
 				else {
-					$options['newheight']=$this->imgWidth;
+					$options['newheight'] = $this->imgWidth;
 				}
 			}
 		}
 		if ($options['scale']>1){
-			$options['scale']=$options['scale']/$options['newheight'];
+			$options['scale'] = $options['scale']/$options['newheight'];
 		}
 		elseif ($options['height']>1){
-			$options['scale']=$options['height']/$options['newheight'];
+			$options['scale'] = $options['height']/$options['newheight'];
 		}
 		elseif ($options['width']>1){
-			$options['scale']=$options['width']/$options['newwidth'];
+			$options['scale'] = $options['width']/$options['newwidth'];
 		}
-		$options['cropwidth']=ceil($options['newwidth']*$options['scale']);
-		$options['cropheight']=ceil($options['newheight']*$options['scale']);
+		$options['cropwidth'] = ceil($options['newwidth']*$options['scale']);
+		$options['cropheight'] = ceil($options['newheight']*$options['scale']);
 		if (empty($options['x'])){
-			$options['x']=0;
+			$options['x'] = 0;
 		}
 		if (empty($options['y'])){
-			$options['y']=0;
+			$options['y'] = 0;
 		}
-		$image_cropped=imagecreatetruecolor($options['cropwidth'],$options['cropheight']);
+		$image_cropped = imagecreatetruecolor($options['cropwidth'], $options['cropheight']);
 		if (!$image_cropped){
 			$this->error='The cropped truecolor image could not be generated with dimensions '.$options['cropwidth'].' x '.$options['cropheight'].'px. Other variables are: '.echo_array($options,true);
 			return false;
@@ -182,6 +189,7 @@ class oneImage {
 		}
 		return $options['file'];
 	}
+
 	function data(){
 		list($this->imgWidth,$this->imgHeight,$this->imgType)=getimagesize($this->fileIn);
 		$this->imgType=image_type_to_mime_type($this->imgType);
@@ -192,14 +200,17 @@ class oneImage {
 		}
 		return $this;
 	}
+
 	function ext(){
 		return $this->imgExt;
 	}
+
 	function resize($options){
 		$options=$this->resizeCalc($options);
 		$this->resizeImg($options);
 		return $options;
 	}
+
 	function resizeImg($options){
 		$this->imgResized=imagecreatetruecolor($options['width'],$options['height']);
 		if (!$this->imgResized){
@@ -215,6 +226,7 @@ class oneImage {
 		}
 		return $this;
 	}
+
 	function alphaBlend($image){
 		if ($this->imgType='image/png' or $this->imgType='image/x-png'){
 			if (!imagealphablending($image,false)){
@@ -228,6 +240,7 @@ class oneImage {
 		}
 		return $this;
 	}
+
 	function resizeCalc($options){
 		if ($options['enlarge']!=1){
 			if ($options['width']>$this->imgWidth){
@@ -261,6 +274,7 @@ class oneImage {
 		}
 		return $options;
 	}
+
 	function store($options){
 		if (empty($options['height']) and empty($options['width'])){
 			$copy=true;
@@ -308,11 +322,13 @@ class oneImage {
 		imagedestroy($this->imgResized);
 		return $options['file'];
 	}
+
 	function storeInit($options){
 		// if theres no width or height specified we just save it straight away
 		
 		return $options;
 	}
+
 	function valid(){
 		switch ($this->imgType){
 			case 'image/gif':
@@ -328,6 +344,7 @@ class oneImage {
 		}
 		return $this;
 	}
+
 	function watermark($options){
 		if (!empty($options['watermark'])){
 			$this->watermarkFile=$options['watermark'];
@@ -355,12 +372,12 @@ class oneImage {
 			$image_watermarked=$this->imgResized;
 		}
 		else {
-			$image_watermarked=$this->imgResource;
-			$options['width']=$this->imgWidth;
-			$options['height']=$this->imgHeight;
+			$image_watermarked = $this->imgResource;
+			$options['width'] = $this->imgWidth;
+			$options['height'] = $this->imgHeight;
 		}
-		$dest_x=($options['width']->imgWidth-$watermark_resized_width)/2;
-		$dest_y=($options['height']-$watermark_resized_height)/2;
+		$dest_x = ($options['width']->imgWidth-$watermark_resized_width)/2;
+		$dest_y = ($options['height']-$watermark_resized_height)/2;
 		imagecopymerge_alpha($image_watermarked,$watermark_resized,$dest_x,$dest_y,0,0,$watermark_resized_width,$watermark_resized_height);
 		imagedestroy($watermark_resized);
 		if (!$this->alphaBlend($image_watermarked)){
@@ -395,9 +412,6 @@ class oneImage {
 		return $options['file'];
 	}
 }
-
-
-
 
 
 function image_crop($p,&$error){
