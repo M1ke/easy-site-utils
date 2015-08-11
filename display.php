@@ -69,6 +69,39 @@ function html_data($data,$test_numeric=true){
 	return $html;
 }
 
+function html_facebook_js($fb_id, $url){
+	if (empty($fb_id)){
+		return '';
+	}
+
+	$url_no_protocol = substr($url, 5);
+
+	return "<div id='fb-root'></div>
+	<script type='text/javascript'>
+	var fbAsyncInit = function(){
+		try {
+			FB.init({
+				appId:'".FB_ID."'
+				,channelURL:'{$url_no_protocol}vendor/m1ke/easy-site-utils/fb_channel.php'
+				,status:true,cookie:true,oauth:true
+				,version:'v2.2'
+			});
+		}
+		catch (e){
+			console && console.log(e);
+		}
+		typeof easyFacebook!='undefined' && easyFacebook.init();
+	};
+	(function(d,s,id) {
+	var js,fjs=d.getElementsByTagName(s)[0];
+	if(d.getElementById(id)) return;
+	js=d.createElement(s); js.id=id;
+	js.src='//connect.facebook.net/en_GB/sdk.js';
+	fjs.parentNode.insertBefore(js,fjs);
+	}(document,'script','facebook-jssdk'));
+	</script>";
+}
+
 function html_implode($arr, $el, $class = ''){
 	if (!is_array($arr)){
 		return '';
