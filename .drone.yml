@@ -1,4 +1,5 @@
-image: php_sturents
+#image: php_sturents
+image: phpunit/phpunit
 
 script:
   - phpunit tests/test_string.php  
