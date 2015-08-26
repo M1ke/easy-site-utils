@@ -1,5 +1,3 @@
-image: php5.5
-env:
-  - GOPATH=/var/cache/drone
+image: php_sturents:v1
 script:
   - phpunit tests/test_string.php  
