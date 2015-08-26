@@ -1,4 +1,4 @@
-image: php_sturents:v1
+image: php_sturents
 
 script:
   - phpunit tests/test_string.php  
