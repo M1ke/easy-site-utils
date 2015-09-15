@@ -98,6 +98,10 @@ function send_email($p,&$error=null,$mail_type=null){
 	}
 	//
 
+	if (function_exists('send_email_whitelist')){
+		$p['emails'] = send_email_whitelist($p['emails']);
+	}
+
 	if (!defined('EMAIL_SEND')){
 		if (!isset($p['headers'])){
 			$headers=mail_headers();
