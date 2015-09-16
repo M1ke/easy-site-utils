@@ -58,8 +58,15 @@ function file_load($file, $serialize = false){
 	return $serialize ? unserialize($string) : $string;
 }
 
-function file_load_json($file, $throw_on_error = true){
-	$string = file_load($file);
+function file_get_json($url, $throw_on_error = true){
+	if (substr($url, 0, 4)!='http'){
+		$url = 'http://'.$url;
+	}
+	$string = file_get_contents($url);
+	return file_parse_json($string, $throw_on_error);
+}
+
+function file_parse_json($string, $throw_on_error = true){
 	if (empty($string)){
 		return [];
 	}
@@ -68,9 +75,14 @@ function file_load_json($file, $throw_on_error = true){
 		if ($throw_on_error){
 			throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
 		}
-		$json=[];
+		$json = [];
 	}
 	return $json;
+}
+
+function file_load_json($file, $throw_on_error = true){
+	$string = file_load($file);
+	return file_parse_json($string, $throw_on_error);
 }
 
 // deprecated
