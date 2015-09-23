@@ -82,8 +82,8 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		];
 		$this->assertTrue(is_assoc($arr_1));
 		$arr_2 = [
-				0=> 'First element',
-				1=> 'Second element'
+				1=> 'Second element',
+				0=> 'First element'
 		];
 		$this->assertTrue(is_assoc($arr_2));
 	}
