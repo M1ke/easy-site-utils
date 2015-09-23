@@ -70,6 +70,24 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(['a'=>'Lorem', 'b'=>'Ipsum', 'c'=>'Dolor'], $extracted);
 	}
 
+	function testAssocArray(){
+		$arr_2d = [
+				1=> [1=>'First element of first'],
+				2=> [1=>'First element of second', 2=>'Second element of second']
+		];
+		$this->assertTrue(is_assoc($arr_2d));
+		$arr_1 = [
+				1=> 'First element',
+				2=> 'Second element'
+		];
+		$this->assertTrue(is_assoc($arr_1));
+		$arr_2 = [
+				0=> 'First element',
+				1=> 'Second element'
+		];
+		$this->assertTrue(is_assoc($arr_2));
+	}
+	
 	// array_keys_exist
 	function testArrayKeysExistOr(){
 		// are in array
