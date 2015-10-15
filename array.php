@@ -109,9 +109,12 @@ function array_keys_2d($arr){
 }
 
 // takes specific keys out of an array and returns the result
-function array_pull($arr,$pull,&$new=array()){
+function array_pull($arr, $pull ,&$new = []){
 	foreach ($pull as $key => $field){
-		$new[$field]=$arr[is_numeric($key) ? $field : $key];
+		$key = is_numeric($key) ? $field : $key;
+		if (isset($arr[$key])){
+			$new[$field] = $arr[$key];
+		}
 	}
 	return $new;
 }
