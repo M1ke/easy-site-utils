@@ -31,7 +31,7 @@ function make_youtube_video($url,$params){
 		case 'youtu.':
 		case 'youtube.':
 			$video_id=youtube_video_id($url,false);
-			$html.='<iframe width="'.$width.'" height="'.$height.'" frameborder="0" src="https://www.youtube.com/v/'.$video_id.'?'.$query.'"></iframe>';
+			$html.='<iframe width="'.$width.'" height="'.$height.'" frameborder="0" src="https://www.youtube.com/embed/'.$video_id.'?'.$query.'"></iframe>';
 		break;
 		default:
 			$html.='<!-- this link does not correspond to a supported domain : '.$url.'-->';
