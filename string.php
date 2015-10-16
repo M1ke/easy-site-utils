@@ -349,19 +349,6 @@ function make_html($text,$tags=null,$multi_byte=false){
 	$text=preg_replace('|</div>|',"",$text);
 	$text=str_replace('&nbsp;',' ',$text);
 //$text=preg_replace('|(<h[1-6]>[\w\s.;#-;"<>/?=]*</h[1-6]>[\s]*<p>[\w\s.#-;"<>/?=]*</p>)(?=[\s]<h[1-6]>)|',"<div>$1</div>",$text);
-	$text=preg_replace('|(?<!-->)(</p>)(?=[\s]*<h[1-6]>)|',"$1</div>",$text);
-	$text=preg_replace('|(?<!-->)(</p>)(?=[\s]*<p><!-- pagebreak --></p>)|',"$1</div>",$text);
-	$text=preg_replace('|(?<!-->)(</ul>)(?=[\s]*<h[1-6]>)|',"$1</div>",$text);
-	$text=preg_replace('|(?<!-->)(</blockquote>)(?=[\s]*<h[1-6]>)|',"$1</div>",$text);
-	$text=preg_replace('|(<h[1-6]>[\w\s.;#-;"/?!=\&]*</h[1-6]>)(?=[\s]*<p>)|',"<div>$1",$text);
-	$text=preg_replace('|(<h[1-6]>[\w\s.;#-;"/?!=\&]*</h[1-6]>)(?=[\s]*<ul>)|',"<div>$1",$text);
-	$text=trim($text);
-	while (substr_count($text,'</div>')>substr_count($text,'<div')){
-		$text='<div>'.$text;
-	}
-	while (substr_count($text,'<div')>substr_count($text,'</div>')){
-		$text.='</div>';
-	}
 	return $text; 
 }
 
