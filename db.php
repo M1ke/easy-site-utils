@@ -284,15 +284,18 @@ function query_insert(Array $arr,$exc=array(),$repeat=false){
 	return query_insert_make($fields,$vals,$repeat);
 }
 
-function query_insert_make(Array $fields,Array $vals,$repeat=false){
-	$vals="(".implode(',',$vals).")";
-	if (!empty($repeat)){
-		for ($n=0;$n<$repeat;$n++){
-			$vals_arr[]=$vals;
-		}
-		$vals=implode(',',$vals_arr);
+function query_insert_make(Array $fields, Array $vals, $repeat = false){
+	foreach ($vals as &$val){
+		$val = sql_slashes($val);
 	}
-	$query="(".implode(',',$fields).") VALUES $vals";
+	$vals = "(".implode(',',$vals).")";
+	if (!empty($repeat)){
+		for ($n = 0; $n<$repeat; $n++){
+			$vals_arr[] = $vals;
+		}
+		$vals = implode(',', $vals_arr);
+	}
+	$query = "(".implode(',', $fields).") VALUES $vals";
 	return $query;
 }
 
@@ -309,6 +312,7 @@ function query_insert_inc(Array $arr,Array $inc,$repeat=false){
 function query_update($arr,$exc=array()){
 	foreach ($arr as $key => $val){
 		if ($val!==false and strpos($key,'-')===false and !in_array($key,$exc) and !is_array($val)){
+			$val = sql_slashes($val);
 			$query[]="`$key`='$val'";
 		}
 	}
@@ -319,6 +323,7 @@ function query_update($arr,$exc=array()){
 function query_update_inc($arr,$inc){
 	foreach ($arr as $key => $val){
 		if (in_array($key,$inc) and $val!==false and !is_null($val)){
+			$val = sql_slashes($val);
 			$query[]="`$key`='$val'";
 		}
 	}

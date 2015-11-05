@@ -295,6 +295,12 @@ function make_email(&$string,$blank=false){
 	return false;
 }
 
+function sql_slashes($string){
+	$string = stripslashes($string);
+	$string = addslashes($string);
+	return $string;
+}
+
 /**
  * @todo test this!
  */
