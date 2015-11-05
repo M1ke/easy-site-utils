@@ -278,6 +278,7 @@ function query_insert(Array $arr,$exc=array(),$repeat=false){
 	foreach ($arr as $key => $val){
 		if ($val!==false and strpos($key,'-')===false and !in_array($key,$exc) and !is_array($val)){
 			$fields[]="`$key`";
+			$val = sql_slashes($val);
 			$vals[]="'$val'";
 		}
 	}
@@ -285,9 +286,6 @@ function query_insert(Array $arr,$exc=array(),$repeat=false){
 }
 
 function query_insert_make(Array $fields, Array $vals, $repeat = false){
-	foreach ($vals as &$val){
-		$val = sql_slashes($val);
-	}
 	$vals = "(".implode(',',$vals).")";
 	if (!empty($repeat)){
 		for ($n = 0; $n<$repeat; $n++){
@@ -303,6 +301,7 @@ function query_insert_inc(Array $arr,Array $inc,$repeat=false){
 	foreach ($arr as $key => $val){
 		if (in_array($key,$inc) and $val!==false and !is_null($val)){
 			$fields[]="`$key`";
+			$val = sql_slashes($val);
 			$vals[]="'$val'";
 		}
 	}
