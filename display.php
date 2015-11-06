@@ -336,7 +336,8 @@ function make_table_head(Array $table, $base_url = '', Array $request = [], Arra
 				$query_string = $request;
 				$query_string['sort'] = $key.'|'.$sort;
 				$url = $base_url.'?'.http_build_query($query_string);
-				$head['class'] .= "sort-$sort $current";
+
+				$head['class'] .= " sort-$sort $current"; // Requires a space at the start of the string
 				$head['title'] = '<a href="'.$url.'">'.$head['title'].'</a>';
 				$header_link = true;
 			}
