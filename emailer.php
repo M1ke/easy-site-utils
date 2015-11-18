@@ -178,13 +178,36 @@ function sendgrid_send($p,&$error){
 		$mail=send_user($mail,'sendgrid');
 	}
 	$mail->Encoding='base64';
-	if (function_exists('sendgrid_send_api')){
-		$mail = sendgrid_send_api($mail);
+	if (function_exists('sendgrid_send_extend')){
+		$mail = sendgrid_send_extend($mail);
 	}
 	if (!smtp_send_email($mail,$p,$error)){
 		return false;
 	}
 	return true;
+}
+
+/**
+ * @param PHPMailer $mail
+ * @param array $filter
+ *
+ * $filter = [
+	'footer' => [
+		'setting' => [
+			'enable' => 1,
+			'text/plain' => 'You can haz footers!',
+		],
+	],
+];
+ *
+ * @return PHPMailer
+ */
+function sendgrid_add_filter(PHPMailer $mail, array $filter){
+	$header = new Smtpapi\Header();
+
+	$header->setFilters($filter);
+	$mail->addCustomHeader(Smtpapi\Header::NAME, $header->jsonString());
+	return $mail;
 }
 
 function smtp_send($p,&$error){
