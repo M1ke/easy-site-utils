@@ -60,6 +60,11 @@ function mail_headers(&$p=null,&$extra=null){
 	return $headers;
 }
 
+/**
+ * @param $error
+ *
+ * @return bool|PHPMailer
+ */
 function mailer_setup(&$error){
 	if (!class_exists('PHPMailer')){
 	   $error='The mailing system cannot be loaded to send this email.';
@@ -173,6 +178,9 @@ function sendgrid_send($p,&$error){
 		$mail=send_user($mail,'sendgrid');
 	}
 	$mail->Encoding='base64';
+	if (function_exists('sendgrid_send_api')){
+		$mail = sendgrid_send_api($mail);
+	}
 	if (!smtp_send_email($mail,$p,$error)){
 		return false;
 	}
@@ -224,6 +232,10 @@ function smtp_send_email($mail,$p,&$error){
 	if (!empty($p['emails'])){
 		foreach ($p['emails'] as $email => $name){
 			$mail->AddAddress($email,$name);
+			if (is_on('EMAIL_SERIALIZE')){
+				$mail_serialize = serialize($mail);
+				file_save(LOG.'emails/by-date/'.date('Y-m-d-H:i:s').'_'.$email, $mail_serialize);
+			}
 			if (!$mail->Send()){
 				$errors[]=$mail->ErrorInfo.' occured for address '.$email;
 			}
