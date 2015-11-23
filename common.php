@@ -255,6 +255,14 @@ function json_error_msg(){
 	return $arr[$int];
 }
 
+function pause($seconds = 10){
+	if (!is_numeric($seconds) || $seconds<1){
+		die('You may not pause for less than 1 second.');
+	}
+	echo 'You have '.$seconds.' seconds before the script continues'.PHP_EOL;
+	return sleep($seconds);
+}
+
 function redirect_url($url=null,$debug=false){
 	if (empty($url)){
 		$url=$_SERVER['HTTP_REFERER'];
