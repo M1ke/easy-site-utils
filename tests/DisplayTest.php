@@ -77,10 +77,10 @@ class TestDisplay extends PHPUnit_Framework_TestCase {
 		$head = make_table_head($table, '/path/script/');
 		$html = '<thead>
 			<tr>
-				<th class="sort-desc " data-name="name">
+				<th class=" sort-desc " data-name="name">
 					<a href="/path/script/?sort=name'.$this->pipe.'desc">Name</a>
 				</th>
-				<th class="sort-desc " data-name="houses">
+				<th class=" sort-desc " data-name="houses">
 					<a href="/path/script/?sort=houses'.$this->pipe.'desc">Houses</a>
 				</th>
 				<th>
@@ -102,10 +102,10 @@ class TestDisplay extends PHPUnit_Framework_TestCase {
 		$head = make_table_head($table, '/path/script/', ['sort'=>'houses|desc', 'page'=> 2]);
 		$html = '<thead>
 			<tr>
-				<th class="sort-asc " data-name="name">
+				<th class=" sort-asc " data-name="name">
 					<a href="/path/script/?sort=name'.$this->pipe.'asc&page=2">Name</a>
 				</th>
-				<th class="sort-asc sort-current sort-current-desc" data-name="houses">
+				<th class=" sort-asc sort-current sort-current-desc" data-name="houses">
 					<a href="/path/script/?sort=houses'.$this->pipe.'asc&page=2">Houses</a>
 				</th>
 				<th>
@@ -126,10 +126,10 @@ class TestDisplay extends PHPUnit_Framework_TestCase {
 		$table = $this->makeTableHeadArray();
 		$head = make_table_head($table, '/path/script/', [], ['el'=> 'div', 'norow'=> true]);
 		$html = '
-			<div class="sort-desc " data-name="name">
+			<div class=" sort-desc " data-name="name">
 				<a href="/path/script/?sort=name'.$this->pipe.'desc">Name</a>
 			</div>
-			<div class="sort-desc " data-name="houses">
+			<div class=" sort-desc " data-name="houses">
 				<a href="/path/script/?sort=houses'.$this->pipe.'desc">Houses</a>
 			</div>
 			<div>

@@ -178,16 +178,16 @@ function seconds_convert($time,$return='day'){
 
 function seconds_to_time($time,$seconds_only=''){
 	$seconds=$time%60;
-	if ($time>60){
+	if ($time>=60){
 		$time/=60;
 		$minutes=$time%60;
-		if ($time>60){
+		if ($time>=60){
 			$time/=60;
 			$hours=$time%24;
-			if ($time>24){
+			if ($time>=24){
 				$time/=24;
 				$days=$time%365;
-				if ($time>365){
+				if ($time>=365){
 					$time/=365;
 					$years=floor($time);
 				}
@@ -285,12 +285,27 @@ function date_year_correct($year){
 	return $year;
 }
 
-function age_from_dob($date){
+function age_from_dob($date, $current_date = null){
+	$components = ['year'=> 'Y', 'month'=> 'm', 'day'=> 'd'];
+	$compare_date = [];
+	if (is_null($current_date)){
+		foreach ($components as $key => $php_date){
+			$compare_date[$key] = date($php_date);
+		}
+	}
+	else {
+		$current_date = explode('-', $current_date);
+		foreach (array_keys($components) as $n => $key){
+			$compare_date[$key] = 1*$current_date[$n];
+		}
+	}
+
 	$date=date_components($date);
 	date_year_correct_($date['year']);
-    $diff['year']=date('Y')-$date['year'];
-    $diff['month']=date('m')-$date['month'];
-    $diff['day']=date('d')-$date['day'];
+	$diff = [];
+	foreach ($components as $key => $php_date){
+		$diff[$key] = $compare_date[$key] - $date[$key];
+	}
     if ($diff['month']< 0 or ($diff['day']< 0 and $diff['month']==0)){
 		$diff['year']--;
 	}

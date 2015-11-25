@@ -13,6 +13,8 @@ class TestPolygon extends PHPUnit_Framework_TestCase {
 	private $polygonLondon;
 
 	function __construct(){
+		parent::__construct();
+
 		$this->pl=new pointLocation();
 		$this->polygonDurham=file_load(__DIR__.'/polygons/durham','serialize');
 		$this->polygonLondon=file_load(__DIR__.'/polygons/london','serialize');
