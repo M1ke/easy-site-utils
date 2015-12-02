@@ -1,4 +1,6 @@
 <?php
+ini_set('gd.jpeg_ignore_warning', true);
+
 class oneImage {
 	private $fileIn;
 	private $imgWidth;
