@@ -236,7 +236,7 @@ function smtp_send_email($mail,$p,&$error){
 	$mail->Subject=$p['subject'];
 	$mail->Body=$p['message']; //HTML Body
 	$mail->IsHTML(true); // send as HTML
-	$mail->AltBody=strip_tags($p['message']); //Text Body
+	$mail->AltBody=$p['message-plain'] ?: strip_tags($p['message']); //Text Body
 	if (!empty($p['cc'])){
 		foreach ($p['cc'] as $email => $name){
 			$mail->AddCC($email,$name);
