@@ -26,7 +26,7 @@ function log_email($email,$subject,$message,$headers){
 	$content='---- Email sent on '.date('r').' ----'."\r\n";
 	$content.="\r\n".'Recipient: '.$email;
 	$content.="\r\n".'Subject: '.$subject;
-	$content.="\r\n".$message;
+	$content.="\r\n".print_r($message, true);
 	$content.="\r\n".$headers."\r\n\r\n";
 	$fh=fopen($file,'a+');
 	if (!empty($fh)){
