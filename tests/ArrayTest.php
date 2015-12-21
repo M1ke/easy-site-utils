@@ -123,4 +123,36 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$new=array_pull($arr,$pull);
 		$this->assertEquals($new,array('a'=>array('i'=>1,'ii'=>2),'c'=>array('v'=>5,'vi'=>6)));
 	}
+
+	// Array strip
+
+	public function testArrayStripEnd(){
+		$array = ['','a','','b',''];
+		$array_strip_end = array_strip_end($array);
+		$this->assertEquals(['','a','','b'], $array_strip_end);
+	}
+
+	public function testArrayStripEndLots(){
+		$array = ['','a','','b','','',''];
+		$array_strip_end = array_strip_end($array);
+		$this->assertEquals(['','a','','b'], $array_strip_end);
+	}
+
+	public function testArrayStripStart(){
+		$array = ['','a','','b',''];
+		$array_strip_start = array_strip_start($array);
+		$this->assertEquals(['a','','b',''], $array_strip_start);
+	}
+
+	public function testArrayStripStartLots(){
+		$array = ['','','','a','','b',''];
+		$array_strip_start = array_strip_start($array);
+		$this->assertEquals(['a','','b',''], $array_strip_start);
+	}
+
+	public function testArrayStrip(){
+		$array = ['','','a','','b','',''];
+		$array_strip = array_strip($array);
+		$this->assertEquals(['a','','b'], $array_strip);
+	}
 }

@@ -226,6 +226,37 @@ function array_stitch_empty(Array $arr, Array $order, $glue = ''){
 	return array_stitch($arr, $order, $glue);
 }
 
+function array_strip_end(array $arr){
+	$assoc = is_assoc($arr);
+
+	$n = count($arr) - 1;
+	while (empty($arr[$n]) && $n>=0){
+		unset($arr[$n]);
+		$n--;
+	}
+
+	return $assoc ? $arr : array_values($arr);
+}
+
+function array_strip_start(array $arr){
+	$assoc = is_assoc($arr);
+
+	$count = count($arr) - 1;
+	$n=0;
+	while (empty($arr[$n]) && $n<=$count){
+		unset($arr[$n]);
+		$n++;
+	}
+
+	return $assoc ? $arr : array_values($arr);
+}
+
+function array_strip(array $arr){
+	$arr = array_strip_start($arr);
+	$arr = array_strip_end($arr);
+	return $arr;
+}
+
 // inserts an item between specific keys in an array. useful when relying on the iteration order of an array
 function array_insert_assoc($arr,$offset,$insert,$before=false){
 	$keys=array_keys($arr);
@@ -248,7 +279,7 @@ function array_insert_assoc($arr,$offset,$insert,$before=false){
 				$adj++;
 			}
         }
-        $n++; 
+        $n++;
     }
     return $temp;
 }
@@ -286,7 +317,7 @@ function array_twod(&$arr,$assoc,$pre){
 	$keys=array_keys($arr);
 	foreach ($keys as $key){
 		if (strpos($key,$pre)!==false){
-			if (is_array($arr[$key])){	
+			if (is_array($arr[$key])){
 				foreach ($arr[$key] as $n => $val){
 					$arr[$assoc][$n][str_replace($pre.'-','',$key)]=$val;
 				}
