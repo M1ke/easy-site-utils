@@ -163,8 +163,7 @@ class pointLocation {
 	var $pointOnVertex=false;
 	var $arr_x=1;
 	var $arr_y=0;
-	function pointLocation(){
-	}
+
 	function pointInPolygon($point,$polygon,$pointOnVertex=false){
 		$this->pointOnVertex=$pointOnVertex;
 		$vertices=$polygon;
