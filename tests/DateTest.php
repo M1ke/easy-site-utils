@@ -29,6 +29,42 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(26, $age);
 	}
 
+	public function validDobs(){
+		return array(
+			['01/5/1980', '1980-05-01'],
+			['01/01/1920', '1920-01-01'],
+			['1/9/20', '2020-09-01'],
+			['01/12/88', '1988-12-01'],
+		);
+	}
+
+	/**
+	 * @dataProvider validDobs
+	 */
+	function testDateFromValidDob($dob, $expected){
+		$date = date_from_dob($dob);
+		$this->assertEquals($expected, $date);
+	}
+
+	public function invalidDobs(){
+		return array(
+			['01/jan/1980', '1980-jan-01'],
+			['01/0123/1920', '1920-0123-01'],
+			['x/9/1955', '1955-9-x'],
+			['01/12/xx', 'xx-12-01'],
+			['xx/xx', '-xx-xx'],
+			['1sd', '1sd'],
+		);
+	}
+
+	/**
+	 * @dataProvider invalidDobs
+	 */
+	function testDateFromInvalidDob($dob, $expected){
+		$date = date_from_dob($dob);
+		$this->assertNotEquals($expected, $date);
+	}
+
 	function testSaturdaysInFeb2014(){
 		$date = '01/02/2014';
 		$saturdays = days_left(6, $date);
