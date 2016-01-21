@@ -215,6 +215,7 @@ function seconds_to_time($time, $seconds_only = ''){
 }
 
 function date_from_dob($date){
+	$date = custom_date($date);
 	return date_store($date);
 }
 
