@@ -387,7 +387,7 @@ function html_table_quick($arr){
 	$head_overwrite = $args['array'];
 	$process = $args['callable'];
 	$class = $args['string'];
-	$rows = [];
+	$rows  = $keys = [];
 	foreach ($arr as $item){
 		if (is_callable($process)){
 			$item = $process($item);
@@ -399,6 +399,9 @@ function html_table_quick($arr){
 			$keys = array_keys($item);
 		}
 		$rows[] = html_table_cols($item);
+	}
+	if (empty($rows)){
+		return '';
 	}
 	if (!empty($head_overwrite)){
 		$keys = array_overwrite($keys, $head_overwrite);
