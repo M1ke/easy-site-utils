@@ -112,6 +112,20 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($new, ['a' => 1, 'c' => 3]);
 	}
 
+	function testArrayPull1dMissing(){
+		$arr = ['a' => 1, 'b' => 2, 'c' => 3];
+		$pull = ['a', 'c', 'd'];
+		$new = array_pull($arr, $pull);
+		$this->assertEquals($new, ['a' => 1, 'c' => 3, 'd' => null]);
+	}
+
+	function testArrayPullString(){
+		$arr = ['a' => 1, 'b' => 2, 'c' => 3];
+		$pull = "a, c";
+		$new = array_pull($arr, $pull);
+		$this->assertEquals($new, ['a' => 1, 'c' => 3]);
+	}
+
 	function testArrayPull2d(){
 		$arr = ['a' => [1, 2], 'b' => [3, 4], 'c' => [5, 6]];
 		$pull = ['a', 'c'];
