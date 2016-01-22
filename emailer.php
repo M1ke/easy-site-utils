@@ -105,6 +105,12 @@ function send_email($p,&$error=null,$mail_type=null){
 
 	if (defined('BETA') && function_exists('send_email_whitelist')){
 		$p['emails'] = send_email_whitelist($p['emails']);
+		if (!empty($p['cc'])){
+			$p['cc'] = send_email_whitelist($p['cc'], false);
+		}
+		if (!empty($p['bcc'])){
+			$p['bcc'] = send_email_whitelist($p['bcc'], false);
+		}
 	}
 
 	if (!defined('EMAIL_SEND')){
@@ -227,7 +233,7 @@ function smtp_send($p,&$error){
 	return true;
 }
 
-function smtp_send_email($mail,$p,&$error){
+function smtp_send_email(PHPMailer $mail,$p,&$error){
 	if (function_exists('smtp_send_config')){
 		$p=smtp_send_config($p);
 	}
