@@ -43,7 +43,7 @@ function echo_html($html){
 
 function echo_shell($string, $eol = true){
 	if (PHP_SAPI!=='cli'){
-		return false;
+		return;
 	}
 	if ($string instanceof Exception){
 		$string = 'E: ' . $string->getMessage();
@@ -52,8 +52,6 @@ function echo_shell($string, $eol = true){
 		$string = print_r($string, true);
 	}
 	echo $string . ($eol ? PHP_EOL : '');
-
-	return true;
 }
 
 function json_out($data){
