@@ -548,3 +548,44 @@ function as_array($item){
 
 	return $item;
 }
+
+/**
+ * Verifies, recursively, existence of keys and if key values are an array
+ * Will return an empty array is verified
+ *
+ * @param array $format
+ * @param array $check
+ * @param string $depth
+ * @param array $errors
+ * @return array
+ */
+function array_keys_verify(array $format, array $check, $depth = '', $errors = []){
+
+	foreach ($format as $key => $sub_format){
+		$current_depth = $depth . '.' . $key;
+		// First see if they key is even set
+		if (!isset($check[$key])){
+			$errors[$current_depth] = "The key '$key' must be set, even if it is blank";
+			continue;
+		}
+
+		// If the sub-format isn't an array we're done with this key
+		if (!is_array($sub_format)){
+			continue;
+		}
+
+		// If sub-format is an array and the value we're checking isn't, that's a problem
+		if (!is_array($check[$key])){
+			$errors[$current_depth] = "The key '$key' must be an array, even if it is empty";
+			continue;
+		}
+
+		// If our sub-format is an array with values we then dive into that
+		if (!empty($sub_format)){
+			$errors = array_keys_verify($sub_format, $check[$key], $current_depth, $errors);
+			continue;
+		}
+	}
+
+	return $errors;
+}
