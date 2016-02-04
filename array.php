@@ -591,6 +591,11 @@ function array_keys_verify(array $format, array $check, $depth = '', $errors = [
 						$errors[$current_depth] = "The key '$key' must be a boolean";
 					}
 				break;
+				case 'float':
+					if (!is_float($check[$key])){
+						$errors[$current_depth] = "The key '$key' must be a decimal number";
+					}
+				break;
 				// We did check for strings, but php will treat anything else as a string
 				//  so there's not huge relevance to test
 			}
