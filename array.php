@@ -575,30 +575,17 @@ function array_keys_verify(array $format, array $check, $depth = '', $errors = [
 
 		// If the sub-format isn't an array we're done with this key
 		if (!is_array($sub_format)){
-			switch ($sub_format){
-				case 'int':
-					if (!is_int($check[$key])){
-						$errors[$current_depth] = "The key '$key' must be an integer";
-					}
-				break;
-				case 'non-zero':
-					if ((int) $check[$key]===0){
-						$errors[$current_depth] = "The key '$key' must be a non-zero integer";
-					}
-				break;
-				case 'bool':
-					if (!is_bool($check[$key])){
-						$errors[$current_depth] = "The key '$key' must be a boolean";
-					}
-				break;
-				case 'float':
-					if (!is_float($check[$key])){
-						$errors[$current_depth] = "The key '$key' must be a decimal number";
-					}
-				break;
-				// We did check for strings, but php will treat anything else as a string
-				//  so there's not huge relevance to test
+			if ($sub_format==='non-zero'){
+				// non-zero isn't a regular type, but requiring non-zero values
+				//  can be as relevant to operational logic, preventing div by zero etc
+				if ((int) $check[$key]===0){
+					$errors[$current_depth] = "The key '$key' must be a non-zero integer";
+				}
 			}
+			elseif (gettype($check[$key])!==$sub_format){
+				$errors[$current_depth] = "The key '$key' must be of type '$sub_format'";
+			}
+
 			continue;
 		}
 
