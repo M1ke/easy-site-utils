@@ -575,6 +575,7 @@ function array_keys_verify(array $format, array $check, $depth = '', $errors = [
 
 		// If the sub-format isn't an array we're done with this key
 		if (!is_array($sub_format)){
+			$type = gettype($check[$key]);
 			if ($sub_format==='non-zero'){
 				// non-zero isn't a regular type, but requiring non-zero values
 				//  can be as relevant to operational logic, preventing div by zero etc
@@ -582,8 +583,8 @@ function array_keys_verify(array $format, array $check, $depth = '', $errors = [
 					$errors[$current_depth] = "The key '$key' must be a non-zero integer";
 				}
 			}
-			elseif (gettype($check[$key])!==$sub_format){
-				$errors[$current_depth] = "The key '$key' must be of type '$sub_format'";
+			elseif ($type!==$sub_format){
+				$errors[$current_depth] = "The key '$key' must be of type '$sub_format', not '$type''";
 			}
 
 			continue;
