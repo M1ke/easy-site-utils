@@ -269,7 +269,7 @@ function date_components($date){
 		list($year, $month, $day) = explode('-', $date);
 	}
 	if (empty($month)){
-		return '';
+		return ['year' => '', 'month' => '', 'day' => ''];
 	}
 	date_year_correct_($year);
 
