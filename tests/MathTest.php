@@ -31,9 +31,24 @@ class TestMath extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_pos($num));
 	}
 
+	public function testIsNotPos(){
+		$num = 0;
+		$this->assertFalse(is_pos($num));
+	}
+
 	public function testIsPosString(){
 		$num = '5';
 		$this->assertTrue(is_pos($num));
+	}
+
+	public function testIsNotPosString(){
+		$num = '0';
+		$this->assertFalse(is_pos($num));
+	}
+
+	public function testIsPosWords(){
+		$num = '0hello';
+		$this->assertFalse(is_pos($num));
 	}
 
 	public function testIsPosNull(){
