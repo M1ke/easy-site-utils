@@ -25,4 +25,39 @@ class TestMath extends PHPUnit_Framework_TestCase {
 		$precision = 5;
 		$this->assertEquals(10, round_custom($val, $precision, 'floor'));
 	}
+
+	public function testIsPos(){
+		$num = 5;
+		$this->assertTrue(is_pos($num));
+	}
+
+	public function testIsPosString(){
+		$num = '5';
+		$this->assertTrue(is_pos($num));
+	}
+
+	public function testIsPosNull(){
+		$num = null;
+		$this->assertFalse(is_pos($num));
+	}
+
+	public function testIsPosNullable(){
+		$num = null;
+		$this->assertTrue(is_pos_nullable($num));
+	}
+
+	public function testIsPosStringEmpty(){
+		$num = '';
+		$this->assertFalse(is_pos($num));
+	}
+
+	public function testIsPosBlank(){
+		$num = '';
+		$this->assertTrue(is_pos_blank($num));
+	}
+
+	public function testIsPosBlankString(){
+		$num = '0abc';
+		$this->assertFalse(is_pos_blank($num));
+	}
 }

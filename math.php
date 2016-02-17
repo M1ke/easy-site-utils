@@ -61,10 +61,7 @@ function is_positive(&$number, $blank = null){
 	return false;
 }
 
-function is_pos($number, $null_allowed = null){
-	if (is_null($number) && $null_allowed){
-		return true;
-	}
+function is_pos($number){
 	if (!is_numeric($number)){
 		return false;
 	}
@@ -72,7 +69,23 @@ function is_pos($number, $null_allowed = null){
 	return ($number>0);
 }
 
-function is_not_zero($number, $null_allowed = null){
+function is_pos_nullable($number){
+	if (is_null($number)){
+		return true;
+	}
+
+	return is_pos($number);
+}
+
+function is_pos_blank($number){
+	if ($number===''){
+		return true;
+	}
+
+	return is_pos_nullable($number);
+}
+
+function is_not_zero($number){
 	$number = abs($number);
 
 	return is_pos($number);
