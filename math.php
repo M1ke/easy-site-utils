@@ -37,6 +37,13 @@ function is_number(&$number, $blank = null){
 	}
 }
 
+/**
+ * @param $number
+ * @param null $blank
+ * @return bool
+ *
+ * @deprecated use is_pos which does not pass by reference
+ */
 function is_positive(&$number, $blank = null){
 	if (@strlen($number)>0){
 		$number=trim($number);
@@ -54,15 +61,21 @@ function is_positive(&$number, $blank = null){
 	return false;
 }
 
-function is_positive_safe($number, $blank = null){
-	if (@strlen($number)>0){
-		return ($number>0 && is_numeric($number));
-	}
-	elseif ($blank){
-		$number = false;
+function is_pos($number, $null_allowed = null){
+	if (is_null($number) && $null_allowed){
 		return true;
 	}
-	return false;
+	if (!is_numeric($number)){
+		return false;
+	}
+
+	return ($number>0);
+}
+
+function is_not_zero($number, $null_allowed = null){
+	$number = abs($number);
+
+	return is_pos($number);
 }
 
 function is_whole($num){
