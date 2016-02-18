@@ -367,27 +367,27 @@ function validate_input($valid,&$p,&$error){
 		case 'num':
 		case 'number':
 			if (!is_number($val,($valid['blank'] ? 1 : false))){
-				if (!empty($valid['default'])){
-					$val=$valid['default'];
-				}
-				else {
+				if (!is_numeric($valid['default'])){
 					$error=!empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid number.';
+					break;
 				}
+				$val=$valid['default'];
 			}
-			if (!empty($val)){
-				// for legacy support
-				if (isset($valid['ulimit'])) $valid['max']=$valid['ulimit'];
-				if (isset($valid['dlimit'])) $valid['min']=$valid['dlimit'];
-				//
-				if (isset($valid['max']) and $val>$valid['max']){
-					$error='You must enter a number no greater than '.$valid['max'].'.';
-				}
-				if (isset($valid['min']) and $val<$valid['min']){
-					$error='You must enter a number no lower than '.$valid['min'].'.';
-				}
-				if (isset($valid['max-other']) and $val>$p[$valid['max-other']]){
-					$error='You must enter a number no greater than '.$p[$valid['max-other']].'.';
-				}
+			if ($val===false){
+				break;
+			}
+			// for legacy support
+			if (isset($valid['ulimit'])) $valid['max']=$valid['ulimit'];
+			if (isset($valid['dlimit'])) $valid['min']=$valid['dlimit'];
+			//
+			if (isset($valid['max']) and $val>$valid['max']){
+				$error='You must enter a number no greater than '.$valid['max'].'.';
+			}
+			if (isset($valid['min']) and $val<$valid['min']){
+				$error='You must enter a number no lower than '.$valid['min'].'.';
+			}
+			if (isset($valid['max-other']) and $val>$p[$valid['max-other']]){
+				$error='You must enter a number no greater than '.$p[$valid['max-other']].'.';
 			}
 		break;
 		case 'phone':
