@@ -385,6 +385,14 @@ function not_empty($string){
 	return (strlen($string)>0);
 }
 
+/**
+ * @param string $string
+ * @return bool
+ */
+function string_empty($string){
+	return !not_empty($string);
+}
+
 function make_name($name){
     $name=ucwords(strtolower($name));
 	foreach (array('-',"'") as $delimiter){
