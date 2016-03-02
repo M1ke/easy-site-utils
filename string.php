@@ -375,6 +375,16 @@ function make_html($text, $tags = null){
 	return $text; 
 }
 
+/**
+ * @param string $string
+ * @return bool
+ */
+function not_empty($string){
+	$string = (string) $string;
+	$string = trim($string);
+	return (strlen($string)>0);
+}
+
 function make_name($name){
     $name=ucwords(strtolower($name));
 	foreach (array('-',"'") as $delimiter){
@@ -777,10 +787,10 @@ function string_check($string,$strip=1,$trim=true,$multi_byte=false){
 		$string=preg_replace('/&(?![A-Za-z0-9#]+;)/s','&amp;',$string);
 	}
 	if ($multi_byte){
-		$string=mb_replace(array("'","’","‘",'`'),array('&#39;'),$string);
+		$string=mb_replace(array("'","ï¿½","ï¿½",'`'),array('&#39;'),$string);
 	}
 	else {
-		$string=str_replace(array("'","’","‘",'`'),array('&#39;'),$string);
+		$string=str_replace(array("'","ï¿½","ï¿½",'`'),array('&#39;'),$string);
 	}
 	return $string;
 }
@@ -855,9 +865,9 @@ function string_split($string,$split=','){
 
 function string_uncheck($string){
 	$string=stripslashes($string);
-	$string=str_replace(array('&amp;','&#39;','&#39;','&#39;','"','&#8220;','&#8221;','&#233;','&#163;','...','-'),array('&',"'","’","‘",'`','“','”','é','£','…','–'),$string);
+	$string=str_replace(array('&amp;','&#39;','&#39;','&#39;','"','&#8220;','&#8221;','&#233;','&#163;','...','-'),array('&',"'","ï¿½","ï¿½",'`','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½','ï¿½'),$string);
 	// some characters produce this after replacement for some reason - this gets rid of that
-	$string=str_replace('Ã©','é',$string);
+	$string=str_replace('Ã©','ï¿½',$string);
 	return $string;
 }
 
@@ -974,7 +984,7 @@ function switch_string($string,$sep=' '){
 
 function unfilter($post){
 	$post=str_replace('&#39;',"'",$post);
-	$post=str_replace('&#233;','é',$post);
+	$post=str_replace('&#233;','ï¿½',$post);
 	$post=str_replace('&amp;','&',$post);
 	$post=str_replace('<ol>','<ol><br/>',$post);
 	$post=str_replace('<ul>','<ul><br/>',$post);
