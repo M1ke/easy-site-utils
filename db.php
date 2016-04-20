@@ -190,6 +190,7 @@ function db_update($new,$old,&$out=null,$echo=null){
 			$queries[]=$create;
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
+					$index=str_replace(',','`,`',$index);
 					$queries[]="ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 				}
 			}
@@ -212,7 +213,7 @@ function db_update($new,$old,&$out=null,$echo=null){
 		}
 	}
 	else {
-		echo_array($queries);
+		echo implode(";\n\n", $queries);
 		die;
 	}
 }
