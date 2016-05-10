@@ -415,6 +415,18 @@ function custom_date_format($stamp, $format, $sep = ' at '){
 	return $date;
 }
 
+function date_nearest_day($direction, $date_today, $day, $format = 'Y-m-d'){
+	return custom_date($date_today, 'D')===$day ? $date_today : date($format, strtotime("$direction $day", $date_today));
+}
+
+function date_prev_day($date_today, $day, $format = 'Y-m-d'){
+	return date_nearest_day('last', $date_today, $day, $format);
+}
+
+function date_next_day($date_today, $day, $format = 'Y-m-d'){
+	return date_nearest_day('next', $date_today, $day, $format);
+}
+
 function int_day($int){
 	$arr = arr_day();
 
