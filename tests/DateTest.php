@@ -259,4 +259,24 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$dat = sql_dat($date);
 		$this->assertEquals('2015-02-13', $dat);
 	}
+
+	// date_nearest_day
+
+	function testNextDay(){
+		$date = '2016-05-10'; // a tuesday
+		$next_thursday = date_next_day($date, 'thu');
+		$this->assertEquals('2016-05-12', $next_thursday);
+	}
+
+	function testPrevDay(){
+		$date = '2016-05-10'; // a tuesday
+		$prev_thursday = date_prev_day($date, 'thu');
+		$this->assertEquals('2016-05-05', $prev_thursday);
+	}
+
+	function testPrevDayIsToday(){
+		$date = '2016-05-10'; // a tuesday
+		$prev_tuesday = date_prev_day($date, 'tue');
+		$this->assertEquals('2016-05-10', $prev_tuesday);
+	}
 }
