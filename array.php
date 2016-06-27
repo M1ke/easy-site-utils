@@ -1,21 +1,11 @@
 <?php
 // generates the php code to create a selected array
-function array_code($arr, $level = 1){
+function array_code($arr){
 	if (is_array($arr)){
-		for ($n = 0; $n<$level; $n++){
-			$tabs .= "\t";
-			if ($n>0){
-				$breaks .= "\t";
-			}
-		}
-		$vals = [];
-		foreach ($arr as $key => $val){
-			$vals[] = is_array($val) ? "'" . $key . "'=>" . array_code($val, $level+1) : "'" . $key . "'=>'" . $val . "'";
-		}
-		$php = "array(\r" . $tabs . implode(",\r" . $tabs, $vals) . "\r" . $breaks . ")";
-
-		return $php;
+		return var_export($arr);
 	}
+
+	return '';
 }
 
 function array_assoc($arr){
@@ -133,15 +123,17 @@ function array_pull(array $arr, $pull, &$new = []){
 // reutrns the first item of an array. Not certain where we needed this, reset($arr) does the same!
 function arraystr($array){
 	foreach ($array as $item){
-		return $item;
+		return (string)$item;
 	}
+
+	return '';
 }
 
 // flattens multiple keys of an array into a single dimension
 function array_oned(&$arr, $assoc, $pre){
 	if (is_array($arr[$assoc])){
 		foreach ($arr[$assoc] as $key => $val){
-			$arr[$pre . '-' . $key] = $val;
+			$arr[$pre.'-'.$key] = $val;
 		}
 	}
 	unset($arr[$assoc]);
@@ -210,16 +202,18 @@ function array_snip($arr, $key){
 	return $arr;
 }
 
-function array_invert($item, $item_key, &$twod, $inc = false, $ext = ''){
+function array_invert($item, $item_key, &$twod, $include = [], $ext = ''){
 	foreach ($item as $key => $value){
-		if (empty($inc) or in_array($key, $inc)){
-			$twod[$key . $ext][$item_key] = $value;
+		if (empty($include) || in_array($key, $include)){
+			$twod[$key.$ext][$item_key] = $value;
 		}
 	}
+
+	return $twod;
 }
 
 function array_stitch(Array $arr, Array $order, $glue = '', $missing = false){
-	$new_arr = '';
+	$new_arr = [];
 	foreach ($order as $key){
 		$new_arr[] = $arr[$key];
 		if ($missing){
@@ -286,8 +280,9 @@ function array_insert_assoc($arr, $offset, $insert, $before = false){
 	}
 	$temp = [];
 	$n = 0;
+	$adj = 0;
 	foreach ($arr as $key => $val){
-		$temp[(is_numeric($key) ? ($key+$adj) : $key)] = $val;
+		$temp[is_numeric($key) ? ($key+$adj) : $key] = $val;
 		if ($n==$offset){
 			if (is_array($insert)){
 				foreach ($insert as $ins_key => $ins_val){
@@ -320,6 +315,7 @@ function array_search_2d($needle, $haystack, $key, $last = false){
 }
 
 function array_switch($arr, $key1, $key2){
+	$temp = [];
 	foreach ($arr as $key => $val){
 		if ($key===$key1){
 			$temp[$key2] = $arr[$key2];
@@ -342,11 +338,11 @@ function array_twod(&$arr, $assoc, $pre){
 		if (strpos($key, $pre)!==false){
 			if (is_array($arr[$key])){
 				foreach ($arr[$key] as $n => $val){
-					$arr[$assoc][$n][str_replace($pre . '-', '', $key)] = $val;
+					$arr[$assoc][$n][str_replace($pre.'-', '', $key)] = $val;
 				}
 			}
 			else {
-				$arr[$assoc][str_replace($pre . '-', '', $key)] = $arr[$key];
+				$arr[$assoc][str_replace($pre.'-', '', $key)] = $arr[$key];
 			}
 			unset($arr[$key]);
 		}
@@ -397,6 +393,7 @@ function flatten_array($array){
 }
 
 function implode_assoc($sep, $arr){
+	$string = '';
 	foreach ($arr as $key => $val){
 		$string .= $val;
 		if (!is_numeric($key) and $val!=end($arr)){
@@ -408,8 +405,9 @@ function implode_assoc($sep, $arr){
 }
 
 function implode_dual($sep, $arr1, $arr2){
+	$string = '';
 	foreach ($arr1 as $key => $val){
-		$string .= $val . $sep[1] . $arr2[$key];
+		$string .= $val.$sep[1].$arr2[$key];
 		if ($val!=end($arr1)){
 			$string .= $sep[0];
 		}
@@ -428,9 +426,10 @@ function implode_key($sep, $arr){
 }
 
 function implode_wrap($pre, $suf, $arr){
+	$html = '';
 	if (is_array($arr)){
 		foreach ($arr as $val){
-			$html .= $pre . $val . $suf;
+			$html .= $pre.$val.$suf;
 		}
 	}
 
@@ -441,9 +440,11 @@ function is_array_full($arr){
 	if (!is_array($arr)){
 		return false;
 	}
+
 	if (empty($arr)){
 		return false;
 	}
+
 	foreach ($arr as $item){
 		if (!empty($item)){
 			return true;
@@ -478,6 +479,7 @@ function is_assoc(&$arr){
 function largest_array(){
 	$arrs = func_get_args();
 	$large = 0;
+	$largest = 0;
 	foreach ($arrs as $key => $arr){
 		$count = count($arr);
 		if ($count>$large){
@@ -562,7 +564,7 @@ function as_array($item){
 function array_keys_verify(array $format, array $check, $depth = '', $errors = []){
 
 	foreach ($format as $key => $sub_format){
-		$current_depth = $depth . '.' . $key;
+		$current_depth = $depth.'.'.$key;
 		// First see if they key is even set
 		if (!isset($check[$key])){
 			$errors[$current_depth] = "The key '$key' must be set, even if it is blank";
@@ -579,11 +581,11 @@ function array_keys_verify(array $format, array $check, $depth = '', $errors = [
 			if ($sub_format==='non-zero'){
 				// non-zero isn't a regular type, but requiring non-zero values
 				//  can be as relevant to operational logic, preventing div by zero etc
-				if ((int) $check[$key]===0){
+				if ((int)$check[$key]===0){
 					$errors[$current_depth] = "The key '$key' must be a non-zero integer";
 				}
 			}
-			elseif ($type!==$sub_format){
+			elseif ($type!==$sub_format) {
 				$errors[$current_depth] = "The key '$key' must be of type '$sub_format', not '$type''";
 			}
 
