@@ -434,6 +434,51 @@ function date_next_day($date_today, $day, $format = 'Y-m-d'){
 	return date_nearest_day('next', $date_today, $day, $format);
 }
 
+function date_working_forward($date, $days){
+	$date = date_not_weekend_forward($date);
+
+	for ($n = 0; $n<$days; $n++){
+		$date = inc_date($date, ['day' => 1], false, 'Y-m-d');
+
+		$date = date_not_weekend_forward($date); // 6 is Sat, 7 is Sun
+	}
+
+	return $date;
+}
+
+function date_working_backward($date, $days){
+	$date = date_not_weekend_forward($date);
+
+	for ($n = 0; $n<$days; $n++){
+		$date = inc_date($date, ['day' => -1], false, 'Y-m-d');
+
+		$date = date_not_weekend_backward($date); // 6 is Sat, 7 is Sun
+	}
+
+	return $date;
+}
+
+function date_not_weekend($date, $dir){
+	$day = custom_date($date, 'N'); // 6 is Sat, 7 is Sun
+	$day -= 5;
+	if ($day>0){
+		if ($dir>0){
+			$day = 3 - $day;
+		}
+		$date = inc_date($date, ['day' => $dir * $day], false, 'Y-m-d');
+	}
+
+	return $date;
+}
+
+function date_not_weekend_forward($date){
+	return date_not_weekend($date, 1);
+}
+
+function date_not_weekend_backward($date){
+	return date_not_weekend($date, -1);
+}
+
 function int_day($int){
 	$arr = arr_day();
 

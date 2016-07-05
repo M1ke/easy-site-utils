@@ -279,4 +279,30 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$prev_tuesday = date_prev_day($date, 'tue');
 		$this->assertEquals('2016-05-10', $prev_tuesday);
 	}
+
+	// date_working_forward
+
+	function testDateWorkingForward(){
+		$date = '2016-07-01'; // a friday
+		$one_working_day = date_working_forward($date, 1);
+		$this->assertEquals('2016-07-04', $one_working_day);
+	}
+
+	function testDateWorkingForwardStartSat(){
+		$date = '2016-07-02'; // a saturday
+		$one_working_day = date_working_forward($date, 1);
+		$this->assertEquals('2016-07-05', $one_working_day); // should be a tuesday, 1 working day from monday
+	}
+
+	function testDateWorkingBackward(){
+		$date = '2016-07-04'; // a monday
+		$one_working_day = date_working_backward($date, 1);
+		$this->assertEquals('2016-07-01', $one_working_day);
+	}
+
+	function testDateWorkingBackwardSun(){
+		$date = '2016-07-03'; // a sunday
+		$one_working_day = date_working_backward($date, 1);
+		$this->assertEquals('2016-07-01', $one_working_day);
+	}
 }
