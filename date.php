@@ -440,7 +440,7 @@ function date_working_forward($date, $days){
 	for ($n = 0; $n<$days; $n++){
 		$date = inc_date($date, ['day' => 1], false, 'Y-m-d');
 
-		$date = date_not_weekend_forward($date); // 6 is Sat, 7 is Sun
+		$date = date_not_weekend_forward($date);
 	}
 
 	return $date;
@@ -452,20 +452,57 @@ function date_working_backward($date, $days){
 	for ($n = 0; $n<$days; $n++){
 		$date = inc_date($date, ['day' => -1], false, 'Y-m-d');
 
-		$date = date_not_weekend_backward($date); // 6 is Sat, 7 is Sun
+		$date = date_not_weekend_backward($date);
 	}
 
 	return $date;
 }
 
+function uk_bank_holidays(){
+	return [
+		'2016-08-29',
+		'2016-12-26',
+		'2016-12-27',
+		'2017-01-02',
+		'2017-04-14',
+		'2017-04-17',
+		'2017-05-01',
+		'2017-05-29',
+		'2017-08-28',
+		'2017-12-25',
+		'2017-12-26',
+		'2018-01-01',
+		'2018-03-30',
+		'2018-04-02',
+		'2018-05-07',
+		'2018-05-28',
+		'2018-08-27',
+		'2018-12-25',
+		'2018-12-26',
+	];
+}
+
 function date_not_weekend($date, $dir){
+	$date = sql_dat($date);
+
+	$bank_holidays = uk_bank_holidays();
+
 	$day = custom_date($date, 'N'); // 6 is Sat, 7 is Sun
 	$day -= 5;
-	if ($day>0){
-		if ($dir>0){
-			$day = 3 - $day;
+
+	while (in_array($date, $bank_holidays) || $day>0){
+		if ($day>0){
+			if ($dir>0){
+				$day = 3 - $day;
+			}
+			$date = inc_date($date, ['day' => $dir * $day], false, 'Y-m-d');
 		}
-		$date = inc_date($date, ['day' => $dir * $day], false, 'Y-m-d');
+		elseif (in_array($date, $bank_holidays)) {
+			$date = inc_date($date, ['day' => $dir], false, 'Y-m-d');
+		}
+
+		$day = custom_date($date, 'N');
+		$day -= 5;
 	}
 
 	return $date;
