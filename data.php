@@ -8,6 +8,10 @@ function data_valid($fields){
 	return $temp;
 }
 
+function sql_like($string){
+	return '%'.$string.'%';
+}
+
 function valid_copy(&$p,&$error=null,$valid=null){
 	if (isset($p[$valid['copy']])){
 		$p[$valid['_input']]=$p[$valid['copy']];
