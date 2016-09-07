@@ -138,7 +138,7 @@ function get_browse(){
 	$browser=array('OPERA','MSIE','NETSCAPE','FIREFOX','SAFARI','KONQUEROR','MOZILLA');
 	$info['browser']='OTHER';
 	foreach ($browser as $parent){
-		if (($s=strpos(strtoupper($_SERVER['HTTP_USER_AGENT']),$parent))!==false){        
+		if (($s=strpos(strtoupper($_SERVER['HTTP_USER_AGENT']),$parent))!==false){
 			$f=$s+strlen($parent);
 			$version=substr($_SERVER['HTTP_USER_AGENT'],$f,5);
 			$version=preg_replace('/[^0-9,.]/','',$version);
@@ -274,6 +274,7 @@ function redirect_url($url=null,$debug=false){
 		echo $url;
 	}
 	else {
+		$url = str_replace(["\r", "\n"], '', $url);
 		header('location:'.$url);
 	}
 	die;
@@ -283,7 +284,7 @@ function shell(){
 	return !empty($_SERVER['shell']);
 }
 
-function success(){	
+function success(){
 	$return=func_get_args();
 	if (is_array($return[0])){
 		$return=$return[0];
