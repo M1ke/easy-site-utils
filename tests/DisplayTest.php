@@ -122,6 +122,13 @@ class TestDisplay extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($order, $head['order']);
 	}
 
+	public function testMakeTableHeadSortStopInjection(){
+		$table = $this->makeTableHeadArray();
+		$head = make_table_head($table, '/path/script/', ['sort'=>'houses|desc; UPDATE table set field=0', 'page'=> 2]);
+		$order = 'l.houses DESC';
+		$this->assertEquals($order, $head['order']);
+	}
+
 	public function testMakeTableHeadEl(){
 		$table = $this->makeTableHeadArray();
 		$head = make_table_head($table, '/path/script/', [], ['el'=> 'div', 'norow'=> true]);
