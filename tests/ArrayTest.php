@@ -171,4 +171,10 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$array_strip = array_strip($array);
 		$this->assertEquals(['a', '', 'b'], $array_strip);
 	}
+
+	public function testArrayRemove(){
+		$arr = ['a', 'b', 'c'];
+		$removed = array_remove('a', $arr);
+		$this->assertEquals([1 => 'b', 2 => 'c'], $removed);
+	}
 }

@@ -148,7 +148,7 @@ function array_random(Array $arr){
 
 function array_remove($needle, Array $haystack){
 	$key = array_search($needle, $haystack);
-	if (!empty($key)){
+	if ($key!==false){
 		unset($haystack[$key]);
 	}
 
