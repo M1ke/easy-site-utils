@@ -321,23 +321,25 @@ function make_table_head(Array $table, $base_url = '', Array $request = [], Arra
 		if (!empty($head['order'])){
 			$current = '';
 			if ($key==$order[0]){
-				$sort = $order[1]=='asc' ? 'desc' : 'asc';
-				$return['order'] = $head['pfx'].$head['order'].' '.strtoupper($order[1]);
-				$current = 'sort-current sort-current-'.$order[1];
+				$sort_next = $order[1]=='asc' ? 'desc' : 'asc';
+				$sort_current = $order[1]=='asc' ? 'asc' : 'desc';
+
+				$return['order'] = $head['pfx'].$head['order'].' '.strtoupper($sort_current);
+				$current = 'sort-current sort-current-'.$sort_current;
 			}
 			elseif ($head['default']==1){
-				$sort = (empty($order[0]) && $head['sort']=='asc') ? 'desc' : 'asc';
+				$sort_next = (empty($order[0]) && $head['sort']=='asc') ? 'desc' : 'asc';
 				$default = $head['pfx'].$head['order'].' '.strtoupper($head['sort']);
 			}
 			else {
-				$sort = $head['sort'];
+				$sort_next = $head['sort'];
 			}
 			if (!empty($base_url) && empty($head['no'])){
 				$query_string = $request;
-				$query_string['sort'] = $key.'|'.$sort;
+				$query_string['sort'] = $key.'|'.$sort_next;
 				$url = $base_url.'?'.http_build_query($query_string);
 
-				$head['class'] .= " sort-$sort $current"; // Requires a space at the start of the string
+				$head['class'] .= " sort-$sort_next $current"; // Requires a space at the start of the string
 				$head['title'] = '<a href="'.$url.'">'.$head['title'].'</a>';
 				$header_link = true;
 			}
