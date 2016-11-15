@@ -24,6 +24,9 @@ function create_field(&$field,&$error){
 		case 'single':
 			$type=' tinyint(1)';
 		break;
+		case 'blob':
+			$type=' blob';
+		break;
 		case 'text':
 			$type=' text collate utf8_unicode_ci';
 		break;
