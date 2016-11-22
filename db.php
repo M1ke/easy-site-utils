@@ -27,6 +27,9 @@ function create_field(&$field,&$error){
 		case 'blob':
 			$type=' blob';
 		break;
+		case 'mediumtext':
+			$type=' mediumtext collate utf8_unicode_ci';
+		break;
 		case 'text':
 			$type=' text collate utf8_unicode_ci';
 		break;
