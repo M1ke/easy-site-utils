@@ -27,6 +27,18 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$email='me@m1ke.me>';
 		$this->assertFalse(make_email($email));
 	}
+	function testBadPeriodLocalPartStart(){
+		$email='.me@m1ke.me';
+		$this->assertFalse(make_email($email));
+	}
+	function testBadPeriodLocalPartEnd(){
+		$email='me.@m1ke.me';
+		$this->assertFalse(make_email($email));
+	}
+	function testBadPeriodLocalPartRepeated(){
+		$email='inferno..me@m1ke.me';
+		$this->assertFalse(make_email($email));
+	}
 
 	// Message split
 	function testShortMessageReturnsSingleItemArray(){
@@ -168,7 +180,7 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$first_word=first_word($test_string);
 		$this->assertEquals($first_word,'');
 	}
-	
+
 	// substr_words
 	function testSubstrWords(){
 		$sentence='The quick brown fox jumped over the lazy dog';
@@ -296,4 +308,3 @@ class TestPlural extends PHPUnit_Framework_TestCase {
 		$this->assertEquals($plural,'1 '.$this->str);
 	}
 }
-
