@@ -39,6 +39,21 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$email='inferno..me@m1ke.me';
 		$this->assertFalse(make_email($email));
 	}
+	function testFirstEmail(){
+		$email='me@m1ke.me you@m1ke.me';
+		$this->assertTrue(make_email($email));
+		$this->assertEquals('me@m1ke.me', $email);
+	}
+	function testFirstEmailBadFirst(){
+		$email='me@m1\'ke.me you@m1ke.me';
+		$this->assertFalse(make_email($email));
+		$this->assertEquals('me@m1\'ke.me', $email);
+	}
+	function testFirstEmailBadSecond(){
+		$email='me@m1ke.me,you@m1\'ke.me';
+		$this->assertTrue(make_email($email));
+		$this->assertEquals('me@m1ke.me', $email);
+	}
 
 	// Message split
 	function testShortMessageReturnsSingleItemArray(){
