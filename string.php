@@ -279,6 +279,15 @@ function make_currency(&$num,$zero=false){
 }
 
 function make_email(&$string,$blank=false){
+	// limit to the first candidate if someone tries to pass in a list
+
+	// remove commas
+	$string = explode(',', $string)[0];
+
+	// remove spaces
+	$string = trim($string);
+	$string = explode(' ', $string)[0];
+
 	if (strlen($string)>0){
 		$string=strtolower(trim($string));
 		$string=str_replace('\u0040','@',$string);
