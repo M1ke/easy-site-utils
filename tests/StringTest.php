@@ -39,6 +39,10 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$email='inferno..me@m1ke.me';
 		$this->assertFalse(make_email($email));
 	}
+	function testBadPeriodDomainPartRepeated(){
+		$email='inferno.me@m1ke..me';
+		$this->assertFalse(make_email($email));
+	}
 	function testFirstEmail(){
 		$email='me@m1ke.me you@m1ke.me';
 		$this->assertTrue(make_email($email));
