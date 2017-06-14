@@ -69,7 +69,7 @@ function html_data($data,$test_numeric=true){
 	return $html;
 }
 
-function html_facebook_js($fb_id, $url, $version = '2.9'){
+function html_facebook_js($fb_id, $version = '2.9', $debug = false){
 	if (empty($fb_id)){
 		return '';
 	}
@@ -95,7 +95,7 @@ function html_facebook_js($fb_id, $url, $version = '2.9'){
 	var js,fjs=d.getElementsByTagName(s)[0];
 	if(d.getElementById(id)) return;
 	js=d.createElement(s); js.id=id;
-	js.src='//connect.facebook.net/en_GB/sdk.js';
+	js.src='//connect.facebook.net/en_GB/sdk".($debug ? "/debug" : '').".js';
 	fjs.parentNode.insertBefore(js,fjs);
 	}(document,'script','facebook-jssdk'));
 	</script>";
