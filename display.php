@@ -69,22 +69,21 @@ function html_data($data,$test_numeric=true){
 	return $html;
 }
 
-function html_facebook_js($fb_id, $url, $version = '2.2'){
+function html_facebook_js($fb_id, $url, $version = '2.9'){
 	if (empty($fb_id)){
 		return '';
 	}
-
-	$url_no_protocol = substr($url, 5);
 
 	return "<div id='fb-root'></div>
 	<script type='text/javascript'>
 	var fbAsyncInit = function(){
 		try {
 			FB.init({
-				appId:'$fb_id'
-				,channelURL:'{$url_no_protocol}vendor/m1ke/easy-site-utils/fb_channel.php'
-				,status:true,cookie:true,oauth:true
-				,version:'v{$version}'
+				appId:'$fb_id',
+				status:true,
+				cookie:true,
+				version:'v{$version}',
+				autoLogAppEvents : true
 			});
 		}
 		catch (e){
