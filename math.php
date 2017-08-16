@@ -1,21 +1,38 @@
 <?php
 function decimal_ratio($decimal, $sep = ':'){
-	$num=array(0,0);
+	$num = [0, 0];
 	do {
 		$num[1]++;
-		$num[0] = $num[1]*$decimal;
-	}
-	while (!is_whole($num[0]));
+		$num[0] = $num[1] * $decimal;
+	} while (!is_whole($num[0]));
 	$ratio = implode($sep, $num);
+
 	return $ratio;
 }
 
+/**
+ * Takes two float values and asserts whether they are equal to a certain precision
+ * This avoids problems when a specific large floating point value will not accurately
+ * be compared to a conversion from another type e.g. a submitted string
+ *
+ * @param float|int $a currency value in pounds
+ * @param float|int $b currency value in pounds
+ * @param int $dp
+ *
+ * @return bool
+ */
+function floats_equal($a, $b, $dp = 2){
+	$multiply = 10 ^ $dp;
+
+	return (int)round($a * $multiply)===(int)round($b * $multiply);
+}
+
 function is_decimal($num){
-	return ((int)$num!=$num);
+	return (int)$num!=$num;
 }
 
 function is_even($n){
-	return ($n%2 == 0);
+	return $n % 2===0;
 }
 
 function is_number(&$number, $blank = null){
@@ -24,17 +41,17 @@ function is_number(&$number, $blank = null){
 		if (is_numeric($number)){
 			return true;
 		}
-		else {
-			$result=word_to_number($number);
-		}
+
+		$result = word_to_number($number);
 	}
+
 	if (!empty($result) || $blank){
 		$number = false;
+
 		return true;
 	}
-	else {
-		return false;
-	}
+
+	return false;
 }
 
 /**
@@ -46,18 +63,19 @@ function is_number(&$number, $blank = null){
  */
 function is_positive(&$number, $blank = null){
 	if (@strlen($number)>0){
-		$number=trim($number);
+		$number = trim($number);
 		if ($number>0 && is_numeric($number)){
 			return true;
 		}
-		else {
-			return word_to_number($number);
-		}
+
+		return word_to_number($number);
 	}
-	elseif ($blank){
+	elseif ($blank) {
 		$number = false;
+
 		return true;
 	}
+
 	return false;
 }
 
@@ -92,7 +110,7 @@ function is_not_zero($number){
 }
 
 function is_whole($num){
-	return $num/round($num)==1;
+	return $num / round($num)==1;
 }
 
 function num_position($num){
@@ -115,7 +133,8 @@ function num_position($num){
 
 function ratio_decimal($ratio, $sep = ':'){
 	$num = explode($sep, $ratio);
-	return $num[1]==0 ? 1 : $num[0]/$num[1];
+
+	return $num[1]==0 ? 1 : $num[0] / $num[1];
 }
 
 function round_custom($num, $precision = 5, $func = 'round'){
