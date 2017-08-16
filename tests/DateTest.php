@@ -305,4 +305,71 @@ class TestDates extends PHPUnit_Framework_TestCase {
 		$one_working_day = date_working_backward($date, 1);
 		$this->assertEquals('2016-07-01', $one_working_day);
 	}
+
+	// String time
+	function testStringTimeBasic(){
+		$date = '2016-07-30';
+		$timestamp = string_time($date);
+		$this->assertEquals(1469833200, $timestamp);
+	}
+
+	function testStringTimeUk(){
+		$date = '30/07/2016';
+		$timestamp = string_time($date);
+		$this->assertEquals(1469833200, $timestamp);
+	}
+
+	function testStringTimeUsa(){
+		$date = '07/30/2016';
+		$error = null;
+		$timestamp = string_time($date, $error, true);
+		$this->assertEquals(1469833200, $timestamp);
+	}
+
+	function testStringTimeMonthOnly(){
+		$date = '07/2016';
+		$timestamp = string_time($date);
+		$this->assertEquals(1467327600, $timestamp);
+	}
+
+	function testStringTimeInvalidString(){
+		$date = 'hello';
+		$error = null;
+		$timestamp = string_time($date, $error);
+		$this->assertFalse($timestamp);
+		$this->assertNotEmpty($error);
+	}
+
+	function testStringTimeWords(){
+		$date = '30th July 2017';
+		$timestamp = string_time($date);
+		// We have to convert it to just a date or the timezone
+		// of the machine/server will alter the timestamp output
+		$test_date = date('Y-m-d', $timestamp);
+		$this->assertEquals('2017-07-30', $test_date);
+	}
+
+	function testStringTimeInvalidNum(){
+		$date = 1;
+		$error = null;
+		$timestamp = string_time($date, $error);
+		$this->assertFalse($timestamp);
+		$this->assertNotEmpty($error);
+	}
+
+	function testStringTimeTooPast(){
+		$date = '0245-01-01'; // likely mistyped
+		$error = null;
+		$timestamp = string_time($date, $error);
+		$this->assertFalse($timestamp);
+		$this->assertNotEmpty($error);
+	}
+
+	function testStringTimeTooFuture(){
+		$date = '4234-01-01'; // likely mistyped
+		$error = null;
+		$timestamp = string_time($date, $error);
+		$this->assertFalse($timestamp);
+		$this->assertNotEmpty($error);
+	}
 }

@@ -700,6 +700,12 @@ function sql_time($time, $stamp = null, &$error = null){
 	return $time;
 }
 
+/**
+ * @param string $date
+ * @param string $error
+ * @param bool $date_usa
+ * @return bool|int
+ */
 function string_time($date, &$error = null, $date_usa = false){
 	if (substr_count($date, '/')==1){
 		$date = '01/'.$date;
@@ -710,8 +716,22 @@ function string_time($date, &$error = null, $date_usa = false){
 		$date = preg_replace('/(?<![0-9])([0-9]{1,2})\/([0-9]{1,2})\//', '$2/$1/', $date);
 	}
 	$stamp = strtotime($date);
-	if (empty($stamp)){
+	if ($stamp===false){
 		$error = 'The date entered wasn\'t recognised as a valid date. Try writing it in the format dd/mm/yyyy.';
+
+		return false;
+	}
+
+	$first_jan_1900 = -2208988800;
+	if ($stamp<$first_jan_1900){
+		$error = 'The date entered was thought to be earlier than 1st Jan 1900. This suggests a potential error for most uses of this date.';
+
+		return false;
+	}
+
+	$end_dec_2099 = 4102444800;
+	if ($stamp>$end_dec_2099){
+		$error = 'The date entered was thought to be later than 31st Dec 2099. This suggests a potential error for most uses of this date.';
 
 		return false;
 	}
