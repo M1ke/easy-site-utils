@@ -5,7 +5,8 @@
     "require": {
         "php": ">=5.4.0",
         "phpmailer/phpmailer": "5.2.*",
-	    "sendgrid/smtpapi": "~0.5"
+	    "sendgrid/smtpapi": "~0.5",
+        "paragonie/random_compat": "^2.0"
     },
     "require-dev": {
         "m1ke/git-php-lint": "1.0.0",
