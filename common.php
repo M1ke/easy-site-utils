@@ -17,7 +17,7 @@ function csv_array($file, $check = false, $delimiter = ',', $start = 1){
 	return csv_array_parse($parsed, $check, $start);
 }
 
-function csv_file($file, $delimiter = ','){
+function csv_file($file, $delimiter = ',', $limit = 80000){
 	if (is_array($file)){
 		$file = $file['tmp_name'];
 	}
@@ -30,7 +30,6 @@ function csv_file($file, $delimiter = ','){
 		return $parsed;
 	}
 	// might want to improve this; maybe limit it based on number of empty rows?
-	$limit = 50000; // limit to 50,000
 	$n = 0;
 	while (($parse = fgetcsv($fh, 0, $delimiter)) && $n<$limit){
 		$parsed[] = $parse;
