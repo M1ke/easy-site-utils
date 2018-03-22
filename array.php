@@ -1,14 +1,25 @@
 <?php
-// generates the php code to create a selected array
+/**
+ * generates the php code to create a variable (or blank if var is not array)
+ *
+ * @param mixed $arr
+ *
+ * @return string
+ */
 function array_code($arr){
 	if (is_array($arr)){
-		return var_export($arr);
+		return var_export($arr) ?: '';
 	}
 
 	return '';
 }
 
-function array_assoc($arr){
+/**
+ * @param array $arr
+ *
+ * @return array
+ */
+function array_assoc(array $arr){
 	$assoc = [];
 	foreach ($arr as $key => $val){
 		$assoc[$val] = $key;
@@ -17,7 +28,13 @@ function array_assoc($arr){
 	return $assoc;
 }
 
-function array_overwrite($base, $fill){
+/**
+ * @param array $base
+ * @param array $fill
+ *
+ * @return array
+ */
+function array_overwrite(array $base, array $fill = []){
 	if (empty($fill)){
 		return $base;
 	}
@@ -34,6 +51,12 @@ function array_overwrite($base, $fill){
 	return $arr;
 }
 
+/**
+ * @param array $arr
+ * @param string|int $field
+ *
+ * @return array
+ */
 function array_extract(array $arr, $field){
 	$return = [];
 	foreach ($arr as $key => $val){
@@ -43,26 +66,43 @@ function array_extract(array $arr, $field){
 	return $return;
 }
 
-// places items in a flat array into a multidimensional array based on keys
+
+/**
+ * places items in a flat array into a multidimensional array based on keys
+ *
+ * @param array $arr
+ * @param string $key
+ * @param string $key2
+ * @param string $key3
+ */
 function array_id(&$arr, $key, $key2 = null, $key3 = null){
-	if (is_array($arr)){
-		$new = [];
-		foreach ($arr as $item){
-			if ($key3){
-				$new[$item[$key3]][$item[$key2]][$item[$key]] = $item;
-			}
-			elseif ($key2) {
-				$new[$item[$key2]][$item[$key]] = $item;
-			}
-			else {
-				$new[$item[$key]] = $item;
-			}
-		}
-		$arr = $new;
+	if (!is_array($arr)){
+		return;
 	}
+
+	$new = [];
+	foreach ($arr as $item){
+		if ($key3){
+			$new[$item[$key3]][$item[$key2]][$item[$key]] = $item;
+		}
+		elseif ($key2) {
+			$new[$item[$key2]][$item[$key]] = $item;
+		}
+		else {
+			$new[$item[$key]] = $item;
+		}
+	}
+	$arr = $new;
 }
 
-function array_data_sort(Array $arr, $sort_field, $desc = false){
+/**
+ * @param array $arr
+ * @param string $sort_field
+ * @param bool $desc
+ *
+ * @return array
+ */
+function array_data_sort(array $arr, $sort_field, $desc = false){
 	$first = reset($arr);
 	if (!isset($first[$sort_field])){
 		return $arr;
@@ -75,21 +115,44 @@ function array_data_sort(Array $arr, $sort_field, $desc = false){
 	return $arr;
 }
 
-function array_union(Array $a, Array $b){
+/**
+ * Merges two arrays and removes duplicate values
+ *
+ * @param array $a
+ * @param array $b
+ *
+ * @return array
+ */
+function array_union(array $a, array $b){
 	return array_unique(array_merge($a, $b));
 }
 
+/**
+ * Type safe unserialize that always returns array
+ *
+ * @param string $string
+ *
+ * @return array
+ */
 function array_unserialize($string){
 	$arr = unserialize($string);
 	if ($arr===false){
 		$arr = [];
 	}
+	elseif (!is_array($arr)) {
+		$arr = (array)$arr;
+	}
 
 	return $arr;
 }
 
-// shifts all array keys by a specified value (default reduces by 1)
-function array_key_shift(&$arr, $num = -1){
+/**
+ * Shifts all array keys by a specified value (default reduces by 1)
+ *
+ * @param array $arr
+ * @param int $num
+ */
+function array_key_shift(array &$arr, $num = -1){
 	$temp = [];
 	foreach ($arr as $key => $val){
 		$key += $num;
@@ -99,14 +162,29 @@ function array_key_shift(&$arr, $num = -1){
 	unset($temp);
 }
 
-function array_keys_2d($arr){
+/**
+ * Returns the keys of the assoc arrays making up a list
+ *
+ * @param array $arr
+ *
+ * @return array
+ */
+function array_keys_2d(array $arr){
 	$first_row = reset($arr);
 
 	return array_keys($first_row);
 }
 
-// takes specific keys out of an array and returns the result
-function array_pull(array $arr, $pull, &$new = []){
+/**
+ * takes specific keys out of an array and returns the result
+ *
+ * @param array $arr
+ * @param array|string $pull
+ * @param array $new
+ *
+ * @return array
+ */
+function array_pull(array $arr, $pull, array &$new = []){
 	if (!is_array($pull)){
 		$pull = explode(',', $pull);
 	}
@@ -120,8 +198,13 @@ function array_pull(array $arr, $pull, &$new = []){
 	return $new;
 }
 
-// reutrns the first item of an array. Not certain where we needed this, reset($arr) does the same!
-function arraystr($array){
+/**
+ * returns the first item of an array. Not certain where we needed this, reset($arr) does the same!
+ *
+ * @param array $array
+ * @return string
+ */
+function arraystr(array $array){
 	foreach ($array as $item){
 		return (string)$item;
 	}
@@ -129,8 +212,14 @@ function arraystr($array){
 	return '';
 }
 
-// flattens multiple keys of an array into a single dimension
-function array_oned(&$arr, $assoc, $pre){
+/**
+ * flattens multiple keys of an array into a single dimension
+ *
+ * @param array $arr
+ * @param string $assoc
+ * @param string $pre
+ */
+function array_oned(array &$arr, $assoc, $pre){
 	if (is_array($arr[$assoc])){
 		foreach ($arr[$assoc] as $key => $val){
 			$arr[$pre.'-'.$key] = $val;
@@ -139,14 +228,25 @@ function array_oned(&$arr, $assoc, $pre){
 	unset($arr[$assoc]);
 }
 
-function array_random(Array $arr){
+/**
+ * @param array $arr
+ *
+ * @return mixed
+ */
+function array_random(array $arr){
 	$keys = array_keys($arr);
-	$key = $keys[rand(0, count($keys)-1)];
+	$key = $keys[random_int(0, count($keys)-1)];
 
 	return $arr[$key];
 }
 
-function array_remove($needle, Array $haystack){
+/**
+ * @param mixed $needle
+ * @param array $haystack
+ *
+ * @return array
+ */
+function array_remove($needle, array $haystack){
 	$key = array_search($needle, $haystack);
 	if ($key!==false){
 		unset($haystack[$key]);
@@ -155,7 +255,12 @@ function array_remove($needle, Array $haystack){
 	return $haystack;
 }
 
-function array_remove_empty(Array $arr){
+/**
+ * @param array $arr
+ *
+ * @return array
+ */
+function array_remove_empty(array $arr){
 	foreach ($arr as $key => $val){
 		if (empty($val)){
 			unset($arr[$key]);
@@ -165,8 +270,17 @@ function array_remove_empty(Array $arr){
 	return $arr;
 }
 
-// inserts an item into an array at a specified key without creating a new array
-function array_slip($arr, $assign, $overwrite_or_val = true, $overwrite = true){
+/**
+ * inserts an item into an array at a specified key without creating a new array
+ *
+ * @param array $arr
+ * @param array|string $assign
+ * @param bool $overwrite_or_val
+ * @param bool $overwrite
+ *
+ * @return array
+ */
+function array_slip(array $arr, $assign, $overwrite_or_val = true, $overwrite = true){
 	if (!is_array($assign)){
 		$assign = [$assign => $overwrite_or_val];
 	}
@@ -182,7 +296,13 @@ function array_slip($arr, $assign, $overwrite_or_val = true, $overwrite = true){
 	return $arr;
 }
 
-function array_slip_2d($arr, $slip, $val = null){
+/**
+ * @param array $arr
+ * @param mixed $slip
+ * @param mixed $val
+ * @return array
+ */
+function array_slip_2d(array $arr, $slip, $val = null){
 	if (!is_array($slip)){
 		$slip = [$slip => $val];
 	}
@@ -195,14 +315,29 @@ function array_slip_2d($arr, $slip, $val = null){
 	return $arr;
 }
 
-// opposite of array_slip, removes one item from an array without creating a new array
-function array_snip($arr, $key){
+/**
+ * opposite of array_slip, removes one item from an array without creating a new array
+ *
+ * @param array $arr
+ * @param string|int $key
+ *
+ * @return array
+ */
+function array_snip(array $arr, $key){
 	unset($arr[$key]);
 
 	return $arr;
 }
 
-function array_invert($item, $item_key, &$twod, $include = [], $ext = ''){
+/**
+ * @param array $item
+ * @param string|int $item_key
+ * @param array $twod
+ * @param array $include
+ * @param string $ext
+ * @return array
+ */
+function array_invert(array $item, $item_key, array &$twod, $include = [], $ext = ''){
 	foreach ($item as $key => $value){
 		if (empty($include) || in_array($key, $include)){
 			$twod[$key.$ext][$item_key] = $value;
@@ -212,7 +347,15 @@ function array_invert($item, $item_key, &$twod, $include = [], $ext = ''){
 	return $twod;
 }
 
-function array_stitch(Array $arr, Array $order, $glue = '', $missing = false){
+/**
+ * @param array $arr
+ * @param array $order
+ * @param string $glue
+ * @param bool $missing
+ *
+ * @return string
+ */
+function array_stitch(array $arr, array $order, $glue = '', $missing = false){
 	$new_arr = [];
 	foreach ($order as $key){
 		$new_arr[] = $arr[$key];
@@ -229,7 +372,14 @@ function array_stitch(Array $arr, Array $order, $glue = '', $missing = false){
 	return implode($glue, $new_arr);
 }
 
-function array_stitch_empty(Array $arr, Array $order, $glue = ''){
+/**
+ * @param array $arr
+ * @param array $order
+ * @param string $glue
+ *
+ * @return string
+ */
+function array_stitch_empty(array $arr, array $order, $glue = ''){
 	foreach ($order as $n => $key){
 		if (empty($arr[$key])){
 			unset($order[$n]);
@@ -239,6 +389,11 @@ function array_stitch_empty(Array $arr, Array $order, $glue = ''){
 	return array_stitch($arr, $order, $glue);
 }
 
+/**
+ * @param array $arr
+ *
+ * @return array
+ */
 function array_strip_end(array $arr){
 	$assoc = is_assoc($arr);
 
@@ -251,6 +406,11 @@ function array_strip_end(array $arr){
 	return $assoc ? $arr : array_values($arr);
 }
 
+/**
+ * @param array $arr
+ *
+ * @return array
+ */
 function array_strip_start(array $arr){
 	$assoc = is_assoc($arr);
 
@@ -264,6 +424,11 @@ function array_strip_start(array $arr){
 	return $assoc ? $arr : array_values($arr);
 }
 
+/**
+ * @param array $arr
+ *
+ * @return array
+ */
 function array_strip(array $arr){
 	$arr = array_strip_start($arr);
 	$arr = array_strip_end($arr);
@@ -271,8 +436,17 @@ function array_strip(array $arr){
 	return $arr;
 }
 
-// inserts an item between specific keys in an array. useful when relying on the iteration order of an array
-function array_insert_assoc($arr, $offset, $insert, $before = false){
+/**
+ * Inserts an item between specific keys in an array. useful when relying on the iteration order of an array
+ *
+ * @param array $arr
+ * @param int $offset
+ * @param mixed $insert
+ * @param bool $before
+ *
+ * @return array
+ */
+function array_insert_assoc(array $arr, $offset, $insert, $before = false){
 	$keys = array_keys($arr);
 	$offset = array_search($offset, $keys, true);
 	if ($before and $offset>0){
@@ -300,7 +474,15 @@ function array_insert_assoc($arr, $offset, $insert, $before = false){
 	return $temp;
 }
 
-function array_search_2d($needle, $haystack, $key, $last = false){
+/**
+ * @param mixed $needle
+ * @param array $haystack
+ * @param string|int $key
+ * @param bool $last
+ *
+ * @return mixed
+ */
+function array_search_2d($needle, array $haystack, $key, $last = false){
 	$found = false;
 	foreach ($haystack as $index => $item){
 		if ($item[$key]==$needle){
@@ -314,7 +496,14 @@ function array_search_2d($needle, $haystack, $key, $last = false){
 	return $found;
 }
 
-function array_switch($arr, $key1, $key2){
+/**
+ * @param array $arr
+ * @param string|int $key1
+ * @param string|int $key2
+ *
+ * @return array
+ */
+function array_switch(array $arr, $key1, $key2){
 	$temp = [];
 	foreach ($arr as $key => $val){
 		if ($key===$key1){
@@ -331,8 +520,14 @@ function array_switch($arr, $key1, $key2){
 	return $temp;
 }
 
-// builds a compressed array up into a multidimensional array
-function array_twod(&$arr, $assoc, $pre){
+/**
+ * builds a compressed array up into a multidimensional array
+ *
+ * @param array $arr
+ * @param string|int $assoc
+ * @param string $pre
+ */
+function array_twod(array &$arr, $assoc, $pre){
 	$keys = array_keys($arr);
 	foreach ($keys as $key){
 		if (strpos($key, $pre)!==false){
@@ -349,7 +544,13 @@ function array_twod(&$arr, $assoc, $pre){
 	}
 }
 
-// unsets specific keys in an array
+/**
+ * unsets specific keys in an array
+ *
+ * @param array $arr
+ * @param array $keys
+ * @return array
+ */
 function array_unset($arr, $keys){
 	foreach ($keys as $key){
 		unset($arr[$key]);
@@ -358,8 +559,15 @@ function array_unset($arr, $keys){
 	return $arr;
 }
 
-// unsets items in an array where the value is false or empty
-function array_unset_false($arr, $strict = true){
+/**
+ * Unsets items in an array where the value is false or empty
+ *
+ * @param array $arr
+ * @param bool $strict
+ *
+ * @return array
+ */
+function array_unset_false(array $arr, $strict = true){
 	foreach ($arr as $key => $val){
 		if ($strict and $val===false){
 			unset($arr[$key]);
@@ -372,13 +580,23 @@ function array_unset_false($arr, $strict = true){
 	return $arr;
 }
 
-function average($arr){
+/**
+ * @param array $arr
+ *
+ * @return float
+ */
+function average(array $arr){
 	$avg = array_sum($arr) / count($arr);
 
 	return $avg;
 }
 
-function flatten_array($array){
+/**
+ * @param array $array
+ *
+ * @return array
+ */
+function flatten_array(array $array){
 	$new = [];
 	if (is_array($array)){
 		foreach ($array as $item){
@@ -392,7 +610,13 @@ function flatten_array($array){
 	return $new;
 }
 
-function implode_assoc($sep, $arr){
+/**
+ * @param string $sep
+ * @param array $arr
+ *
+ * @return string
+ */
+function implode_assoc($sep, array $arr){
 	$string = '';
 	foreach ($arr as $key => $val){
 		$string .= $val;
@@ -404,7 +628,14 @@ function implode_assoc($sep, $arr){
 	return $string;
 }
 
-function implode_dual($sep, $arr1, $arr2){
+/**
+ * @param string $sep
+ * @param array $arr1
+ * @param array $arr2
+ *
+ * @return string
+ */
+function implode_dual($sep, array $arr1, array $arr2){
 	$string = '';
 	foreach ($arr1 as $key => $val){
 		$string .= $val.$sep[1].$arr2[$key];
@@ -416,7 +647,13 @@ function implode_dual($sep, $arr1, $arr2){
 	return $string;
 }
 
-function implode_key($sep, $arr){
+/**
+ * @param $sep
+ * @param array $arr
+ *
+ * @return array
+ */
+function implode_key($sep, array $arr){
 	foreach ($arr as $key => &$val){
 		$val = $key;
 	}
@@ -425,6 +662,13 @@ function implode_key($sep, $arr){
 	return $arr;
 }
 
+/**
+ * @param string $pre
+ * @param string $suf
+ * @param array $arr
+ *
+ * @return string
+ */
 function implode_wrap($pre, $suf, $arr){
 	$html = '';
 	if (is_array($arr)){
@@ -436,6 +680,11 @@ function implode_wrap($pre, $suf, $arr){
 	return $html;
 }
 
+/**
+ * @param mixed $arr
+ *
+ * @return bool
+ */
 function is_array_full($arr){
 	if (!is_array($arr)){
 		return false;
@@ -454,20 +703,30 @@ function is_array_full($arr){
 	return false;
 }
 
+/**
+ * @param mixed $arr
+ *
+ * @return bool
+ */
 function is_array_true($arr){
 	if (!is_array($arr)){
 		return false;
 	}
-	$return = false;
+
 	foreach ($arr as $item){
 		if ($item!==false){
-			$return = true;
+			return true;
 		}
 	}
 
-	return $return;
+	return false;
 }
 
+/**
+ * @param mixed $arr
+ *
+ * @return bool
+ */
 function is_assoc(&$arr){
 	if (is_array($arr)){
 		return !(array_values($arr)===$arr);
@@ -476,26 +735,35 @@ function is_assoc(&$arr){
 	return false;
 }
 
-function largest_array(){
-	$arrs = func_get_args();
+/**
+ * @param array[] ...$arrays
+ *
+ * @return mixed
+ */
+function largest_array(array ...$arrays){
 	$large = 0;
 	$largest = 0;
-	foreach ($arrs as $key => $arr){
-		$count = count($arr);
+	foreach ($arrays as $key => $array){
+		$count = count($array);
 		if ($count>$large){
 			$large = $count;
 			$largest = $key;
 		}
 	}
 
-	return $arrs[$largest];
+	return $arrays[$largest];
 }
 
-function largest_array_count(){
-	$arrs = func_get_args();
+/**
+ * @param array[] ...$arrays
+ *
+ * @return int
+ */
+function largest_array_count(array ...$arrays){
+	$arrays = func_get_args();
 	$large = 0;
-	foreach ($arrs as $arr){
-		$count = count($arr);
+	foreach ($arrays as $array){
+		$count = count($array);
 		if ($count>$large){
 			$large = $count;
 		}
@@ -504,6 +772,11 @@ function largest_array_count(){
 	return $large;
 }
 
+/**
+ * @param int $count
+ *
+ * @return array
+ */
 function make_array($count){
 	$arr = [];
 	for ($n = 0; $n<$count; $n++){
@@ -513,6 +786,12 @@ function make_array($count){
 	return $arr;
 }
 
+/**
+ * @param int $to
+ * @param int $start
+ *
+ * @return array
+ */
 function number_list($to = 10, $start = 1){
 	$arr = [];
 	for ($n = $start; $n<=$to; $n++){
@@ -522,7 +801,14 @@ function number_list($to = 10, $start = 1){
 	return $arr;
 }
 
-function super_implode($sep, $arr, $assoc){
+/**
+ * @param string $sep
+ * @param array $arr
+ * @param string $assoc
+ *
+ * @return string
+ */
+function super_implode($sep, array $arr, $assoc){
 	$temp = [];
 	foreach ($arr as $val){
 		$temp[] = $val[$assoc];
@@ -532,9 +818,16 @@ function super_implode($sep, $arr, $assoc){
 	return $temp;
 }
 
-// returns true if any of the keys exist in the array
-// by default uses OR condition
-function array_keys_exist($keys, $arr, $and = false){
+/**
+ * returns true if any of the keys exist in the array
+ * by default uses OR condition
+ * @param array $keys
+ * @param array $arr
+ * @param bool $and
+ *
+ * @return bool
+ */
+function array_keys_exist(array $keys, array $arr, $and = false){
 	$result = $and;
 	foreach ($keys as $key){
 		$result = $and ? $result && array_key_exists($key, $arr) : $result || array_key_exists($key, $arr);
@@ -543,6 +836,11 @@ function array_keys_exist($keys, $arr, $and = false){
 	return $result;
 }
 
+/**
+ * @param mixed $item
+ *
+ * @return array
+ */
 function as_array($item){
 	if (!is_array($item)){
 		$item = [$item];
@@ -559,9 +857,10 @@ function as_array($item){
  * @param array $check
  * @param string $depth
  * @param array $errors
+ *
  * @return array
  */
-function array_keys_verify(array $format, array $check, $depth = '', $errors = []){
+function array_keys_verify(array $format, array $check, $depth = '', array $errors = []){
 
 	foreach ($format as $key => $sub_format){
 		$current_depth = $depth.'.'.$key;
