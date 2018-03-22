@@ -1,4 +1,25 @@
 <?php
+
+/**
+ * @param string $path
+ * @param bool $recursive
+ * @param int $chmod
+ *
+ * @return bool
+ */
+function create_dir($path, $recursive = true, $chmod = 0775){
+	if (!is_dir($path) && !mkdir($path, $chmod, $recursive)){
+		return false;
+	}
+
+	return true;
+}
+
+/**
+ * @param string $path
+ *
+ * @return array
+ */
 function dir_list_files($path){
 	if (!is_dir($path)){
 		return [];
@@ -19,7 +40,14 @@ function dir_list_files($path){
 	return $files;
 }
 
-function dir_list_recursive($path, $list = [], $prefix = ''){
+/**
+ * @param string $path
+ * @param array $list
+ * @param string $prefix
+ *
+ * @return array
+ */
+function dir_list_recursive($path, array $list = [], $prefix = ''){
 	$files = dir_list_files($path);
 
 	foreach ($files as $file){
@@ -36,6 +64,12 @@ function dir_list_recursive($path, $list = [], $prefix = ''){
 	return $list;
 }
 
+/**
+ * @param array $dir
+ * @param string $root
+ *
+ * @return bool
+ */
 function dir_tree($dir, $root = null){
 	foreach ($dir as $name => $sub){
 		$name = $root.$name;
@@ -50,6 +84,11 @@ function dir_tree($dir, $root = null){
 	return true;
 }
 
+/**
+ * @param string $file
+ *
+ * @return bool
+ */
 function file_delete($file){
 	if (!file_exists($file)){
 		return true;
@@ -67,23 +106,13 @@ function file_delete($file){
 	return true;
 }
 
-function file_load($file, $serialize = false){
-	if (!is_readable($file)){
-		return false;
-	}
-	$size = filesize($file);
-	if (empty($size)){
-		return '';
-	}
-	$fh = fopen($file, 'r');
-	if (!empty($fh)){
-		$string = fread($fh, $size);
-		fclose($fh);
-	}
-
-	return $serialize ? unserialize($string) : $string;
-}
-
+/**
+ * @param string $url
+ * @param bool $throw_on_error
+ *
+ * @return array|mixed
+ * @throws Exception
+ */
 function file_get_json($url, $throw_on_error = true){
 	if (substr($url, 0, 4)!='http'){
 		$url = 'http://'.$url;
@@ -93,30 +122,28 @@ function file_get_json($url, $throw_on_error = true){
 	return file_parse_json($string, $throw_on_error);
 }
 
-function file_parse_json($string, $throw_on_error = true){
-	if (empty($string)){
-		return [];
+function file_load($file, $serialize = false){
+	if (!is_readable($file)){
+		return false;
 	}
-	$json = json_decode($string, true);
-	if ($json===null){
-		if ($throw_on_error){
-			throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
-		}
-		$json = [];
+	$size = filesize($file);
+	if (empty($size)){
+		return '';
+	}
+	$fh = fopen($file, 'r');
+	$string = '';
+	if (!empty($fh)){
+		$string = fread($fh, $size);
+		fclose($fh);
 	}
 
-	return $json;
+	return $serialize ? unserialize($string) : $string;
 }
 
 function file_load_json($file, $throw_on_error = true){
 	$string = file_load($file);
 
 	return file_parse_json($string, $throw_on_error);
-}
-
-// deprecated
-function get_file($filename){
-	return file_load($filename);
 }
 
 function file_output($file_path, $mime = null, $file_name = null){
@@ -131,6 +158,27 @@ function file_output($file_path, $mime = null, $file_name = null){
 	ob_clean();
 	flush();
 	readfile($file_path);
+}
+
+/**
+ * @param $string
+ * @param bool $throw_on_error
+ * @return array|mixed
+ * @throws Exception
+ */
+function file_parse_json($string, $throw_on_error = true){
+	if (empty($string)){
+		return [];
+	}
+	$json = json_decode($string, true);
+	if ($json===null){
+		if ($throw_on_error){
+			throw new \Exception('The JSON could not be parsed correctly: "'.json_error_msg().'"');
+		}
+		$json = [];
+	}
+
+	return $json;
 }
 
 function file_save($file, $string, $overwrite = false){
@@ -216,6 +264,15 @@ function folder_copy($src, $dst, $recurse = true){
 	}
 }
 
+// deprecated
+function get_file($filename){
+	return file_load($filename);
+}
+
+function get_max_upload_size(){
+	return min(php_size_to_bytes(ini_get('post_max_size')), php_size_to_bytes(ini_get('upload_max_filesize')));
+}
+
 // Taken from http://stackoverflow.com/a/22500394/518703
 function php_size_to_bytes($sSize){
 	if (is_numeric($sSize)){
@@ -238,9 +295,5 @@ function php_size_to_bytes($sSize){
 	}
 
 	return $iValue;
-}
-
-function get_max_upload_size(){
-	return min(php_size_to_bytes(ini_get('post_max_size')), php_size_to_bytes(ini_get('upload_max_filesize')));
 }
 //

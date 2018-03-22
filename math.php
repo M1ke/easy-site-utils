@@ -54,29 +54,10 @@ function is_number(&$number, $blank = null){
 	return false;
 }
 
-/**
- * @param $number
- * @param null $blank
- * @return bool
- *
- * @deprecated use is_pos which does not pass by reference
- */
-function is_positive(&$number, $blank = null){
-	if (@strlen($number)>0){
-		$number = trim($number);
-		if ($number>0 && is_numeric($number)){
-			return true;
-		}
+function is_not_zero($number){
+	$number = abs($number);
 
-		return word_to_number($number);
-	}
-	elseif ($blank) {
-		$number = false;
-
-		return true;
-	}
-
-	return false;
+	return is_pos($number);
 }
 
 function is_pos($number){
@@ -103,10 +84,29 @@ function is_pos_blank($number){
 	return is_pos_nullable($number);
 }
 
-function is_not_zero($number){
-	$number = abs($number);
+/**
+ * @param $number
+ * @param null $blank
+ * @return bool
+ *
+ * @deprecated use is_pos which does not pass by reference
+ */
+function is_positive(&$number, $blank = null){
+	if (@strlen($number)>0){
+		$number = trim($number);
+		if ($number>0 && is_numeric($number)){
+			return true;
+		}
 
-	return is_pos($number);
+		return word_to_number($number);
+	}
+	elseif ($blank) {
+		$number = false;
+
+		return true;
+	}
+
+	return false;
 }
 
 function is_whole($num){
@@ -129,6 +129,22 @@ function num_position($num){
 		default:
 			return $num.'th';
 	}
+}
+
+/**
+ * Originally this was more complex; it split out the
+ * pence and pound values and added them separately to avoid
+ * rounding errors. However when writing unit tests it seemed
+ * just a plain round after the multiply works as well. The
+ * function is still worth having as it better clarifies what is happening
+ *
+ * @param float|string $input
+ *
+ * @return int
+ */
+function pounds_to_pence($input){
+	// Must round afterwards or can get e.g. 641.66999999999
+	return (int) round($input * 100);
 }
 
 function ratio_decimal($ratio, $sep = ':'){

@@ -46,7 +46,7 @@ function random_token($length, $include_upper_case = true){
     $method - aes-128-cbc default
     $options - 0 default
     $iv - a non-NULL Initialization Vector, must be 16 chars  
-    Use these methods to hide url parameters. Not suitable for passwords as it is more of obfuscation rathern than encryption
+    Use these methods to hide url parameters. Not suitable for passwords as it is more of obfuscation rather than encryption
 */
 
 function simple_encode($data, $passwd, $method = 'aes-128-cbc', $options = 0, $iv = 'SomeA1AweS0meK5y'){

@@ -1,5 +1,19 @@
 <?php
 /**
+ * @param array $arr
+ *
+ * @return array
+ */
+function array_assoc(array $arr){
+	$assoc = [];
+	foreach ($arr as $key => $val){
+		$assoc[$val] = $key;
+	}
+
+	return $assoc;
+}
+
+/**
  * generates the php code to create a variable (or blank if var is not array)
  *
  * @param mixed $arr
@@ -16,37 +30,20 @@ function array_code($arr){
 
 /**
  * @param array $arr
+ * @param string $sort_field
+ * @param bool $desc
  *
  * @return array
  */
-function array_assoc(array $arr){
-	$assoc = [];
-	foreach ($arr as $key => $val){
-		$assoc[$val] = $key;
+function array_data_sort(array $arr, $sort_field, $desc = false){
+	$first = reset($arr);
+	if (!isset($first[$sort_field])){
+		return $arr;
 	}
-
-	return $assoc;
-}
-
-/**
- * @param array $base
- * @param array $fill
- *
- * @return array
- */
-function array_overwrite(array $base, array $fill = []){
-	if (empty($fill)){
-		return $base;
+	foreach ($arr as $key => $item){
+		$sort[$key] = $item[$sort_field];
 	}
-	$arr = [];
-	foreach ($base as $n => $key){
-		if (isset($fill[$key])){
-			$arr[$key] = $fill[$key];
-		}
-		else {
-			$arr[$n] = $key;
-		}
-	}
+	array_multisort($sort, $desc ? SORT_DESC : SORT_ASC, $arr);
 
 	return $arr;
 }
@@ -96,54 +93,59 @@ function array_id(&$arr, $key, $key2 = null, $key3 = null){
 }
 
 /**
+ * Inserts an item between specific keys in an array. useful when relying on the iteration order of an array
+ *
  * @param array $arr
- * @param string $sort_field
- * @param bool $desc
+ * @param int $offset
+ * @param mixed $insert
+ * @param bool $before
  *
  * @return array
  */
-function array_data_sort(array $arr, $sort_field, $desc = false){
-	$first = reset($arr);
-	if (!isset($first[$sort_field])){
-		return $arr;
+function array_insert_assoc(array $arr, $offset, $insert, $before = false){
+	$keys = array_keys($arr);
+	$offset = array_search($offset, $keys, true);
+	if ($before and $offset>0){
+		$offset--;
 	}
-	foreach ($arr as $key => $item){
-		$sort[$key] = $item[$sort_field];
+	$temp = [];
+	$n = 0;
+	$adj = 0;
+	foreach ($arr as $key => $val){
+		$temp[is_numeric($key) ? ($key+$adj) : $key] = $val;
+		if ($n==$offset){
+			if (is_array($insert)){
+				foreach ($insert as $ins_key => $ins_val){
+					$temp[$ins_key] = $ins_val;
+				}
+			}
+			else {
+				$temp[] = $insert;
+				$adj++;
+			}
+		}
+		$n++;
 	}
-	array_multisort($sort, $desc ? SORT_DESC : SORT_ASC, $arr);
 
-	return $arr;
+	return $temp;
 }
 
 /**
- * Merges two arrays and removes duplicate values
- *
- * @param array $a
- * @param array $b
- *
+ * @param array $item
+ * @param string|int $item_key
+ * @param array $twod
+ * @param array $include
+ * @param string $ext
  * @return array
  */
-function array_union(array $a, array $b){
-	return array_unique(array_merge($a, $b));
-}
-
-/**
- * Type safe unserialize that always returns array
- *
- * @param string $string
- *
- * @return array
- */
-function array_unserialize($string){
-	$arr = unserialize($string);
-	if ($arr===false){
-		$arr = [];
-	}
-	elseif (!is_array($arr)) {
-		$arr = (array)$arr;
+function array_invert(array $item, $item_key, array &$twod, $include = [], $ext = ''){
+	foreach ($item as $key => $value){
+		if (empty($include) || in_array($key, $include)){
+			$twod[$key.$ext][$item_key] = $value;
+		}
 	}
 
-	return $arr;
+	return $twod;
 }
 
 /**
@@ -176,6 +178,82 @@ function array_keys_2d(array $arr){
 }
 
 /**
+ * returns true if any of the keys exist in the array
+ * by default uses OR condition
+ * @param array $keys
+ * @param array $arr
+ * @param bool $and
+ *
+ * @return bool
+ */
+function array_keys_exist(array $keys, array $arr, $and = false){
+	$result = $and;
+	foreach ($keys as $key){
+		$result = $and ? $result && array_key_exists($key, $arr) : $result || array_key_exists($key, $arr);
+	}
+
+	return $result;
+}
+
+/**
+ * Verifies, recursively, existence of keys and if key values are an array
+ * Will return an empty array is verified
+ *
+ * @param array $format
+ * @param array $check
+ * @param string $depth
+ * @param array $errors
+ *
+ * @return array
+ */
+function array_keys_verify(array $format, array $check, $depth = '', array $errors = []){
+
+	foreach ($format as $key => $sub_format){
+		$current_depth = $depth.'.'.$key;
+		// First see if they key is even set
+		if (!isset($check[$key])){
+			$errors[$current_depth] = "The key '$key' must be set, even if it is blank";
+			continue;
+		}
+
+		if (is_null($sub_format)){
+			continue;
+		}
+
+		// If the sub-format isn't an array we're done with this key
+		if (!is_array($sub_format)){
+			$type = gettype($check[$key]);
+			if ($sub_format==='non-zero'){
+				// non-zero isn't a regular type, but requiring non-zero values
+				//  can be as relevant to operational logic, preventing div by zero etc
+				if ((int)$check[$key]===0){
+					$errors[$current_depth] = "The key '$key' must be a non-zero integer";
+				}
+			}
+			elseif ($type!==$sub_format) {
+				$errors[$current_depth] = "The key '$key' must be of type '$sub_format', not '$type''";
+			}
+
+			continue;
+		}
+
+		// If sub-format is an array and the value we're checking isn't, that's a problem
+		if (!is_array($check[$key])){
+			$errors[$current_depth] = "The key '$key' must be an array, even if it is empty";
+			continue;
+		}
+
+		// If our sub-format is an array with values we then dive into that
+		if (!empty($sub_format)){
+			$errors = array_keys_verify($sub_format, $check[$key], $current_depth, $errors);
+			continue;
+		}
+	}
+
+	return $errors;
+}
+
+/**
  * takes specific keys out of an array and returns the result
  *
  * @param array $arr
@@ -199,20 +277,6 @@ function array_pull(array $arr, $pull, array &$new = []){
 }
 
 /**
- * returns the first item of an array. Not certain where we needed this, reset($arr) does the same!
- *
- * @param array $array
- * @return string
- */
-function arraystr(array $array){
-	foreach ($array as $item){
-		return (string)$item;
-	}
-
-	return '';
-}
-
-/**
  * flattens multiple keys of an array into a single dimension
  *
  * @param array $arr
@@ -226,6 +290,29 @@ function array_oned(array &$arr, $assoc, $pre){
 		}
 	}
 	unset($arr[$assoc]);
+}
+
+/**
+ * @param array $base
+ * @param array $fill
+ *
+ * @return array
+ */
+function array_overwrite(array $base, array $fill = []){
+	if (empty($fill)){
+		return $base;
+	}
+	$arr = [];
+	foreach ($base as $n => $key){
+		if (isset($fill[$key])){
+			$arr[$key] = $fill[$key];
+		}
+		else {
+			$arr[$n] = $key;
+		}
+	}
+
+	return $arr;
 }
 
 /**
@@ -268,6 +355,48 @@ function array_remove_empty(array $arr){
 	}
 
 	return $arr;
+}
+
+/**
+ * Replace all entries in $array of $search with $replace
+ *
+ * @param mixed $search
+ * @param mixed $replace
+ * @param array $array
+ *
+ * @return array
+ */
+function array_replace_value($search, $replace, array $array){
+	$keys = array_keys($array, $search);
+	if (!empty($keys)){
+		foreach ($keys as $key){
+			$array[$key] = $replace;
+		}
+	}
+
+	return $array;
+}
+
+/**
+ * @param mixed $needle
+ * @param array $haystack
+ * @param string|int $key
+ * @param bool $last
+ *
+ * @return mixed
+ */
+function array_search_2d($needle, array $haystack, $key, $last = false){
+	$found = false;
+	foreach ($haystack as $index => $item){
+		if ($item[$key]==$needle){
+			$found = $index;
+			if (!$last){
+				break;
+			}
+		}
+	}
+
+	return $found;
 }
 
 /**
@@ -327,24 +456,6 @@ function array_snip(array $arr, $key){
 	unset($arr[$key]);
 
 	return $arr;
-}
-
-/**
- * @param array $item
- * @param string|int $item_key
- * @param array $twod
- * @param array $include
- * @param string $ext
- * @return array
- */
-function array_invert(array $item, $item_key, array &$twod, $include = [], $ext = ''){
-	foreach ($item as $key => $value){
-		if (empty($include) || in_array($key, $include)){
-			$twod[$key.$ext][$item_key] = $value;
-		}
-	}
-
-	return $twod;
 }
 
 /**
@@ -437,66 +548,6 @@ function array_strip(array $arr){
 }
 
 /**
- * Inserts an item between specific keys in an array. useful when relying on the iteration order of an array
- *
- * @param array $arr
- * @param int $offset
- * @param mixed $insert
- * @param bool $before
- *
- * @return array
- */
-function array_insert_assoc(array $arr, $offset, $insert, $before = false){
-	$keys = array_keys($arr);
-	$offset = array_search($offset, $keys, true);
-	if ($before and $offset>0){
-		$offset--;
-	}
-	$temp = [];
-	$n = 0;
-	$adj = 0;
-	foreach ($arr as $key => $val){
-		$temp[is_numeric($key) ? ($key+$adj) : $key] = $val;
-		if ($n==$offset){
-			if (is_array($insert)){
-				foreach ($insert as $ins_key => $ins_val){
-					$temp[$ins_key] = $ins_val;
-				}
-			}
-			else {
-				$temp[] = $insert;
-				$adj++;
-			}
-		}
-		$n++;
-	}
-
-	return $temp;
-}
-
-/**
- * @param mixed $needle
- * @param array $haystack
- * @param string|int $key
- * @param bool $last
- *
- * @return mixed
- */
-function array_search_2d($needle, array $haystack, $key, $last = false){
-	$found = false;
-	foreach ($haystack as $index => $item){
-		if ($item[$key]==$needle){
-			$found = $index;
-			if (!$last){
-				break;
-			}
-		}
-	}
-
-	return $found;
-}
-
-/**
  * @param array $arr
  * @param string|int $key1
  * @param string|int $key2
@@ -545,6 +596,37 @@ function array_twod(array &$arr, $assoc, $pre){
 }
 
 /**
+ * Merges two arrays and removes duplicate values
+ *
+ * @param array $a
+ * @param array $b
+ *
+ * @return array
+ */
+function array_union(array $a, array $b){
+	return array_unique(array_merge($a, $b));
+}
+
+/**
+ * Type safe unserialize that always returns array
+ *
+ * @param string $string
+ *
+ * @return array
+ */
+function array_unserialize($string){
+	$arr = unserialize($string);
+	if ($arr===false){
+		$arr = [];
+	}
+	elseif (!is_array($arr)) {
+		$arr = (array)$arr;
+	}
+
+	return $arr;
+}
+
+/**
  * unsets specific keys in an array
  *
  * @param array $arr
@@ -578,6 +660,48 @@ function array_unset_false(array $arr, $strict = true){
 	}
 
 	return $arr;
+}
+
+/**
+ * returns the first item of an array. Not certain where we needed this, reset($arr) does the same!
+ *
+ * @param array $array
+ * @return string
+ */
+function arraystr(array $array){
+	foreach ($array as $item){
+		return (string)$item;
+	}
+
+	return '';
+}
+
+/**
+ * @param string $string
+ * @param mixed $item
+ * @param string $sep
+ *
+ * @return string
+ */
+function append_to_string_array($string, $item, $sep = ','){
+	$arr = explode($sep, $string);
+	$arr[] = $item;
+	$string = implode($sep, $arr);
+
+	return $string;
+}
+
+/**
+ * @param mixed $item
+ *
+ * @return array
+ */
+function as_array($item){
+	if (!is_array($item)){
+		$item = [$item];
+	}
+
+	return $item;
 }
 
 /**
@@ -736,6 +860,23 @@ function is_assoc(&$arr){
 }
 
 /**
+ * @param string $string
+ * @param bool   $throw
+ *
+ * @return array
+ * @throws Exception
+ */
+function json_as_array($string, $throw = false){
+	$arr = json_decode($string, true);
+
+	if (!$arr && $throw){
+		throw new Exception("The data could not be decoded, parser reported: ".json_last_error_msg()." The data was ".$string);
+	}
+
+	return $arr ?: [];
+}
+
+/**
  * @param array[] ...$arrays
  *
  * @return mixed
@@ -816,93 +957,4 @@ function super_implode($sep, array $arr, $assoc){
 	$temp = implode($sep, $temp);
 
 	return $temp;
-}
-
-/**
- * returns true if any of the keys exist in the array
- * by default uses OR condition
- * @param array $keys
- * @param array $arr
- * @param bool $and
- *
- * @return bool
- */
-function array_keys_exist(array $keys, array $arr, $and = false){
-	$result = $and;
-	foreach ($keys as $key){
-		$result = $and ? $result && array_key_exists($key, $arr) : $result || array_key_exists($key, $arr);
-	}
-
-	return $result;
-}
-
-/**
- * @param mixed $item
- *
- * @return array
- */
-function as_array($item){
-	if (!is_array($item)){
-		$item = [$item];
-	}
-
-	return $item;
-}
-
-/**
- * Verifies, recursively, existence of keys and if key values are an array
- * Will return an empty array is verified
- *
- * @param array $format
- * @param array $check
- * @param string $depth
- * @param array $errors
- *
- * @return array
- */
-function array_keys_verify(array $format, array $check, $depth = '', array $errors = []){
-
-	foreach ($format as $key => $sub_format){
-		$current_depth = $depth.'.'.$key;
-		// First see if they key is even set
-		if (!isset($check[$key])){
-			$errors[$current_depth] = "The key '$key' must be set, even if it is blank";
-			continue;
-		}
-
-		if (is_null($sub_format)){
-			continue;
-		}
-
-		// If the sub-format isn't an array we're done with this key
-		if (!is_array($sub_format)){
-			$type = gettype($check[$key]);
-			if ($sub_format==='non-zero'){
-				// non-zero isn't a regular type, but requiring non-zero values
-				//  can be as relevant to operational logic, preventing div by zero etc
-				if ((int)$check[$key]===0){
-					$errors[$current_depth] = "The key '$key' must be a non-zero integer";
-				}
-			}
-			elseif ($type!==$sub_format) {
-				$errors[$current_depth] = "The key '$key' must be of type '$sub_format', not '$type''";
-			}
-
-			continue;
-		}
-
-		// If sub-format is an array and the value we're checking isn't, that's a problem
-		if (!is_array($check[$key])){
-			$errors[$current_depth] = "The key '$key' must be an array, even if it is empty";
-			continue;
-		}
-
-		// If our sub-format is an array with values we then dive into that
-		if (!empty($sub_format)){
-			$errors = array_keys_verify($sub_format, $check[$key], $current_depth, $errors);
-			continue;
-		}
-	}
-
-	return $errors;
 }

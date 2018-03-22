@@ -1,5 +1,6 @@
 <?php
 function data_valid($fields){
+	$temp = [];
 	foreach ($fields as $key => $field){
 		if (count($field)>1){
 			$temp[]=$key;
@@ -10,6 +11,29 @@ function data_valid($fields){
 
 function sql_like($string){
 	return '%'.$string.'%';
+}
+
+/**
+ * Apply strip_tags to all non-empty flat entries, recursing on arrays
+ *
+ * @param $array
+ *
+ * @return array
+ */
+function strip_fields_tags(array $array){
+	foreach ($array as $key => $field){
+		if (empty($field)){
+			continue;
+		}
+		if (is_array($field)){
+			$array[$key] = strip_fields_tags($field);
+		}
+		else {
+			$array[$key] = strip_tags($field);
+		}
+	}
+
+	return $array;
 }
 
 function valid_copy(&$p,&$error=null,$valid=null){
