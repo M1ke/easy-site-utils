@@ -265,6 +265,15 @@ function line_breaks_replace($string, $replace_value){
 	return str_replace(["\r\n", "\r", "\n"], $replace_value, $string);
 }
 
+/**
+ * @param $string
+ *
+ * @return string
+ */
+function line_breaks_to_comma_space($string){
+	return line_breaks_replace($string, ', ');
+}
+
 function make_currency(&$num, $zero = false){
 	$num = preg_replace('/[^0-9.-]+/', '', $num);
 	if (strlen($num)>0){
@@ -914,6 +923,12 @@ function string_split($string, $split = ','){
 	$string = str_replace([$split.' ', ' '.$split], $split, $string);
 
 	return explode($split, $string);
+}
+
+function string_to_camel_case($string){
+	$string = str_replace(' ', '', ucwords(str_replace('_', ' ', $string)));
+
+	return $string;
 }
 
 function string_uncheck($string){

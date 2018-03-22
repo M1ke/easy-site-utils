@@ -115,3 +115,16 @@ function make_html($text, $tags = null){
 
 	return $text;
 }
+
+/**
+ * @param string $string
+ *
+ * @return bool
+ */
+function stringIsHtml($string){
+	if (strlen($string)==0){
+		return false;
+	}
+
+	return $string[0]=='<';
+}
