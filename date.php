@@ -625,9 +625,6 @@ function month_limits($month, $year, $months = 1){
  * @return int
  */
 function months_between($start_date, $end_date, $both_ends_included = false, $round = true){
-	// RentsDashboardDisplay used a 30 day month, not both ends, rounded
-	// Ajax\Manage\Rents\Periods used last month length days, both ends, not rounded
-
 	$start_stamp = strtotime($start_date);
 	$end_stamp = strtotime($end_date);
 	$years = date('Y', $end_stamp) - date('Y', $start_stamp);
