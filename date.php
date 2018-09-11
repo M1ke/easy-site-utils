@@ -320,6 +320,9 @@ function date_next_day($date_today, $day, $format = 'Y-m-d'){
 
 function date_not_weekend($date, $dir){
 	$date = sql_dat($date);
+	if ($date===false){
+		return false;
+	}
 
 	$bank_holidays = uk_bank_holidays();
 
@@ -380,6 +383,9 @@ function date_store($date){
 
 function date_working_backward($date, $days){
 	$date = date_not_weekend_forward($date);
+	if ($date===false){
+		return false;
+	}
 
 	for ($n = 0; $n<$days; $n++){
 		$date = inc_date($date, ['day' => -1], false, 'Y-m-d');
@@ -392,6 +398,9 @@ function date_working_backward($date, $days){
 
 function date_working_forward($date, $days){
 	$date = date_not_weekend_forward($date);
+	if ($date===false){
+		return false;
+	}
 
 	for ($n = 0; $n<$days; $n++){
 		$date = inc_date($date, ['day' => 1], false, 'Y-m-d');
