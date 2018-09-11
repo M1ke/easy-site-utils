@@ -5,6 +5,10 @@
 */
 
 function age_from_dob($date, $current_date = null){
+	if (!$date){
+		return false;
+	}
+
 	$components = ['year' => 'Y', 'month' => 'm', 'day' => 'd'];
 	$compare_date = [];
 	if (is_null($current_date)){
@@ -23,7 +27,7 @@ function age_from_dob($date, $current_date = null){
 	date_year_correct_($date['year']);
 	$diff = [];
 	foreach ($components as $key => $php_date){
-		$diff[$key] = $compare_date[$key] - $date[$key];
+		$diff[$key] = $compare_date[$key]-$date[$key];
 	}
 	if ($diff['month']<0 or ($diff['day']<0 and $diff['month']==0)){
 		$diff['year']--;
@@ -195,7 +199,7 @@ function date_age($date){
 	$date = sql_date($date);
 	list($Y, $m, $d) = explode('-', $date);
 
-	return (date('md')<$m.$d ? date('Y') - $Y - 1 : date('Y') - $Y);
+	return (date('md')<$m.$d ? date('Y')-$Y-1 : date('Y')-$Y);
 }
 
 function date_components($date){
@@ -228,7 +232,7 @@ function date_difference($date1, $return = '', $date2 = false, $pos = true){
 	if (empty($date1) or empty($date2)){
 		return false;
 	}
-	$diff = $date2 - $date1;
+	$diff = $date2-$date1;
 	$diff = ($diff<0 and $pos) ? $diff * -1 : $diff;
 
 	return !empty($return) ? seconds_convert($diff, $return) : $diff;
@@ -256,6 +260,7 @@ function date_display_check(&$date){
 
 function date_from_dob($date){
 	$date = custom_date($date);
+
 	return date_store($date);
 }
 
@@ -332,7 +337,7 @@ function date_not_weekend($date, $dir){
 	while (in_array($date, $bank_holidays) || $day>0){
 		if ($day>0){
 			if ($dir>0){
-				$day = 3 - $day;
+				$day = 3-$day;
 			}
 			$date = inc_date($date, ['day' => $dir * $day], false, 'Y-m-d');
 		}
@@ -376,6 +381,10 @@ function date_stitch($date){
 }
 
 function date_store($date){
+	if (empty($date)){
+		return '';
+	}
+
 	$date = date_components($date);
 
 	return date_stitch($date);
@@ -419,7 +428,7 @@ function date_year_correct($year){
 	if (strlen($year)==2){
 		if ($year>date('y')){
 			// let's face it, we're doing well if this needs future proofing!
-			$year = 1900 + $year;
+			$year = 1900+$year;
 		}
 	}
 
@@ -464,7 +473,7 @@ function inc_date($date = null, $inc = [], $stamp = false, $format = 'Y-m-d H:i:
 	if (!empty($inc['date'])){
 		$inc['day'] = $inc['date'];
 	}
-	$date = mktime(date('H', $date) + $inc['hour'], date('i', $date) + $inc['min'], date('s', $date) + $inc['second'], date('m', $date) + $inc['month'], date('d', $date) + $inc['day'], date('Y', $date) + $inc['year']);
+	$date = mktime(date('H', $date)+$inc['hour'], date('i', $date)+$inc['min'], date('s', $date)+$inc['second'], date('m', $date)+$inc['month'], date('d', $date)+$inc['day'], date('Y', $date)+$inc['year']);
 	if ($stamp){
 		return $date;
 	}
@@ -508,7 +517,7 @@ function is_today($date){
 		return false;
 	}
 	$today = strtotime(date('Y-m-d'));
-	$sub = $date - $today;
+	$sub = $date-$today;
 	if ($sub<86400 and $sub>=0){
 		return true;
 	}
@@ -524,7 +533,7 @@ function is_tomorrow($date){
 		return false;
 	}
 	$today = strtotime(date('Y-m-d'));
-	$sub = $date - $today;
+	$sub = $date-$today;
 	if ($sub<172800 and $sub>=86400){
 		return true;
 	}
@@ -566,10 +575,10 @@ function make_date($date, $separator = ','){
 	if (date('Y-m-d', $datestamp)==date('Y-m-d')){
 		$date = 'Today'.$time;
 	}
-	elseif (date('Y-m-d', $datestamp)==date('Y-m-d', time() - 86400)) {
+	elseif (date('Y-m-d', $datestamp)==date('Y-m-d', time()-86400)) {
 		$date = 'Yesterday'.$time;
 	}
-	elseif (date('Y-m-d', $datestamp)==date('Y-m-d', time() + 86400)) {
+	elseif (date('Y-m-d', $datestamp)==date('Y-m-d', time()+86400)) {
 		$date = 'Tomorrow'.$time;
 	}
 	else {
@@ -609,12 +618,12 @@ function month_limits($month, $year, $months = 1){
 		$year = date('Y');
 	}
 	$cal_date = strtotime($year.'-'.$month.'-01 00:00:00');
-	$limits['date_start'] = $cal_date = inc_date($cal_date, ['day' => -1 * (date('N', $cal_date) - 1)], 1);
+	$limits['date_start'] = $cal_date = inc_date($cal_date, ['day' => -1 * (date('N', $cal_date)-1)], 1);
 	$complete = false;
 	$n = 0;
-	while (!$complete and $n<($months * 30) + 14){
+	while (!$complete and $n<($months * 30)+14){
 		$next_date = inc_date($cal_date, ['day' => 1], 1);
-		$complete = (date('n', $next_date)==$month + $months and date('N', $next_date)==1);
+		$complete = (date('n', $next_date)==$month+$months and date('N', $next_date)==1);
 		if (empty($complete)){
 			$cal_date = $next_date;
 		}
@@ -636,11 +645,11 @@ function month_limits($month, $year, $months = 1){
 function months_between($start_date, $end_date, $both_ends_included = false, $round = true){
 	$start_stamp = strtotime($start_date);
 	$end_stamp = strtotime($end_date);
-	$years = date('Y', $end_stamp) - date('Y', $start_stamp);
-	$months = date('n', $end_stamp) - date('n', $start_stamp);
-	$days = date('j', $end_stamp) - date('j', $start_stamp) + ($both_ends_included ? 1 : 0);
+	$years = date('Y', $end_stamp)-date('Y', $start_stamp);
+	$months = date('n', $end_stamp)-date('n', $start_stamp);
+	$days = date('j', $end_stamp)-date('j', $start_stamp)+($both_ends_included ? 1 : 0);
 
-	$total_months = $years * 12 + $months + ($days / (arr_month_days()[date('n', $end_stamp)]));
+	$total_months = $years * 12+$months+($days / (arr_month_days()[date('n', $end_stamp)]));
 
 	if ($round){
 		$total_months = round($total_months);
@@ -805,7 +814,7 @@ function string_time($date, &$error = null, $date_usa = false){
 }
 
 function time_ago($time){
-	$time = time() - strtotime($time);
+	$time = time()-strtotime($time);
 	if ($time>32536000){
 		$time /= 32536000;
 		$time = plural('year', round($time, 0)).' ago';
@@ -874,14 +883,14 @@ function year_list($duration, $format){
 	$vals = $names = [];
 	if ($duration<0){
 		for ($n = 0; $n>$duration; $n--){
-			$vals[] = $custom + $n;
-			$names[] = $year + $n;
+			$vals[] = $custom+$n;
+			$names[] = $year+$n;
 		}
 	}
 	else {
 		for ($n = 0; $n<$duration; $n++){
-			$vals[] = $custom + $n;
-			$names[] = $year + $n;
+			$vals[] = $custom+$n;
+			$names[] = $year+$n;
 		}
 	}
 
@@ -894,12 +903,12 @@ function year_list_assoc($duration, $format){
 	$dates = [];
 	if ($duration<0){
 		for ($n = 0; $n>$duration; $n--){
-			$dates[$year + $n] = $custom + $n;
+			$dates[$year+$n] = $custom+$n;
 		}
 	}
 	else {
 		for ($n = 0; $n<$duration; $n++){
-			$dates[$year + $n] = $custom + $n;
+			$dates[$year+$n] = $custom+$n;
 		}
 	}
 
