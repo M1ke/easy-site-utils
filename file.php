@@ -8,7 +8,14 @@
  * @return bool
  */
 function create_dir($path, $recursive = true, $chmod = 0775){
-	if (!is_dir($path) && !mkdir($path, $chmod, $recursive)){
+	// NB: people disagree with using '@' to silence warnings;
+	// however in this case it is used sensibly as the previous check
+	// should have eliminated the possibility of the directory already
+	// eisting, and the method will return false if the creation fails,
+	// so the calling scope can be aware. Where possible libraries
+	// should not cause unexpected warnings to appear, so this meets
+	// that requirement as well
+	if (!is_dir($path) && !@mkdir($path, $chmod, $recursive)){
 		return false;
 	}
 
@@ -74,7 +81,7 @@ function dir_tree($dir, $root = null){
 	foreach ($dir as $name => $sub){
 		$name = $root.$name;
 		if (!file_exists($name)){
-			mkdir($name);
+			@mkdir($name);
 		}
 		if (is_array($sub)){
 			dir_tree($sub, $name.'/');
