@@ -706,11 +706,19 @@ function as_array($item){
 
 /**
  * @param array $arr
- *
+ * @param int $round
  * @return float
  */
-function average(array $arr){
+function average(array $arr, $round = null){
+	if (empty($arr)){
+		return 0;
+	}
+
 	$avg = array_sum($arr) / count($arr);
+
+	if (is_int($round)){
+		$avg = round($avg, $round);
+	}
 
 	return $avg;
 }
@@ -861,7 +869,7 @@ function is_assoc(&$arr){
 
 /**
  * @param string $string
- * @param bool   $throw
+ * @param bool $throw
  *
  * @return array
  * @throws Exception
