@@ -219,7 +219,21 @@ function file_save_($file, $string, $overwrite){
 }
 
 function file_store($id, $params, &$error = null){
+	if (!file_exists($params['in'])){
+		$error = 'The file "'.$params['in'].'" could not found to copy.';
+
+		return false;
+	}
+
 	$out = $params['out'].$id.(!empty($params['ext']) ? '.'.$params['ext'] : '');
+
+	$dirname = dirname($out);
+	if (!is_dir($dirname)){
+		$error = "The directory '$dirname' did not exist to copy in to.";
+
+		return false;
+	}
+
 	if (!copy($params['in'], $out)){
 		$error = 'The file was uploaded but could not be stored. The file "'.$params['in'].'" could not be copied to "'.$out.'".';
 
