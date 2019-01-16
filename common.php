@@ -225,6 +225,7 @@ function log_file($log,$var=null,$file=null,$overwrite=false){
 }
 
 function log_file_location($file=null){
+	$set_dir = false;
 	if (empty($file)){
 		$file='main.log';
 		$set_dir=true;
@@ -235,6 +236,7 @@ function log_file_location($file=null){
 	elseif ($set_dir){
 		$file=__DIR__.'/logs/'.$file;
 	}
+
 	return $file;
 }
 

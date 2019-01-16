@@ -205,6 +205,10 @@ function file_save_json($file, $string, $overwrite = true, $pretty = false){
 }
 
 function file_save_($file, $string, $overwrite){
+	$dir = dirname($file);
+	if (!is_dir($dir)){
+		mkdir($dir, 0755, true);
+	}
 	if (file_exists($file) && !is_writable($file)){
 		return false;
 	}
