@@ -59,6 +59,16 @@ class TestFunctionsString extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(make_email($email));
 		$this->assertEquals('me@m1ke.me', $email);
 	}
+	function testEmailTldTooShort(){
+		$email='me@m1ke.a';
+		$this->assertFalse(make_email($email));
+	}
+	function testEmailTldLong(){
+		// 'example' is not a valid real tld (is reserved), but current make_email only checks
+		// that the string _looks_/is formatted like a valid email
+		$email='me@m1ke.example';
+		$this->assertTrue(make_email($email));
+	}
 
 	// Message split
 	function testShortMessageReturnsSingleItemArray(){
