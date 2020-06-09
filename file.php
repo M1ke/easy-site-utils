@@ -108,9 +108,9 @@ function file_delete($file){
 		return false;
 	}
 	fclose($fh);
-	unlink($file);
+	@unlink($file);
 
-	return true;
+	return !file_exists($file);
 }
 
 /**
