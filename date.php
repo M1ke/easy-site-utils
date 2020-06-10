@@ -29,7 +29,7 @@ function age_from_dob($date, $current_date = null){
 	foreach ($components as $key => $php_date){
 		$diff[$key] = $compare_date[$key]-$date[$key];
 	}
-	if ($diff['month']<0 or ($diff['day']<0 and $diff['month']==0)){
+	if ($diff['month']<0 || ($diff['day']<0 && $diff['month']==0)){
 		$diff['year']--;
 	}
 
@@ -229,7 +229,7 @@ function date_components($date){
 function date_difference($date1, $return = '', $date2 = false, $pos = true){
 	$date1 = string_time($date1);
 	$date2 = empty($date2) ? time() : string_time($date2);
-	if (empty($date1) or empty($date2)){
+	if (empty($date1) || empty($date2)){
 		return false;
 	}
 	$diff = $date2-$date1;
@@ -425,11 +425,9 @@ function date_year_correct_(&$year){
 }
 
 function date_year_correct($year){
-	if (strlen($year)==2){
-		if ($year>date('y')){
-			// let's face it, we're doing well if this needs future proofing!
-			$year = 1900+$year;
-		}
+	if ((strlen($year)==2) && $year>date('y')){
+		// let's face it, we're doing well if this needs future proofing!
+		$year = 1900+$year;
 	}
 
 	return $year;
@@ -502,7 +500,7 @@ function int_month($int){
 }
 
 function is_date($date){
-	if (empty($date) or $date=='0000-00-00 00:00:00' or $date=='0000-00-00' or $date=='00:00:00'){
+	if (empty($date) || $date=='0000-00-00 00:00:00' || $date=='0000-00-00' || $date=='00:00:00'){
 		return false;
 	}
 
@@ -518,7 +516,7 @@ function is_today($date){
 	}
 	$today = strtotime(date('Y-m-d'));
 	$sub = $date-$today;
-	if ($sub<86400 and $sub>=0){
+	if ($sub<86400 && $sub>=0){
 		return true;
 	}
 
@@ -621,7 +619,7 @@ function month_limits($month, $year, $months = 1){
 	$limits['date_start'] = $cal_date = inc_date($cal_date, ['day' => -1 * (date('N', $cal_date)-1)], 1);
 	$complete = false;
 	$n = 0;
-	while (!$complete and $n<($months * 30)+14){
+	while (!$complete && $n<($months * 30)+14){
 		$next_date = inc_date($cal_date, ['day' => 1], 1);
 		$complete = (date('n', $next_date)==$month+$months and date('N', $next_date)==1);
 		if (empty($complete)){
@@ -895,7 +893,7 @@ function us_date($date){
 
 function year_list($duration, $format){
 	$year = date('Y');
-	$custom = $format!='Y' ? date($format) : $year;
+	$custom = $format!=='Y' ? date($format) : $year;
 	$vals = $names = [];
 	if ($duration<0){
 		for ($n = 0; $n>$duration; $n--){
@@ -915,7 +913,7 @@ function year_list($duration, $format){
 
 function year_list_assoc($duration, $format){
 	$year = date('Y');
-	$custom = $format!='Y' ? date($format) : $year;
+	$custom = $format!=='Y' ? date($format) : $year;
 	$dates = [];
 	if ($duration<0){
 		for ($n = 0; $n>$duration; $n--){

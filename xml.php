@@ -1,5 +1,12 @@
 <?php
-// likely superceeded by $xml = SimpleXMLElement($contents);
+/**
+ * @param $contents
+ * @param int $get_attributes
+ * @param string $priority
+ * @return array|void
+ *
+ * @deprecated superseded by $xml = SimpleXMLElement($contents);
+ */
 function xml2array($contents, $get_attributes = 1, $priority = 'tag'){
     $parser = xml_parser_create('');
     xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, "UTF-8");

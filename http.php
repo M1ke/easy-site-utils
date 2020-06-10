@@ -1,4 +1,12 @@
 <?php
+/**
+ * @param $url
+ * @param int $json_depth
+ * @return mixed
+ * @throws Exception
+ *
+ * @deprecated use Guzzle
+ */
 function http_get_json($url, $json_depth = 512){
 	$ch = curl_init($url);
 	curl_setopt($ch, CURLOPT_HTTPGET, true);
@@ -21,6 +29,14 @@ function http_get_json($url, $json_depth = 512){
 	return $result;
 }
 
+/**
+ * @param $post
+ * @param $url
+ * @param bool $return
+ * @return bool|string
+ *
+ * @deprecated use Guzzle
+ */
 function http_post_curl($post, $url, $return = false){
 	//url-ify the data for the POST
 	$post_string = '';
@@ -50,6 +66,14 @@ function http_post_curl($post, $url, $return = false){
 	return $result;
 }
 
+/**
+ * @param $url
+ * @param $data
+ * @param string $content
+ * @return false|string
+ *
+ * @deprecated use Guzzle
+ */
 function http_stream($url, $data, $content = 'post'){
 	switch ($content){
 		case 'post':

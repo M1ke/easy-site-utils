@@ -34,9 +34,7 @@ function random_token($length, $include_upper_case = true){
 		$password_arr[$n] = $character_set[random_int(0, $set_size-1)];
 	}
 
-	$password = implode('', $password_arr);
-
-	return $password;
+	return implode('', $password_arr);
 }
 
 /*

@@ -5,9 +5,8 @@ function decimal_ratio($decimal, $sep = ':'){
 		$num[1]++;
 		$num[0] = $num[1] * $decimal;
 	} while (!is_whole($num[0]));
-	$ratio = implode($sep, $num);
 
-	return $ratio;
+	return implode($sep, $num);
 }
 
 /**
@@ -100,7 +99,8 @@ function is_positive(&$number, $blank = null){
 
 		return word_to_number($number);
 	}
-	elseif ($blank) {
+
+	if ($blank){
 		$number = false;
 
 		return true;

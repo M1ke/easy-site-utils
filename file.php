@@ -36,7 +36,7 @@ function dir_list_files($path){
 	$files = [];
 	if (!empty($dir)){
 		while (false!==($file = readdir($dir))){
-			if ($file!='.' && $file!='..'){
+			if ($file!=='.' && $file!=='..'){
 				$files[] = $file;
 			}
 		}
@@ -262,11 +262,10 @@ function file_valid($file, &$error, $file_types = null){
 	if (file_types($new_file['ext'], $file_types)){
 		return $new_file;
 	}
-	else {
-		$error = 'The file you have uploaded is the wrong file type ('.$new_file['ext'].').';
 
-		return false;
-	}
+	$error = 'The file you have uploaded is the wrong file type ('.$new_file['ext'].').';
+
+	return false;
 }
 
 function folder_copy($src, $dst, $recurse = true){
@@ -274,7 +273,7 @@ function folder_copy($src, $dst, $recurse = true){
 	if (!empty($dir)){
 		@mkdir($dst);
 		while (false!==($file = readdir($dir))){
-			if ($file!='.' && $file!='..'){
+			if ($file!=='.' && $file!=='..'){
 				if (is_dir($src.'/'.$file)){
 					if ($recurse){
 						folder_copy($src.'/'.$file, $dst.'/'.$file);

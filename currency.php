@@ -63,6 +63,8 @@ function price_week_to_month_rounded($price){
 
 /**
  *  Replaces all latin1 £'s in the text with their utf-8 versions
+ * @param string $text
+ * @return string
  */
 function text_replace_pound($text){
 	//Get the value of the string representing the 'bad' £'s

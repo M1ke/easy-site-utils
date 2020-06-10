@@ -126,5 +126,5 @@ function stringIsHtml($string){
 		return false;
 	}
 
-	return $string[0]=='<';
+	return $string[0]==='<';
 }

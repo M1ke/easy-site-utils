@@ -22,6 +22,7 @@ function array_assoc(array $arr){
  */
 function array_code($arr){
 	if (is_array($arr)){
+		/** @noinspection ForgottenDebugOutputInspection */
 		return var_export($arr) ?: '';
 	}
 
@@ -104,8 +105,8 @@ function array_id(&$arr, $key, $key2 = null, $key3 = null){
  */
 function array_insert_assoc(array $arr, $offset, $insert, $before = false){
 	$keys = array_keys($arr);
-	$offset = array_search($offset, $keys, true);
-	if ($before and $offset>0){
+	$offset = (int) array_search($offset, $keys, true);
+	if ($before && $offset>0){
 		$offset--;
 	}
 	$temp = [];
@@ -246,7 +247,6 @@ function array_keys_verify(array $format, array $check, $depth = '', array $erro
 		// If our sub-format is an array with values we then dive into that
 		if (!empty($sub_format)){
 			$errors = array_keys_verify($sub_format, $check[$key], $current_depth, $errors);
-			continue;
 		}
 	}
 
@@ -319,6 +319,7 @@ function array_overwrite(array $base, array $fill = []){
  * @param array $arr
  *
  * @return mixed
+ * @throws Exception
  */
 function array_random(array $arr){
 	$keys = array_keys($arr);
@@ -667,6 +668,7 @@ function array_unset_false(array $arr, $strict = true){
  *
  * @param array $array
  * @return string
+ * @deprecated use reset($array)
  */
 function arraystr(array $array){
 	foreach ($array as $item){
@@ -695,6 +697,7 @@ function append_to_string_array($string, $item, $sep = ','){
  * @param mixed $item
  *
  * @return array
+ * @deprecated use (array) $item
  */
 function as_array($item){
 	if (!is_array($item)){
@@ -780,18 +783,17 @@ function implode_dual($sep, array $arr1, array $arr2){
 }
 
 /**
- * @param $sep
+ * @param string $sep
  * @param array $arr
  *
- * @return array
+ * @return string
  */
 function implode_key($sep, array $arr){
 	foreach ($arr as $key => &$val){
 		$val = $key;
 	}
-	$arr = implode($sep, $arr);
 
-	return $arr;
+	return implode($sep, $arr);
 }
 
 /**

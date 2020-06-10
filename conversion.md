@@ -2,8 +2,8 @@
 
 ## Conversion notes
 
-* rand_pass() - removed dependance on $l['salt'], pass in $salt as 2nd parameter
-* salt_string() - removed dependance on $l['salt'], pass in $salt as 2nd parameter
+* rand_pass() - removed dependence on $l['salt'], pass in $salt as 2nd parameter
+* salt_string() - removed dependence on $l['salt'], pass in $salt as 2nd parameter
 * string_check() - changed behaviour of strip to remove dependance on $l['tags'], pass in string as 2nd parameter
 * image_save() - altered use of $l['imagick'], now uses $params[imagick]
 * image_valid() - remove use of $l['image-file'], now gets "max upload size"

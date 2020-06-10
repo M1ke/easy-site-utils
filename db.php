@@ -52,7 +52,7 @@ function create_field(&$field,&$error){
 	}
 	$null=' NOT null';
 	if (isset($field['default'])){
-		if ($field['type']!='timestamp'){
+		if ($field['type']!=='timestamp'){
 			$field['default']="'".$field['default']."'";
 		}
 		$default=" default ".$field['default'];
