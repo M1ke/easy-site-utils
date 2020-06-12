@@ -50,7 +50,7 @@ function create_field(&$field, &$error){
 			}
 			$type .= '('.$field['length'].') collate utf8_unicode_ci';
 	}
-	$null = ($field['null'] ? '' : 'NOT ').'NULL';
+	$null = ' '.($field['null'] ? '' : 'NOT ').'NULL';
 	if (isset($field['default'])){
 		if ($field['type']!=='timestamp'){
 			$field['default'] = "'".$field['default']."'";
