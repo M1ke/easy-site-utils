@@ -1,155 +1,157 @@
 <?php
-function create_field(&$field,&$error){
-	$field['title']='`'.string_check($field['title']).'`';
+function create_field(&$field, &$error){
+	$field['title'] = '`'.string_check($field['title']).'`';
 	switch ($field['type']){
 		case 'choice':
 		case 'enum':
-			$type=" enum('".implode("','",$field['choices'])."')";
+			$type = " enum('".implode("','", $field['choices'])."')";
 		break;
 		case 'date':
 		case 'datetime':
-			$type=' '.$field['type'];
+			$type = ' '.$field['type'];
 		break;
 		case 'decimal':
 		case 'float':
-			$type=' '.$field['type'];
+			$type = ' '.$field['type'];
 			if (!isset($field['length'])){
-				$field['length']='4,2';
+				$field['length'] = '4,2';
 			}
-			$type.='('.$field['length'].')';
+			$type .= '('.$field['length'].')';
 		break;
 		case 'int':
-			$type=' bigint(20)';
+			$type = ' bigint(20)';
 		break;
 		case 'single':
-			$type=' tinyint(1)';
+			$type = ' tinyint(1)';
 		break;
 		case 'blob':
-			$type=' blob';
+			$type = ' blob';
 		break;
 		case 'mediumtext':
-			$type=' mediumtext collate utf8_unicode_ci';
+			$type = ' mediumtext collate utf8_unicode_ci';
 		break;
 		case 'text':
-			$type=' text collate utf8_unicode_ci';
+			$type = ' text collate utf8_unicode_ci';
 		break;
 		case 'timestamp':
-			$type=" TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
-			$field['default']="CURRENT_TIMESTAMP";
+			$type = " TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
+			$field['default'] = "CURRENT_TIMESTAMP";
 		break;
 		case 'point':
-			$type=" POINT";
+			$type = " POINT";
 		break;
 		case 'polygon':
-			$type=" POLYGON";
+			$type = " POLYGON";
 		break;
 		default:
-			$type=' varchar';
+			$type = ' varchar';
 			if (!isset($field['length'])){
-				$field['length']=100;
+				$field['length'] = 100;
 			}
-			$type.='('.$field['length'].') collate utf8_unicode_ci';
+			$type .= '('.$field['length'].') collate utf8_unicode_ci';
 	}
-	$null=' NOT null';
+	$null = ($field['null'] ? '' : 'NOT ').'NULL';
 	if (isset($field['default'])){
 		if ($field['type']!=='timestamp'){
-			$field['default']="'".$field['default']."'";
+			$field['default'] = "'".$field['default']."'";
 		}
-		$default=" default ".$field['default'];
+		$default = " default ".$field['default'];
 	}
 	else {
 		unset($default);
 	}
 	if ($field['auto']==1){
-		$auto=' auto_increment';
+		$auto = ' auto_increment';
 	}
 	else {
 		unset($auto);
 	}
-	$field=$field['title'].$type.$null.$default.$auto;
+	$field = $field['title'].$type.$null.$default.$auto;
+
 	return $field;
 }
 
-function create_table(&$table,&$error){
+function create_table(&$table, &$error, $engine = 'MyISAM'){
 	if (is_array($table['fields'])){
 		foreach ($table['fields'] as $title => $field){
 			if ($field['db']){
-				$field=$field['db'];
+				$field = $field['db'];
 			}
-			$field['title']=$title;
-			$field=create_field($field,$error);
+			$field['title'] = $title;
+			$field = create_field($field, $error);
 			if (!$field){
 				error($error);
 			}
-			$fields[]=$field;
+			$fields[] = $field;
 		}
 	}
 	else {
-		$error='The table '.$table['title'].' does not have any valid fields and cannot be created.';
+		$error = 'The table '.$table['title'].' does not have any valid fields and cannot be created.';
+
 		return false;
 	}
-	$table['title']=string_check($table['title']);
-	if (isset($table['primary']) and isset($table['fields'][$table['primary']])){
-		$fields[]=' PRIMARY KEY  (`'.$table['primary'].'`)';
+	$table['title'] = string_check($table['title']);
+	if (isset($table['primary']) && isset($table['fields'][$table['primary']])){
+		$fields[] = ' PRIMARY KEY  (`'.$table['primary'].'`)';
 	}
-	$fields=implode(',',$fields);
-	$create="CREATE TABLE IF NOT EXISTS `".$table['title']."` (".$fields.") ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-	return $create;
+	$fields = implode(',', $fields);
+
+	return "CREATE TABLE IF NOT EXISTS `{$table['title']}` ($fields) ENGINE=$engine DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 }
 
-function db_update($new,$old,&$out=null,$echo=null){
+function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 	foreach ($new as $new_table_title => $new_table){
-		$new_table['title']=$new_table_title;
+		$new_table['title'] = $new_table_title;
 		if (is_array($old[$new_table_title])){
-			$old_fields=$old[$new_table_title]['fields'];
+			$old_fields = $old[$new_table_title]['fields'];
 			foreach ($new_table['fields'] as $new_field_title => $new_field){
 				if (isset($new_field['db'])){
-					$new_field=$new_field['db'];
+					$new_field = $new_field['db'];
 				}
 				if (!is_array($old_fields[$new_field_title])){
-					$alter=false;
+					$alter = false;
 					if (is_array($new_field['prev'])){
 						foreach ($new_field['prev'] as $old_field_title){
 							if (is_array($old_fields[$old_field_title])){
-								$new_field['title']=$new_field_title;
-								$new_field=create_field($new_field,$error);
+								$new_field['title'] = $new_field_title;
+								$new_field = create_field($new_field, $error);
 								if (!$new_field){
 									error($error);
 								}
-								$queries[]="ALTER TABLE `{$new_table['title']}` CHANGE `$old_field_title` $new_field";
-								$alter=true;
+								$queries[] = "ALTER TABLE `{$new_table['title']}` CHANGE `$old_field_title` $new_field";
+								$alter = true;
 							}
 						}
 					}
 					if (!$alter){
-						$new_field['title']=$new_field_title;
-						$new_field=create_field($new_field,$error);
+						$new_field['title'] = $new_field_title;
+						$new_field = create_field($new_field, $error);
 						if (!$new_field){
 							error($error);
 						}
-						$queries[]="ALTER TABLE `{$new_table['title']}` ADD $new_field";
+						$queries[] = "ALTER TABLE `{$new_table['title']}` ADD $new_field";
 					}
 				}
 				else {
-					$old_field=$old_fields[$new_field_title];
-					$alter=false;
+					$old_field = $old_fields[$new_field_title];
+					$alter = false;
 					foreach ($new_field as $new_field_param => $new_field_val){
 						switch ($new_field_param){
 							case 'prev':
 							break;
 							default:
 								if ($old_field[$new_field_param]!=$new_field_val){
-									$alter=true;
+									$alter = true;
 								}
 						}
 					}
 					if ($alter){
-						$new_field['title']=$new_field_title;
-						$new_field=create_field($new_field,$error);
+						$new_field['title'] = $new_field_title;
+						$new_field = create_field($new_field, $error);
 						if (!$new_field){
 							error($error);
 						}
-						$queries[]="ALTER TABLE `{$new_table['title']}` CHANGE `$new_field_title` $new_field";
+						$queries[] = "ALTER TABLE `{$new_table['title']}` CHANGE `$new_field_title` $new_field";
 					}
 				}
 			}
@@ -162,59 +164,59 @@ function db_update($new,$old,&$out=null,$echo=null){
 			// }
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
-					$index_name=explode(',',$index);
-					$index_name=$index_name[0];
-					$new_table['index_names'][]=$index_name;
-					$index=str_replace(',','`,`',$index);
-					if (!@in_array($index_name,$old[$new_table['title']]['index'])){
-						$queries[]="ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
+					$index_name = explode(',', $index);
+					$index_name = $index_name[0];
+					$new_table['index_names'][] = $index_name;
+					$index = str_replace(',', '`,`', $index);
+					if (!@in_array($index_name, $old[$new_table['title']]['index'])){
+						$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 					}
 				}
 			}
 			if (is_array($old[$new_table['title']]['index'])){
 				foreach ($old[$new_table['title']]['index'] as $index){
-					$index_name=explode(',',$index);
-					$index_name=$index_name[0];
-					if (!@in_array($index_name,$new_table['index_names'])){
-						$queries[]="ALTER TABLE `{$new_table['title']}` DROP INDEX `$index`";
+					$index_name = explode(',', $index);
+					$index_name = $index_name[0];
+					if (!@in_array($index_name, $new_table['index_names'])){
+						$queries[] = "ALTER TABLE `{$new_table['title']}` DROP INDEX `$index`";
 					}
 				}
 			}
 		}
-		elseif (is_array($new_table['prev'])){
+		elseif (is_array($new_table['prev'])) {
 			foreach ($new_table['prev'] as $old_table_title){
 				if (is_array($old[$old_table_title])){
-					$queries[]="RENAME TABLE `$old_table_title` TO `{$new_table['title']}`";
+					$queries[] = "RENAME TABLE `$old_table_title` TO `{$new_table['title']}`";
 				}
 			}
 		}
 		else {
-			$create=create_table($new_table,$error);
+			$create = create_table($new_table, $error, $engine);
 			if (empty($create)){
 				error($error);
 			}
-			$queries[]=$create;
+			$queries[] = $create;
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
-					$index=str_replace(',','`,`',$index);
-					$queries[]="ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
+					$index = str_replace(',', '`,`', $index);
+					$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 				}
 			}
 		}
 		if (is_array($new_table['triggers'])){
 			foreach ($new_table['triggers'] as $trigger_type => $trigger){
-				$trigger_name=$new_table['title'].'_'.$trigger_type;
+				$trigger_name = $new_table['title'].'_'.$trigger_type;
 				// need to ensure it doesn't crash the process if user lacks privilege or trigger exists
 				// $queries[]="CREATE TRIGGER `$trigger_name` BEFORE $trigger_type ON `{$new_table['title']}` FOR EACH ROW $trigger";
 			}
 		}
 	}
-	log_file($queries,'DB Update','db.log');
+	log_file($queries, 'DB Update', 'db.log');
 	if (!$echo){
 		if (is_array($queries)){
 			foreach ($queries as $query){
-				$query=query($query,null,null,null,null,true);
-				$out.=$query.'<br/>';
+				$query = query($query, null, null, null, null, true);
+				$out .= $query.'<br/>';
 			}
 		}
 	}
@@ -224,76 +226,80 @@ function db_update($new,$old,&$out=null,$echo=null){
 	}
 }
 
-function field_type(&$type,&$length,&$choices=null){
+function field_type(&$type, &$length, &$choices = null){
 	switch ($type){
 		case 'coord':
-			$type='decimal';
-			$length='18,16';
+			$type = 'decimal';
+			$length = '18,16';
 		break;
 		case 'float':
-			$type='float';
+			$type = 'float';
 		break;
 		case 'bigint':
 		case 'smallint':
 		case 'int':
-			$type='int';
-			$length=null;
+			$type = 'int';
+			$length = null;
 		break;
 		case 'tinyint':
-			$type='single';
+			$type = 'single';
 			if ($length==1){
-				$length=null;
-				$type='single';
+				$length = null;
+				$type = 'single';
 			}
-			else $type='int';
+			else {
+				$type = 'int';
+			}
 		break;
 		case 'datetime':
-			$type='datetime';
+			$type = 'datetime';
 		break;
 		case 'date':
-			$type='date';
+			$type = 'date';
 		break;
 		case 'text':
-			$type='text';
+			$type = 'text';
 		break;
 		case 'enum':
-			$type='choice';
-			$length=substr($length,1,strlen($length)-2);
-			$choices=explode("','",$length);
+			$type = 'choice';
+			$length = substr($length, 1, strlen($length)-2);
+			$choices = explode("','", $length);
 		break;
 		case 'timestamp':
-			$type='timestamp';
+			$type = 'timestamp';
 		break;
 		default:
-			$type='string';
+			$type = 'string';
 			if ($length==100){
-				$length=null;
+				$length = null;
 			}
 	}
 }
 
 function need_table($table){
-	$table=string_check($table);
-	$check=query("SHOW TABLES LIKE '$table'",'single');
+	$table = string_check($table);
+	$check = query("SHOW TABLES LIKE '$table'", 'single');
 	if ($check!=$table){
 		error('The database "'.$table.'" could not be found and is required for this page to function. Please make sure the extension you are trying to use has installed properly.');
 	}
+
 	return true;
 }
 
-function query_insert(Array $arr,$exc=array(),$repeat=false){
+function query_insert(array $arr, $exc = [], $repeat = false){
 	foreach ($arr as $key => $val){
-		if ($val!==false and strpos($key,'-')===false and !in_array($key,$exc) and !is_array($val)){
-			$fields[]="`$key`";
+		if ($val!==false and strpos($key, '-')===false and !in_array($key, $exc) and !is_array($val)){
+			$fields[] = "`$key`";
 			$val = sql_slashes($val);
-			$vals[]="'$val'";
+			$vals[] = "'$val'";
 		}
 	}
-	return query_insert_make($fields,$vals,$repeat);
+
+	return query_insert_make($fields, $vals, $repeat);
 }
 
-function query_insert_make(Array $fields, Array $vals, $repeat = false){
-	$vals = "(".implode(',',$vals).")";
+function query_insert_make(array $fields, array $vals, $repeat = false){
+	$vals = "(".implode(',', $vals).")";
 	if (!empty($repeat)){
 		for ($n = 0; $n<$repeat; $n++){
 			$vals_arr[] = $vals;
@@ -301,69 +307,80 @@ function query_insert_make(Array $fields, Array $vals, $repeat = false){
 		$vals = implode(',', $vals_arr);
 	}
 	$query = "(".implode(',', $fields).") VALUES $vals";
+
 	return $query;
 }
 
-function query_insert_inc(Array $arr,Array $inc,$repeat=false){
+function query_insert_inc(array $arr, array $inc, $repeat = false){
 	foreach ($arr as $key => $val){
-		if (in_array($key,$inc) and $val!==false and !is_null($val)){
-			$fields[]="`$key`";
+		if (in_array($key, $inc) and $val!==false and !is_null($val)){
+			$fields[] = "`$key`";
 			$val = sql_slashes($val);
-			$vals[]="'$val'";
+			$vals[] = "'$val'";
 		}
 	}
-	return query_insert_make($fields,$vals,$repeat);
+
+	return query_insert_make($fields, $vals, $repeat);
 }
 
-function query_update($arr,$exc=array()){
+function query_update($arr, $exc = []){
 	foreach ($arr as $key => $val){
-		if ($val!==false and strpos($key,'-')===false and !in_array($key,$exc) and !is_array($val)){
+		if ($val!==false and strpos($key, '-')===false and !in_array($key, $exc) and !is_array($val)){
 			$val = sql_slashes($val);
-			$query[]="`$key`='$val'";
+			$query[] = "`$key`='$val'";
 		}
 	}
-	$query=implode(',',$query);
+	$query = implode(',', $query);
+
 	return $query;
 }
 
-function query_update_inc($arr,$inc){
+function query_update_inc($arr, $inc){
 	foreach ($arr as $key => $val){
-		if (in_array($key,$inc) and $val!==false and !is_null($val)){
+		if (in_array($key, $inc) and $val!==false and !is_null($val)){
 			$val = sql_slashes($val);
-			$query[]="`$key`='$val'";
+			$query[] = "`$key`='$val'";
 		}
 	}
-	$query=implode(',',$query);
+	$query = implode(',', $query);
+
 	return $query;
 }
 
 function table_array($table){
-	$fields=array();
-	$cols=query("SHOW columns FROM `$table`",'2d');
+	$fields = [];
+	$cols = query("SHOW columns FROM `$table`", '2d');
 	foreach ($cols as $col){
-		$field=array();
-		$bracket=strpos($col['Type'],'(');
+		$field = [];
+		$bracket = strpos($col['Type'], '(');
 		if ($bracket>0){
 			$bracket++;
-			$field['length']=substr($col['Type'],$bracket,strpos($col['Type'],')')-$bracket);
-			$field['type']=substr($col['Type'],0,$bracket-1);
+			$field['length'] = substr($col['Type'], $bracket, strpos($col['Type'], ')')-$bracket);
+			$field['type'] = substr($col['Type'], 0, $bracket-1);
 		}
 		else {
-			$field['type']=$col['Type'];
+			$field['type'] = $col['Type'];
 		}
-		field_type($field['type'],$field['length']);
+		field_type($field['type'], $field['length']);
 		if (empty($field['length'])){
 			unset($field['length']);
 		}
-		if (strlen($col['Default'])>0) $field['default']=$col['Default'];
-		if ($col['Extra']=='auto_increment') $field['auto']=1;
-		if ($col['Key']=='PRI') $arr['primary']=$col['Field'];
-		$fields[$col['Field']]=$field;
+		if (strlen($col['Default'])>0){
+			$field['default'] = $col['Default'];
+		}
+		if ($col['Extra']=='auto_increment'){
+			$field['auto'] = 1;
+		}
+		if ($col['Key']=='PRI'){
+			$arr['primary'] = $col['Field'];
+		}
+		$fields[$col['Field']] = $field;
 	}
-	$arr['fields']=$fields;
-	$indexes=query("SHOW INDEX FROM `$table` WHERE Key_name<>'PRIMARY'",'2d');
+	$arr['fields'] = $fields;
+	$indexes = query("SHOW INDEX FROM `$table` WHERE Key_name<>'PRIMARY'", '2d');
 	foreach ($indexes as $index){
-		$arr['index'][]=$index['Key_name'];
+		$arr['index'][] = $index['Key_name'];
 	}
+
 	return $arr;
 }
