@@ -270,7 +270,7 @@ function array_pull(array $arr, $pull, array &$new = []){
 	foreach ($pull as $key => $field){
 		$field = trim($field);
 		$key = is_numeric($key) ? $field : $key;
-		$new[$field] = $arr[$key];
+		$new[$field] = $arr[$key] ?? null;
 	}
 
 	return $new;
