@@ -88,10 +88,7 @@ function create_table(&$table, &$error, $engine = 'MyISAM'){
 				$field = $field['db'];
 			}
 			$field['title'] = $title;
-			$field = create_field($field, $error);
-			if (!$field){
-				error($error);
-			}
+			$field = create_field($field);
 			$fields[] = $field;
 		}
 	}
@@ -124,10 +121,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 						foreach ($new_field['prev'] as $old_field_title){
 							if (is_array($old_fields[$old_field_title])){
 								$new_field['title'] = $new_field_title;
-								$new_field = create_field($new_field, $error);
-								if (!$new_field){
-									error($error);
-								}
+								$new_field = create_field($new_field);
 								$queries[] = "ALTER TABLE `{$new_table['title']}` CHANGE `$old_field_title` $new_field";
 								$alter = true;
 							}
@@ -135,10 +129,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 					}
 					if (!$alter){
 						$new_field['title'] = $new_field_title;
-						$new_field = create_field($new_field, $error);
-						if (!$new_field){
-							error($error);
-						}
+						$new_field = create_field($new_field);
 						$queries[] = "ALTER TABLE `{$new_table['title']}` ADD $new_field";
 					}
 				}
@@ -157,10 +148,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 					}
 					if ($alter){
 						$new_field['title'] = $new_field_title;
-						$new_field = create_field($new_field, $error);
-						if (!$new_field){
-							error($error);
-						}
+						$new_field = create_field($new_field);
 						$queries[] = "ALTER TABLE `{$new_table['title']}` CHANGE `$new_field_title` $new_field";
 					}
 				}
