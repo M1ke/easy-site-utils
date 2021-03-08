@@ -1,14 +1,20 @@
 <?php
-function create_field(&$field, &$error){
+/**
+ * @psalm-param array{title: string, type: string, null?: bool, auto?: bool, choices?: string[], length?: string, default?: string} $field
+ */
+function create_field(array $field) :string{
 	$field['title'] = '`'.string_check($field['title']).'`';
+	$default = '';
 	switch ($field['type']){
 		case 'choice':
 		case 'enum':
 			$type = " enum('".implode("','", $field['choices'])."')";
+			$default = "'{$field['choices'][0]}'";
 		break;
 		case 'date':
 		case 'datetime':
 			$type = ' '.$field['type'];
+			$default = "'0000-00-00".($field['type']==='datetime' ? ' 00:00:00' : '')."'";
 		break;
 		case 'decimal':
 		case 'float':
@@ -17,12 +23,15 @@ function create_field(&$field, &$error){
 				$field['length'] = '4,2';
 			}
 			$type .= '('.$field['length'].')';
+			$default = '0';
 		break;
 		case 'int':
 			$type = ' bigint(20)';
+			$default = '0';
 		break;
 		case 'single':
 			$type = ' tinyint(1)';
+			$default = '0';
 		break;
 		case 'blob':
 			$type = ' blob';
@@ -49,6 +58,13 @@ function create_field(&$field, &$error){
 				$field['length'] = 100;
 			}
 			$type .= '('.$field['length'].') collate utf8_unicode_ci';
+			$default = "''";
+	}
+	if ($field['null']){
+		$default = '';
+	}
+	elseif ($default!=='') {
+		$default = " default $default";
 	}
 	$null = ' '.($field['null'] ? '' : 'NOT ').'NULL';
 	if (isset($field['default'])){
@@ -57,18 +73,12 @@ function create_field(&$field, &$error){
 		}
 		$default = " default ".$field['default'];
 	}
-	else {
-		unset($default);
-	}
-	if ($field['auto']==1){
+	if ((bool) $field['auto']){
 		$auto = ' auto_increment';
+		$default = '';
 	}
-	else {
-		unset($auto);
-	}
-	$field = $field['title'].$type.$null.$default.$auto;
 
-	return $field;
+	return $field['title'].$type.$null.$default.($auto ?? '');
 }
 
 function create_table(&$table, &$error, $engine = 'MyISAM'){
