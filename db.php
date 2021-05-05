@@ -62,6 +62,7 @@ function create_field(array $field, bool $null_default = false): string{
 				$field['length'] = 100;
 			}
 			$type .= '('.$field['length'].') collate utf8_unicode_ci';
+			$default = "''";
 	}
 	$null = ' '.($field['null'] ? '' : 'NOT ').'NULL';
 	if (isset($field['default'])){
