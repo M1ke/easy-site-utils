@@ -42,9 +42,11 @@ function create_field(array $field, bool $null_default = false): string{
 		break;
 		case 'mediumtext':
 			$type = ' mediumtext collate utf8_unicode_ci';
+			$default = "''";
 		break;
 		case 'text':
 			$type = ' text collate utf8_unicode_ci';
+			$default = "''";
 		break;
 		case 'timestamp':
 			$type = " TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
