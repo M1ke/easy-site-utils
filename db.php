@@ -1,5 +1,9 @@
 <?php
-function create_field($field, bool $null_default = false): string{
+/**
+ * @psalm-param array{title: string, null_default?: true, type: string, choices?: string[], length?: string,
+ *  auto?: 1, null?: true, default?: string, required?: true, null_default?: true} $field
+ */
+function create_field(array $field, bool $null_default = false): string{
 	$field['title'] = '`'.string_check($field['title']).'`';
 	if (!$null_default && $field['null_default']){
 		$null_default = true;
@@ -66,7 +70,7 @@ function create_field($field, bool $null_default = false): string{
 		}
 		$default = " default {$field['default']}";
 	}
-	elseif (!$field['null'] && $null_default && !$field['auto']){
+	elseif (!$field['null'] && $null_default && !$field['auto'] && !$field['required']){
 		$default = " default $default";
 	}
 	else {
