@@ -66,7 +66,7 @@ function create_field($field, bool $null_default = false): string{
 		}
 		$default = " default {$field['default']}";
 	}
-	elseif (!$field['null'] && $null_default){
+	elseif (!$field['null'] && $null_default && !$field['auto']){
 		$default = " default $default";
 	}
 	else {
