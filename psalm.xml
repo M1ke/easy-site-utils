@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<psalm
+    errorLevel="4"
+    resolveFromConfigFile="true"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://getpsalm.org/schema/config"
+    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+>
+    <projectFiles>
+        <file name="currency.php" />
+        <file name="display.php" />
+        <file name="output.php" />
+        <file name="users.php" />
+        <file name="security.php" />
+        <file name="common.php" />
+        <file name="data.php" />
+        <file name="lists.php" />
+        <file name="date.php" />
+        <file name="db.php" />
+        <file name="image.php" />
+        <file name="math.php" />
+        <file name="html.php" />
+        <file name="init.php" />
+        <file name="map.php" />
+        <file name="xml.php" />
+        <file name="file.php" />
+        <file name="string.php" />
+        <file name="video.php" />
+        <file name="http.php" />
+        <file name="array.php" />
+        <ignoreFiles>
+            <directory name="vendor" />
+        </ignoreFiles>
+    </projectFiles>
+</psalm>

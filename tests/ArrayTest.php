@@ -1,7 +1,10 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__ . '/../init.php';
 
-class TestArray extends PHPUnit_Framework_TestCase {
+class ArrayTest extends TestCase {
 	public $data = [
 		0 => ['name' => 'Barry', 'email' => 'email@a.com', 'phone' => '0777532906'],
 		1 => ['name' => 'Arnold', 'email' => 'email@c.com', 'phone' => '0787532906'],
@@ -16,7 +19,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			$this->data[0],
 			$this->data[2],
 		];
-		$this->assertEquals($sorted, $correct);
+		self::assertEquals($sorted, $correct);
 	}
 
 	function testArraySortNameDesc(){
@@ -26,7 +29,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			$this->data[0],
 			$this->data[1],
 		];
-		$this->assertEquals($sorted, $correct);
+		self::assertEquals($sorted, $correct);
 	}
 
 	function testArraySortPhone(){
@@ -36,7 +39,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			$this->data[0],
 			$this->data[1],
 		];
-		$this->assertEquals($sorted, $correct);
+		self::assertEquals($sorted, $correct);
 	}
 
 	function testArraySortEmail(){
@@ -46,7 +49,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			$this->data[2],
 			$this->data[1],
 		];
-		$this->assertEquals($sorted, $correct);
+		self::assertEquals($sorted, $correct);
 	}
 
 	// array_extract
@@ -57,7 +60,7 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			['title' => 'Test 3', 'text' => 'Dolor'],
 		];
 		$extracted = array_extract($two_d, 'text');
-		$this->assertEquals(['Lorem', 'Ipsum', 'Dolor'], $extracted);
+		self::assertEquals(['Lorem', 'Ipsum', 'Dolor'], $extracted);
 	}
 
 	function testArrayExtractAssoc(){
@@ -67,41 +70,41 @@ class TestArray extends PHPUnit_Framework_TestCase {
 			'c' => ['title' => 'Test 3', 'text' => 'Dolor'],
 		];
 		$extracted = array_extract($two_d, 'text');
-		$this->assertEquals(['a' => 'Lorem', 'b' => 'Ipsum', 'c' => 'Dolor'], $extracted);
+		self::assertEquals(['a' => 'Lorem', 'b' => 'Ipsum', 'c' => 'Dolor'], $extracted);
 	}
 
 	// array_keys_exist
 	function testArrayKeysExistOr(){
 		// are in array
-		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Bmw' => '2', 'Citroen' => '4']));
-		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3']));
-		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Volvo' => '9']));
-		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => null]));
+		self::assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Bmw' => '2', 'Citroen' => '4']));
+		self::assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3']));
+		self::assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Volvo' => '9']));
+		self::assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => null]));
 
 		// none in array
-		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], []));
-		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['' => '']));
-		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => '3']));
-		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => null]));
+		self::assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], []));
+		self::assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['' => '']));
+		self::assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => '3']));
+		self::assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => null]));
 	}
 
 	function testArrayKeysExistAnd(){
 		// all in array
-		$this->assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Bmw' => '2', 'Citroen' => '4'], true));
+		self::assertTrue(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Bmw' => '2', 'Citroen' => '4'], true));
 
 		// some in array
-		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3'], true));
-		$this->assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Volvo' => '9'], true));
+		self::assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3'], true));
+		self::assertFalse(array_keys_exist(['Audi', 'Bmw', 'Citroen'], ['Audi' => '3', 'Volvo' => '9'], true));
 
 		// none in array
-		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => '3']));
-		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], []));
-		$this->assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['' => '']));
+		self::assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['Audi' => '3']));
+		self::assertFalse(array_keys_exist(['Bmw', 'Citroen'], []));
+		self::assertFalse(array_keys_exist(['Bmw', 'Citroen'], ['' => '']));
 	}
 
 	function testArrayKeysExistEmpty(){
-		$this->assertFalse(array_keys_exist([], ['Audi' => '3']));
-		$this->assertFalse(array_keys_exist([], ['Audi' => null]));
+		self::assertFalse(array_keys_exist([], ['Audi' => '3']));
+		self::assertFalse(array_keys_exist([], ['Audi' => null]));
 	}
 
 	// array_pull
@@ -109,35 +112,35 @@ class TestArray extends PHPUnit_Framework_TestCase {
 		$arr = ['a' => 1, 'b' => 2, 'c' => 3];
 		$pull = ['a', 'c'];
 		$new = array_pull($arr, $pull);
-		$this->assertEquals($new, ['a' => 1, 'c' => 3]);
+		self::assertEquals($new, ['a' => 1, 'c' => 3]);
 	}
 
 	function testArrayPull1dMissing(){
 		$arr = ['a' => 1, 'b' => 2, 'c' => 3];
 		$pull = ['a', 'c', 'd'];
 		$new = array_pull($arr, $pull);
-		$this->assertEquals($new, ['a' => 1, 'c' => 3, 'd' => null]);
+		self::assertEquals($new, ['a' => 1, 'c' => 3, 'd' => null]);
 	}
 
 	function testArrayPullString(){
 		$arr = ['a' => 1, 'b' => 2, 'c' => 3];
 		$pull = "a, c";
 		$new = array_pull($arr, $pull);
-		$this->assertEquals($new, ['a' => 1, 'c' => 3]);
+		self::assertEquals($new, ['a' => 1, 'c' => 3]);
 	}
 
 	function testArrayPull2d(){
 		$arr = ['a' => [1, 2], 'b' => [3, 4], 'c' => [5, 6]];
 		$pull = ['a', 'c'];
 		$new = array_pull($arr, $pull);
-		$this->assertEquals($new, ['a' => [1, 2], 'c' => [5, 6]]);
+		self::assertEquals($new, ['a' => [1, 2], 'c' => [5, 6]]);
 	}
 
 	function testArrayPull2dAssoc(){
 		$arr = ['a' => ['i' => 1, 'ii' => 2], 'b' => ['iii' => 3, 'iv' => 4], 'c' => ['v' => 5, 'vi' => 6]];
 		$pull = ['a', 'c'];
 		$new = array_pull($arr, $pull);
-		$this->assertEquals($new, ['a' => ['i' => 1, 'ii' => 2], 'c' => ['v' => 5, 'vi' => 6]]);
+		self::assertEquals($new, ['a' => ['i' => 1, 'ii' => 2], 'c' => ['v' => 5, 'vi' => 6]]);
 	}
 
 	// Array strip
@@ -145,36 +148,36 @@ class TestArray extends PHPUnit_Framework_TestCase {
 	public function testArrayStripEnd(){
 		$array = ['', 'a', '', 'b', ''];
 		$array_strip_end = array_strip_end($array);
-		$this->assertEquals(['', 'a', '', 'b'], $array_strip_end);
+		self::assertEquals(['', 'a', '', 'b'], $array_strip_end);
 	}
 
 	public function testArrayStripEndLots(){
 		$array = ['', 'a', '', 'b', '', '', ''];
 		$array_strip_end = array_strip_end($array);
-		$this->assertEquals(['', 'a', '', 'b'], $array_strip_end);
+		self::assertEquals(['', 'a', '', 'b'], $array_strip_end);
 	}
 
 	public function testArrayStripStart(){
 		$array = ['', 'a', '', 'b', ''];
 		$array_strip_start = array_strip_start($array);
-		$this->assertEquals(['a', '', 'b', ''], $array_strip_start);
+		self::assertEquals(['a', '', 'b', ''], $array_strip_start);
 	}
 
 	public function testArrayStripStartLots(){
 		$array = ['', '', '', 'a', '', 'b', ''];
 		$array_strip_start = array_strip_start($array);
-		$this->assertEquals(['a', '', 'b', ''], $array_strip_start);
+		self::assertEquals(['a', '', 'b', ''], $array_strip_start);
 	}
 
 	public function testArrayStrip(){
 		$array = ['', '', 'a', '', 'b', '', ''];
 		$array_strip = array_strip($array);
-		$this->assertEquals(['a', '', 'b'], $array_strip);
+		self::assertEquals(['a', '', 'b'], $array_strip);
 	}
 
 	public function testArrayRemove(){
 		$arr = ['a', 'b', 'c'];
 		$removed = array_remove('a', $arr);
-		$this->assertEquals([1 => 'b', 2 => 'c'], $removed);
+		self::assertEquals([1 => 'b', 2 => 'c'], $removed);
 	}
 }

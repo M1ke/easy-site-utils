@@ -1,7 +1,10 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__.'/../init.php';
 
-class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
+class VideoTest extends TestCase {
 
 	function testYoutubeVideoId(){
 		$youtube_urls = [
@@ -27,7 +30,7 @@ class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
 			], ['url' => 'http://www.vistabee.com/en/v/q6h9ok', 'id' => ''],
 		];
 		foreach ($youtube_urls as $test){
-			$this->assertEquals($test['id'], youtube_video_id($test['url']));
+			self::assertEquals($test['id'], youtube_video_id($test['url']));
 		}
 	}
 
@@ -74,7 +77,7 @@ class TestFunctionsVideo extends PHPUnit_Framework_TestCase {
 			return;
 		}
 		foreach ($youtube_urls as $test){
-			$this->assertEquals($test['pass'], self::isVideoValid($api_key, $test['id']));
+			self::assertEquals($test['pass'], self::isVideoValid($api_key, $test['id']));
 		}
 	}
 

@@ -1,15 +1,18 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 require_once __DIR__.'/../init.php';
 require_once __DIR__.'/../display.php';
 
-class TestDisplay extends PHPUnit_Framework_TestCase {
+class DisplayTest extends TestCase {
 
 	// options
 
 	private $options=array(0=>'Zero',1=>'One',2=>'Two','_'=>'');
 	private $pipe;
 
-	public function setUp(){
+	public function setUp() :void{
 		$this->pipe = urlencode('|');
 	}
 

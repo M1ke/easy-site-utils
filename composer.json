@@ -3,13 +3,15 @@
     "description": "A functional set of utilities for PHP websites",
     "license": "MIT",
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=7.2.0",
         "paragonie/random_compat": "^2.0"
     },
     "require-dev": {
         "m1ke/git-php-lint": "1.0.0",
-        "phpunit/phpunit": "4.5.0",
-        "roave/security-advisories": "dev-master"
+        "roave/security-advisories": "dev-master",
+        "phpunit/phpunit": "^8",
+        "vimeo/psalm": "^4"
     },
+    "prefer-stable": true,
     "minimum-stability": "dev"
 }

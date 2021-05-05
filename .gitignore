@@ -4,3 +4,4 @@ composer.phar
 youtubeapi.key
 .idea
 tests/youtube-api-key
+.phpunit.result.cache
