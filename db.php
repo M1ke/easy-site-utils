@@ -73,7 +73,7 @@ function create_field(array $field, bool $null_default = false): string{
 		}
 		$default = " default {$field['default']}";
 	}
-	elseif (!$field['null'] && $null_default && !$field['auto'] && !$field['required']){
+	elseif (!$field['null'] && $null_default && !$field['auto'] && !$field['required']) {
 		$default = " default $default";
 	}
 	else {
@@ -96,7 +96,7 @@ function create_table(&$table, &$error, $engine = 'MyISAM'){
 				$field = $field['db'];
 			}
 			$field['title'] = $title;
-			$field_query = create_field($field, (bool) $table['null_default']);
+			$field_query = create_field($field, (bool)$table['null_default']);
 
 			$fields[] = $field_query;
 		}
@@ -149,9 +149,13 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 					$alter = false;
 					foreach ($new_field as $new_field_param => $new_field_val){
 						switch ($new_field_param){
-							case 'prev':
-							break;
-							default:
+							case 'length':
+							case 'type':
+							case 'default':
+							case 'choices':
+								if ($new_field_param==='length' && is_null($new_field_val)){
+									break;
+								}
 								if ($old_field[$new_field_param]!=$new_field_val){
 									$alter = true;
 								}
@@ -237,12 +241,17 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 
 function field_type(&$type, &$length, &$choices = null){
 	switch ($type){
+		case 'float':
+		case 'decimal':
+		case 'datetime':
+		case 'date':
+		case 'timestamp':
+		case 'text':
+			// do nothing
+		break;
 		case 'coord':
 			$type = 'decimal';
 			$length = '18,16';
-		break;
-		case 'float':
-			$type = 'float';
 		break;
 		case 'bigint':
 		case 'smallint':
@@ -260,22 +269,10 @@ function field_type(&$type, &$length, &$choices = null){
 				$type = 'int';
 			}
 		break;
-		case 'datetime':
-			$type = 'datetime';
-		break;
-		case 'date':
-			$type = 'date';
-		break;
-		case 'text':
-			$type = 'text';
-		break;
 		case 'enum':
 			$type = 'choice';
 			$length = substr($length, 1, strlen($length)-2);
 			$choices = explode("','", $length);
-		break;
-		case 'timestamp':
-			$type = 'timestamp';
 		break;
 		default:
 			$type = 'string';
@@ -357,8 +354,14 @@ function query_update_inc($arr, $inc){
 }
 
 function table_array($table){
-	$fields = [];
 	$cols = query("SHOW columns FROM `$table`", '2d');
+	$indexes = query("SHOW INDEX FROM `$table` WHERE Key_name<>'PRIMARY'", '2d');
+
+	return table_array_inner($cols, $indexes);
+}
+
+function table_array_inner($cols, $indexes){
+	$fields = [];
 	foreach ($cols as $col){
 		$field = [];
 		$bracket = strpos($col['Type'], '(');
@@ -366,6 +369,12 @@ function table_array($table){
 			$bracket++;
 			$field['length'] = substr($col['Type'], $bracket, strpos($col['Type'], ')')-$bracket);
 			$field['type'] = substr($col['Type'], 0, $bracket-1);
+			if ($field['type']==='enum'){
+				$field['choices'] = array_map(static function ($choice){
+					return substr($choice, 1, -1);
+				}, explode(",", $field['length']));
+				$field['length'] = null;
+			}
 		}
 		else {
 			$field['type'] = $col['Type'];
@@ -377,16 +386,15 @@ function table_array($table){
 		if (strlen($col['Default'])>0){
 			$field['default'] = $col['Default'];
 		}
-		if ($col['Extra']=='auto_increment'){
+		if ($col['Extra']==='auto_increment'){
 			$field['auto'] = 1;
 		}
-		if ($col['Key']=='PRI'){
+		if ($col['Key']==='PRI'){
 			$arr['primary'] = $col['Field'];
 		}
 		$fields[$col['Field']] = $field;
 	}
 	$arr['fields'] = $fields;
-	$indexes = query("SHOW INDEX FROM `$table` WHERE Key_name<>'PRIMARY'", '2d');
 	foreach ($indexes as $index){
 		$arr['index'][] = $index['Key_name'];
 	}
