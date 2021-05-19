@@ -247,6 +247,9 @@ function field_type(&$type, &$length, &$choices = null){
 		case 'date':
 		case 'timestamp':
 		case 'text':
+		case 'enum':
+		case 'blob':
+		case 'mediumtext':
 			// do nothing
 		break;
 		case 'coord':
@@ -268,11 +271,6 @@ function field_type(&$type, &$length, &$choices = null){
 			else {
 				$type = 'int';
 			}
-		break;
-		case 'enum':
-			$type = 'choice';
-			$length = substr($length, 1, strlen($length)-2);
-			$choices = explode("','", $length);
 		break;
 		default:
 			$type = 'string';
