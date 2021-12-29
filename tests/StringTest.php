@@ -219,19 +219,19 @@ class StringTest extends TestCase {
 
 	function testPhoneCountryReturnsStripped(){
 		$num = '447816581298';
-		$national = phone_country($num, '44');
+		$national = phone_country($num, '44', false);
 		self::assertEquals('7816581298', $national);
 	}
 
 	function testPhoneCountryReturnsStrippedZeroed(){
 		$num = '447816581298';
-		$national = phone_country($num, '44', true);
+		$national = phone_country($num, '44');
 		self::assertEquals('07816581298', $national);
 	}
 
 	function testPhoneCountryPlusReturnsStrippedZeroed(){
 		$num = '+447816581298';
-		$national = phone_country($num, '44', true);
+		$national = phone_country($num, '44');
 		self::assertEquals('07816581298', $national);
 	}
 
