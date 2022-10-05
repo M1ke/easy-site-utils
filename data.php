@@ -175,7 +175,7 @@ function validate($validate, &$p = null, &$errors = null, $type = null, $clear =
 			}
 		}
 		else {
-			if (is_array($p[$input]) && $valid['type']!=='func'){
+			if (is_array($p[$input]??null) && $valid['type']!=='func'){
 				validate_input_array($valid, $p[$input], $errors);
 				if (!empty($valid['serialize'])){
 					$p[$input] = serialize($p[$input]);
@@ -220,7 +220,8 @@ function validate_input_array($valid, &$val, &$errors){
 // need to write a more robust way of handling array input in the form creation stage, link to validator, avoid '[]'
 function validate_input($valid, &$p, &$error){
 	$error = null;
-	if ($valid['type']!=='func'){
+    $val = '';
+	if (($valid['type']??0)!=='func'){
 		if (is_array($p)){
 			$val =& $p[$valid['_input']];
 		}
@@ -228,10 +229,10 @@ function validate_input($valid, &$p, &$error){
 			$val =& $p;
 		}
 	}
-	switch ($valid['type']){
+	switch ($valid['type']??''){
 		case 'address':
 			$val = string_check($val);
-			if (empty($valid['blank']) && strlen($val)<4){
+			if (empty($valid['blank']??'') && strlen($val)<4){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid address.';
 			}
 			if (!empty($valid['lines']) && !empty($val) && substr_count($val, "\n")<($valid['lines']-1)){
@@ -267,7 +268,7 @@ function validate_input($valid, &$p, &$error){
 				$err = true;
 			}
 			if (!empty($err)){
-				if (!empty($valid['blank'])){
+				if (!empty($valid['blank']??'')){
 					$val = '';
 				}
 				elseif (!empty($valid['msg'])) {
@@ -298,7 +299,7 @@ function validate_input($valid, &$p, &$error){
 		// $val=$p[$valid['copy']];
 		// break;
 		case 'currency':
-			if (!make_currency($val, $valid['blank'] ? 1 : false)){
+			if (!make_currency($val, ($valid['blank']??'') ? 1 : false)){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid currency value';
 			}
 			if (!empty($valid['positive']) && $val<0){
@@ -315,7 +316,7 @@ function validate_input($valid, &$p, &$error){
 			$val = $func($val, $err);
 			$today_date = date('Y-m-d');
 			if (empty($val)){
-				if (!empty($valid['blank'])){
+				if (!empty(($valid['blank']??''))){
 					$val = $valid['blank']==='today' ? $today_date : '';
 				}
 				else {
@@ -341,7 +342,7 @@ function validate_input($valid, &$p, &$error){
 			if (!empty($val)){
 				$val = date_from_dob($val);
 			}
-			if (empty($val) and empty($valid['blank'])){
+			if (empty($val) and empty($valid['blank']??'')){
 				if (!empty($valid['msg'])){
 					$error = $valid['msg'];
 				}
@@ -363,7 +364,7 @@ function validate_input($valid, &$p, &$error){
 			}
 		break;
 		case 'email':
-			if (!make_email($val, ($valid['blank'] ? 1 : false))){
+			if (!make_email($val, (($valid['blank']??'') ? 1 : false))){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid email address.';
 			}
 		break;
@@ -399,13 +400,13 @@ function validate_input($valid, &$p, &$error){
 		break;
 		case 'name':
 			$val = make_name($val);
-			if (empty($valid['blank']) and empty($val)){
+			if (empty($valid['blank']??'') and empty($val)){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid name.';
 			}
 		break;
 		case 'num':
 		case 'number':
-			if (!is_number($val, ($valid['blank'] ? 1 : false))){
+			if (!is_number($val, (($valid['blank']??'') ? 1 : false))){
 				if (!is_numeric($valid['default'])){
 					$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid number.';
 					break;
@@ -438,25 +439,25 @@ function validate_input($valid, &$p, &$error){
 				$error = (!make_phones($val, $p[$valid['other']]));
 			}
 			else {
-				$error = (!make_phone($val, $valid['blank'] ? 1 : false));
+				$error = (!make_phone($val, ($valid['blank']??'') ? 1 : false));
 			}
 			if (!empty($error)){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid phone number.';
 			}
 		break;
 		case 'postcode':
-			if (!make_postcode($val, ($valid['blank'] ? 1 : false))){
+			if (!make_postcode($val, (($valid['blank']??'') ? 1 : false))){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid postcode.';
 			}
 		break;
 		case 'time':
-			if (!make_time($val, $valid['blank'] ? 1 : false, $valid['format'] ? $valid['format'] : null)){
+			if (!make_time($val, ($valid['blank']??'') ? 1 : false, $valid['format']??null)){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid time.';
 			}
 		break;
 		case 'url':
 		case 'website':
-			if (!make_website($val, $valid['blank'] ? 1 : false)){
+			if (!make_website($val, ($valid['blank']??'') ? 1 : false)){
 				$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a valid website address.';
 			}
 			if (is_array($valid['unique'])){
@@ -476,7 +477,7 @@ function validate_input($valid, &$p, &$error){
 			}
 		default:
 			if (!empty($val)){
-				$val = string_check($val, $valid['strip']);
+				$val = string_check($val, $valid['strip']??'');
 			}
 			if (!empty($valid['length'])){
 				if (strlen($val)<$valid['length']){
@@ -504,7 +505,7 @@ function validate_unique($valid, $val, &$error){
 		field (default to _input)
 		except && id
 	*/
-	if (is_array($valid['unique']) and !empty($val)){
+	if (is_array($valid['unique']??null) and !empty($val)){
 		$check = query("SELECT count(*) FROM ".$valid['unique']['table']." WHERE ".(isset($valid['unique']['field']) ? $valid['unique']['field'] : $valid['_input'])."='$val'".(!empty($valid['unique']['except']) ? " and ".$valid['unique']['id']."<>'".$valid['unique']['except']()."'" : '').(!empty($valid['unique']['status']) ? " and status<>0" : ''), 'single');
 		if (!empty($check)){
 			$error = !empty($valid['unique']['error']) ? $valid['unique']['error'] : 'The value you entered is already present.';

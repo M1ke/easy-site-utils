@@ -5,7 +5,7 @@
  */
 function create_field(array $field, bool $null_default = false): string{
 	$field['title'] = '`'.string_check($field['title']).'`';
-	if (!$null_default && $field['null_default']){
+	if (!$null_default && ($valid['null_default']??'')){
 		$null_default = true;
 	}
 	$default = '';
@@ -66,20 +66,20 @@ function create_field(array $field, bool $null_default = false): string{
 			$type .= '('.$field['length'].') collate utf8_unicode_ci';
 			$default = "''";
 	}
-	$null = ' '.($field['null'] ? '' : 'NOT ').'NULL';
+	$null = ' '.(($field['null']??'') ? '' : 'NOT ').'NULL';
 	if (isset($field['default'])){
 		if ($field['type']!=='timestamp'){
 			$field['default'] = "'".$field['default']."'";
 		}
 		$default = " default {$field['default']}";
 	}
-	elseif (!$field['null'] && $null_default && !$field['auto'] && !$field['required']) {
+	elseif (!($field['null']??'') && $null_default && !($field['auto']??'') && !($field['required']??'')) {
 		$default = " default $default";
 	}
 	else {
 		$default = '';
 	}
-	if ($field['auto']==1){
+	if (($field['auto']??'')==1){
 		$auto = ' auto_increment';
 	}
 	else {
@@ -92,11 +92,11 @@ function create_field(array $field, bool $null_default = false): string{
 function create_table(&$table, &$error, $engine = 'MyISAM'){
 	if (is_array($table['fields'])){
 		foreach ($table['fields'] as $title => $field){
-			if ($field['db']){
+			if ($field['db']??''){
 				$field = $field['db'];
 			}
 			$field['title'] = $title;
-			$field_query = create_field($field, (bool)$table['null_default']);
+			$field_query = create_field($field, (bool)($table['null_default']??false));
 
 			$fields[] = $field_query;
 		}
@@ -118,7 +118,7 @@ function create_table(&$table, &$error, $engine = 'MyISAM'){
 function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 	foreach ($new as $new_table_title => $new_table){
 		$new_table['title'] = $new_table_title;
-		if (is_array($old[$new_table_title])){
+		if (is_array($old[$new_table_title]??null)){
 			$old_fields = $old[$new_table_title]['fields'];
 			foreach ($new_table['fields'] as $new_field_title => $new_field){
 				if (isset($new_field['db'])){
@@ -197,7 +197,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 				}
 			}
 		}
-		elseif (is_array($new_table['prev'])) {
+		elseif (is_array($new_table['prev']??null)) {
 			foreach ($new_table['prev'] as $old_table_title){
 				if (is_array($old[$old_table_title])){
 					$queries[] = "RENAME TABLE `$old_table_title` TO `{$new_table['title']}`";
@@ -210,14 +210,14 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 				error($error);
 			}
 			$queries[] = $create;
-			if (is_array($new_table['index'])){
+			if (is_array($new_table['index']??null)){
 				foreach ($new_table['index'] as $index){
 					$index = str_replace(',', '`,`', $index);
 					$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 				}
 			}
 		}
-		if (is_array($new_table['triggers'])){
+		if (is_array($new_table['triggers']??null)){
 			foreach ($new_table['triggers'] as $trigger_type => $trigger){
 				$trigger_name = $new_table['title'].'_'.$trigger_type;
 				// need to ensure it doesn't crash the process if user lacks privilege or trigger exists

@@ -6,6 +6,10 @@ require_once __DIR__.'/../init.php';
 
 class DateTest extends TestCase {
 
+    protected function setUp():void{
+        date_default_timezone_set('UTC');
+    }
+
 	function testDateComponents(){
 		$date = '05/06/1988';
 		$date = date_components($date);
@@ -313,26 +317,26 @@ class DateTest extends TestCase {
 	function testStringTimeBasic(){
 		$date = '2016-07-30';
 		$timestamp = string_time($date);
-		self::assertEquals(1469833200, $timestamp);
+		self::assertEquals(1469836800, $timestamp);
 	}
 
 	function testStringTimeUk(){
 		$date = '30/07/2016';
 		$timestamp = string_time($date);
-		self::assertEquals(1469833200, $timestamp);
+		self::assertEquals(1469836800, $timestamp);
 	}
 
 	function testStringTimeUsa(){
 		$date = '07/30/2016';
 		$error = null;
 		$timestamp = string_time($date, $error, true);
-		self::assertEquals(1469833200, $timestamp);
+		self::assertEquals(1469836800, $timestamp);
 	}
 
 	function testStringTimeMonthOnly(){
 		$date = '07/2016';
 		$timestamp = string_time($date);
-		self::assertEquals(1467327600, $timestamp);
+		self::assertEquals(1467331200, $timestamp);
 	}
 
 	function testStringTimeInvalidString(){
