@@ -334,6 +334,7 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 		return $return;
 	}
 	$return['head'] = [];
+    $order = [];
 	if (isset($request['sort'])){
 		$order = explode('|', str_replace('%7C', '|', $request['sort']));
 	}
@@ -342,16 +343,16 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 		$header_link = false;
 		if (!empty($head['order'])){
 			$current = '';
-			if ($key==$order[0]){
+			if ($key==($order[0]??'')){
 				$sort_next = $order[1]==='asc' ? 'desc' : 'asc';
 				$sort_current = $order[1]==='asc' ? 'asc' : 'desc';
 
-				$return['order'] = $head['pfx'].$head['order'].' '.strtoupper($sort_current);
+				$return['order'] = ($head['pfx']??'').$head['order'].' '.strtoupper($sort_current);
 				$current = 'sort-current sort-current-'.$sort_current;
 			}
-			elseif ($head['default']==1) {
-				$sort_next = (empty($order[0]) && $head['sort']==='asc') ? 'desc' : 'asc';
-				$default = $head['pfx'].$head['order'].' '.strtoupper($head['sort']);
+			elseif (($head['default']??null)==1) {
+				$sort_next = (empty($order[0]??'') && $head['sort']==='asc') ? 'desc' : 'asc';
+				$default = ($head['pfx']??'').$head['order'].' '.strtoupper($head['sort']);
 			}
 			else {
 				$sort_next = $head['sort'];
@@ -361,12 +362,12 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 				$query_string['sort'] = $key.'|'.$sort_next;
 				$url = $base_url.'?'.http_build_query($query_string);
 
-				$head['class'] .= " sort-$sort_next $current"; // Requires a space at the start of the string
+				$head['class'] = ($head['class']??'')." sort-$sort_next $current"; // Requires a space at the start of the string
 				$head['title'] = '<a href="'.$url.'">'.$head['title'].'</a>';
 				$header_link = true;
 			}
 		}
-		if ($head['no']){
+		if ($head['no']??''){
 			continue;
 		}
 		if (!$header_link){
@@ -379,7 +380,7 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 		}
 		$return['head'][] = $head['title'];
 	}
-	$return['head'] = implode($extra['sep'] ?: '', $return['head']);
+	$return['head'] = implode(($extra['sep']??false) ?: '', $return['head']);
 
 	if (empty($return['order'])){
 		$return['order'] = isset($default) ? $default : "RAND()";

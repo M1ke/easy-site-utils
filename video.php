@@ -58,7 +58,7 @@ function youtube_video_id($url,$validate=false){
 	else {
 		$regex="/.*\/{0,2}(?:w{3}\.)*(?:youtube\.com|youtu\.be)\/(?:v\/|embed\/)*([^\&\?\/]+)/";
 		preg_match($regex,$url,$match);
-		$out=$match[1];
+		$out=$match[1]??null;
 	}
 	return $out;
 }

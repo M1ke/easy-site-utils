@@ -90,6 +90,7 @@ function camel_case($str, $first = false){
 
 function comma_list($array, $conj = 'and'){
 	$count = count($array);
+    $return = '';
 	if ($count>1){
 		$n = 0;
 		foreach ($array as $item){
@@ -116,6 +117,7 @@ function custom_number($num, $sep = ','){
 	$num = substr_before($num, '.');
 	$num = (string)$num;
 	$strlen = strlen($num)-1;
+    $string = '';
 	for ($n = $strlen; $n>-1; $n--){
 		$string = ($i>0 and $i % 3==0) ? $num[$n].$sep.$string : $num[$n].$string;
 		$i++;
@@ -1029,6 +1031,7 @@ function substr_until($string, $until, $inc = false){
 
 function substr_words($string, $words, $sep = ' '){
 	$len = strlen($string);
+    $count = 0;
 	if ($string[$len-1]==$sep){
 		$len--;
 	}
