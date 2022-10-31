@@ -178,10 +178,16 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 			// }
 			if (is_array($new_table['index'])){
 				foreach ($new_table['index'] as $index){
-					$index_name = explode(',', $index);
-					$index_name = $index_name[0];
+					$index_fields = explode(',', $index);
+					$index_name = $index_fields[0];
 					$new_table['index_names'][] = $index_name;
 					$index = str_replace(',', '`,`', $index);
+					foreach($index_fields as $index_field) {
+						if (!isset($new_table['fields'][$index_field])) {
+							$queries[] = "-- Index {$index} contains field {$index_field} which is not in schema, skipping";
+							continue 2;
+						}
+					}
 					if (!@in_array($index_name, $old[$new_table['title']]['index'])){
 						$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 					}
@@ -212,6 +218,13 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 			$queries[] = $create;
 			if (is_array($new_table['index']??null)){
 				foreach ($new_table['index'] as $index){
+					$index_fields = explode(',', $index);
+					foreach($index_fields as $index_field) {
+						if (!isset($new_table['fields'][$index_field])) {
+							$queries[] = "-- Index {$index} contains field {$index_field} which is not in schema, skipping";
+							continue 2;
+						}
+					}
 					$index = str_replace(',', '`,`', $index);
 					$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 				}
