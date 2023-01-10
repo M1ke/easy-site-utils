@@ -579,13 +579,9 @@ function number_unique_string($num, $alpha_choice = 0, $depth = 0){
 		'YHMPTRBVNQCXZFWJKDLGS',
 		'p6dZkKB98GXj4LxgRNQCrtTmMJynD3WF5wb2cqvhfHz7SPsYV0',
 	];
-	if (isset($alphas[$alpha_choice])){
-		$alpha = $alphas[$alpha_choice];
-	}
-	else {
-		$alpha = $alpha_choice;
-	}
+	$alpha = $alphas[$alpha_choice] ?? $alpha_choice;
 	$n = floor($num / strlen($alpha));
+	$string = '';
 	if ($n>0){
 		$string .= number_unique_string($n, $alpha_choice, ($depth+1));
 	}
