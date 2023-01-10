@@ -471,7 +471,7 @@ function inc_date($date = null, $inc = [], $stamp = false, $format = 'Y-m-d H:i:
 	if (!empty($inc['date'])){
 		$inc['day'] = $inc['date'];
 	}
-	$date = mktime(date('H', $date)+$inc['hour'], date('i', $date)+$inc['min'], date('s', $date)+$inc['second'], date('m', $date)+$inc['month'], date('d', $date)+$inc['day'], date('Y', $date)+$inc['year']);
+	$date = mktime(date('H', $date)+($inc['hour']??0), date('i', $date)+($inc['min']??0), date('s', $date)+($inc['second']??0), date('m', $date)+($inc['month']??0), date('d', $date)+($inc['day']??0), date('Y', $date)+($inc['year']??0));
 	if ($stamp){
 		return $date;
 	}

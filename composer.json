@@ -3,7 +3,7 @@
     "description": "A functional set of utilities for PHP websites",
     "license": "MIT",
     "require": {
-        "php": ">=7.2.0",
+        "php": ">=7.4.0",
         "paragonie/random_compat": "^2.0"
     },
     "require-dev": {
