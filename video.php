@@ -51,7 +51,7 @@ function youtube_video_id($url,$validate=false){
 			return null;
 		}
 	}
-	parse_str(parse_url( $url, PHP_URL_QUERY ), $vars );
+	parse_str(parse_url( $url, PHP_URL_QUERY )??'', $vars );
 	if (!empty($vars['v'])){
 		$out=$vars['v'];
 	}

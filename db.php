@@ -382,7 +382,7 @@ function table_array_inner($cols, $indexes){
 		if (empty($field['length'])){
 			unset($field['length']);
 		}
-		if (strlen($col['Default'])>0){
+		if (strlen($col['Default']??'')>0){
 			$field['default'] = $col['Default'];
 		}
 		if ($col['Extra']==='auto_increment'){
