@@ -119,6 +119,9 @@ function is_off($define){
 }
 
 function get_args_smart(Array $args,$n=0){
+	$array = [];
+	$callable = null;
+	$string = '';
 	for (;$n<count($args);$n++){
 		if (is_array($args[$n])){
 			$array=$args[$n];

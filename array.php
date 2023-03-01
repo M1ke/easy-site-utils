@@ -470,7 +470,7 @@ function array_snip(array $arr, $key){
 function array_stitch(array $arr, array $order, $glue = '', $missing = false){
 	$new_arr = [];
 	foreach ($order as $key){
-		$new_arr[] = $arr[$key];
+		$new_arr[] = $arr[$key]??null;
 		if ($missing){
 			unset($arr[$key]);
 		}
