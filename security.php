@@ -6,22 +6,9 @@
  * verification keys, salts, auth tokens etc.
  *
  * Requires random_int which can be provided by PHP 7 or paragonie/random_compat
- *
- * @param int $length
- * @param bool $include_upper_case (default on, set to false for lower case only)
- *
- * @return string
- * @throws Exception
  */
-function random_token($length, $include_upper_case = true){
-	if ($length<1 || !is_numeric($length)){
-		throw new Exception("The password generator must be called with a numeric length parameter greater than 0");
-	}
-
-	$max_length = 64;
-	if ($length>$max_length){
-		throw new Exception("The password generator should be called with a string length of $max_length or less to avoid accidental long loops.");
-	}
+function random_token(int $length, bool $include_upper_case = true): string{
+	$length = min(64, max(1, $length));
 
 	$character_set = array_merge(range('a', 'z'), range('0', '9'));
 	if ($include_upper_case){
@@ -31,6 +18,7 @@ function random_token($length, $include_upper_case = true){
 	$set_size = count($character_set);
 	$password_arr = [];
 	for ($n = 0; $n<$length; $n++){
+		/** @noinspection PhpUnhandledExceptionInspection */
 		$password_arr[$n] = $character_set[random_int(0, $set_size-1)];
 	}
 
