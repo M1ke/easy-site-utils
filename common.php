@@ -66,6 +66,7 @@ function csv_array_parse($parsed, $check = false, $start = 1){
 }
 
 function csv_array_string($string, $check = false, $delimiter = ',', $start = 1){
+	$string = trim($string);
 	$string = preg_split("/\r\n|\n|\r/", $string);
 	foreach ($string as $line){
 		$parsed[] = str_getcsv($line, $delimiter);
