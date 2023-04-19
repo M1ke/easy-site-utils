@@ -97,6 +97,9 @@ function dir_tree($dir, $root = null){
  * @return bool
  */
 function file_delete($file){
+	if (empty($file)) {
+		return true;
+	}
 	if (!file_exists($file)){
 		return true;
 	}
@@ -131,6 +134,9 @@ function file_get_json($url, $throw_on_error = true){
 
 function file_load($file, $serialize = false){
 	if (!is_readable($file)){
+		return false;
+	}
+	if (is_dir($file)) {
 		return false;
 	}
 	$size = filesize($file);
@@ -320,4 +326,3 @@ function php_size_to_bytes($sSize){
 
 	return $iValue;
 }
-//

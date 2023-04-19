@@ -14,6 +14,8 @@ class MapTest extends TestCase {
 	private $pl;
 	private $polygonDurham;
 	private $polygonLondon;
+	private $polygonCanterbury;
+	private $polygonHatfield;
 
 	function __construct(){
 		parent::__construct();

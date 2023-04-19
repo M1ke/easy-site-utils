@@ -57,7 +57,7 @@ function csv_array_parse($parsed, $check = false, $start = 1){
 		$item = $parsed[$n];
 		$i = 0;
 		foreach ($title_line as $field){
-			$item[$i] = trim($item[$i]);
+			$item[$i] = trim($item[$i] ?? '');
 			$arr[$n][$field] = $check ? string_check($item[$i]) : $item[$i];
 			$i++;
 		}
@@ -76,39 +76,39 @@ function csv_array_string($string, $check = false, $delimiter = ',', $start = 1)
 
 // This code comes from somewhere online, find where and add a citation
 function debug_code_error($num,$str,$file,$line,$context){
-    if (!(error_reporting() & $num)) return;
-    switch($num){
-    case E_WARNING:
-    case E_USER_WARNING:
-    case E_STRICT:
-    case E_NOTICE:
-    case E_USER_NOTICE:
-        $type='warning';
-        $fatal=false;
-    break;
-    default:
-        $type='fatal error';
-        $fatal=true;
-    }
-    $trace=array_reverse(debug_backtrace());
-    array_pop($trace);
-    if (php_sapi_name()=='cli'){
-        echo 'Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.':'."\n";
-        foreach ($trace as $item) echo '  '.(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()'."\n";
-    }
+	if (!(error_reporting() & $num)) return;
+	switch($num){
+		case E_WARNING:
+		case E_USER_WARNING:
+		case E_STRICT:
+		case E_NOTICE:
+		case E_USER_NOTICE:
+			$type='warning';
+			$fatal=false;
+		break;
+		default:
+			$type='fatal error';
+			$fatal=true;
+	}
+	$trace=array_reverse(debug_backtrace());
+	array_pop($trace);
+	if (php_sapi_name()=='cli'){
+		echo 'Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.':'."\n";
+		foreach ($trace as $item) echo '  '.(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()'."\n";
+	}
 	else {
-        echo '<p class="error_backtrace">Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.':';
-        echo '<ol>';
-        foreach ($trace as $item) echo '<li>'.(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()</li>';
-        echo '</ol></p>';
-    }
-    if (ini_get('log_errors')){
-        $items=array();
-        foreach($trace as $item) $items[]=(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()';
-        $message='Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.': '.join(' | ', $items);
-        error_log($message);
-    }
-    if ($fatal) exit(1);
+		echo '<p class="error_backtrace">Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.':';
+		echo '<ol>';
+		foreach ($trace as $item) echo '<li>'.(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()</li>';
+		echo '</ol></p>';
+	}
+	if (ini_get('log_errors')){
+		$items=array();
+		foreach($trace as $item) $items[]=(isset($item['file'])?$item['file']:'<unknown file>').' '.(isset($item['line'])?$item['line']:'<unknown line>').' calling '.$item['function'].'()';
+		$message='Backtrace from '.$type.' \''.$str.'\' at '.$file.' '.$line.': '.join(' | ', $items);
+		error_log($message);
+	}
+	if ($fatal) exit(1);
 }
 
 function is_on($define){
