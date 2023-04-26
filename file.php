@@ -97,7 +97,7 @@ function dir_tree($dir, $root = null){
  * @return bool
  */
 function file_delete($file){
-	if (empty($file)) {
+	if (!$file) {
 		return true;
 	}
 	if (!file_exists($file)){

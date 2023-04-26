@@ -91,7 +91,7 @@ function is_pos_blank($number){
  * @deprecated use is_pos which does not pass by reference
  */
 function is_positive(&$number, $blank = null){
-	if (@strlen($number ?? '')>0){
+	if (strlen($number ?? '')>0){
 		$number = trim($number);
 		if ($number>0 && is_numeric($number)){
 			return true;
