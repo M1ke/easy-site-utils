@@ -655,7 +655,7 @@ function array_unset_false(array $arr, $strict = true){
 		if ($strict and $val===false){
 			unset($arr[$key]);
 		}
-		elseif ($val=='') {
+		elseif ($val=='' || $val === 0) {
 			unset($arr[$key]);
 		}
 	}
@@ -686,7 +686,7 @@ function arraystr(array $array){
  * @return string
  */
 function append_to_string_array($string, $item, $sep = ','){
-	$arr = explode($sep, $string);
+	$arr = explode($sep, $string ?? '');
 	$arr[] = $item;
 	$string = implode($sep, $arr);
 

@@ -90,7 +90,7 @@ function camel_case($str, $first = false){
 
 function comma_list($array, $conj = 'and'){
 	$count = count($array);
-    $return = '';
+	$return = '';
 	if ($count>1){
 		$n = 0;
 		foreach ($array as $item){
@@ -117,7 +117,7 @@ function custom_number($num, $sep = ','){
 	$num = substr_before($num, '.');
 	$num = (string)$num;
 	$strlen = strlen($num)-1;
-    $string = '';
+	$string = '';
 	for ($n = $strlen; $n>-1; $n--){
 		$string = ($i>0 and $i % 3==0) ? $num[$n].$sep.$string : $num[$n].$string;
 		$i++;
@@ -212,7 +212,7 @@ function in_string($needle, $haystack, $multiple_and = false){
 		}
 	}
 	else {
-		$result = (stripos($haystack, $needle)!==false);
+		$result = (stripos($haystack ?? '', $needle)!==false);
 	}
 
 	return $result;
@@ -298,7 +298,7 @@ function make_email(&$string, $blank = false){
 	// limit to the first candidate if someone tries to pass in a list
 
 	// remove commas
-	$string = explode(',', $string)[0];
+	$string = explode(',', $string ?? '')[0];
 
 	// remove spaces
 	$string = trim($string);
@@ -337,7 +337,7 @@ function make_permalink($string, $blank = null){
 	if (strlen($string)<1){
 		$string = $blank;
 	}
-	$string = strtolower($string);
+	$string = strtolower($string ?? '');
 	$string = str_replace(['&#39;', '&amp;'], '', $string);
 	$string = preg_replace("([\W])", '-', $string);
 	while (strpos($string, '--')!==false){
@@ -470,12 +470,12 @@ function make_postcode(&$string, $blank = null){
 
 function make_website(&$string, $blank = null){
 	// for the idiots out there
-	if (strtolower($string)=='no'){
+	if (strtolower($string ?? '')=='no'){
 		$string = null;
 
 		return true;
 	}
-	if (strlen($string)>0){
+	if (strlen($string ?? '')>0){
 		$string = string_check($string);
 		$pattern = "/((http)|(https)|(ftp)|(HTTP)|(HTTPS)|(FTP)):\/\//";
 		if (preg_match($pattern, $string)<1){
@@ -1027,7 +1027,7 @@ function substr_until($string, $until, $inc = false){
 
 function substr_words($string, $words, $sep = ' '){
 	$len = strlen($string);
-    $count = 0;
+	$count = 0;
 	if ($string[$len-1]==$sep){
 		$len--;
 	}

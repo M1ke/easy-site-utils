@@ -53,17 +53,17 @@ class oneImage {
 		switch ($this->imgType){
 			case 'image/gif':
 				$this->imgResource = imagecreatefromgif($this->fileIn);
-				break;
+			break;
 			case 'image/pjpeg':
 			case 'image/jpeg':
 			case 'image/jpg':
 				$this->imgResource = imagecreatefromjpeg($this->fileIn);
-				break;
+			break;
 			case 'image/png':
 			case 'image/x-png':
 				$this->imgResource = imagecreatefrompng($this->fileIn);
 				imagealphablending($this->imgResource, true);
-				break;
+			break;
 		}
 		if (!$this->imgResource){
 			$this->error = 'The image could not be processed, please try another image. If the error only occurs with one image (or set of similar images) your file(s) may be corrupted. Try opening it in an image editor and saving a new version.';
@@ -91,7 +91,7 @@ class oneImage {
 					$options['newwidth'] = $this->imgHeight * $options['ratio'];
 					$options['newheight'] = $this->imgHeight;
 				}
-				break;
+			break;
 			case ($options['ratio']>1):
 				if ($this->imgWidth>$this->imgHeight){
 					$options['newwidth'] = $this->imgHeight * $options['ratio'];
@@ -101,7 +101,7 @@ class oneImage {
 					$options['newwidth'] = $this->imgWidth;
 					$options['newheight'] = $this->imgWidth / $options['ratio'];
 				}
-				break;
+			break;
 			default:
 				if (empty($options['newwidth'])){
 					if ($this->imgWidth>$this->imgHeight){
@@ -169,7 +169,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/pjpeg':
 			case 'image/jpeg':
 			case 'image/jpg':
@@ -178,7 +178,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/png':
 			case 'image/x-png':
 				if (!imagepng($image_cropped, $options['file'])){
@@ -186,7 +186,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 		}
 		if (!file_exists($options['file'])){
 			$this->error = 'The cropped image was created but could not be found in ' . $options['file'] . '.';
@@ -324,7 +324,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/pjpeg':
 			case 'image/jpeg':
 			case 'image/jpg':
@@ -333,7 +333,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/png':
 			case 'image/x-png':
 				if (!imagepng($this->imgResized, $options['file'])){
@@ -341,7 +341,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 		}
 		imagedestroy($this->imgResized);
 
@@ -362,7 +362,7 @@ class oneImage {
 			case 'image/jpg':
 			case 'image/png':
 			case 'image/x-png':
-				break;
+			break;
 			default:
 				$this->error = 'You have uploaded an invalid image type.';
 
@@ -419,7 +419,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/pjpeg':
 			case 'image/jpeg':
 			case 'image/jpg':
@@ -428,7 +428,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 			case 'image/png':
 			case 'image/x-png':
 				if (!imagepng($image_watermarked, $options['file'])){
@@ -436,7 +436,7 @@ class oneImage {
 
 					return false;
 				}
-				break;
+			break;
 		}
 		imagedestroy($image_watermarked);
 
@@ -472,16 +472,16 @@ function image_ext($img_type){
 	switch ($img_type){
 		case 'image/gif':
 			return 'gif';
-			break;
+		break;
 		case 'image/pjpeg':
 		case 'image/jpeg':
 		case 'image/jpg':
 			return 'jpg';
-			break;
+		break;
 		case 'image/png':
 		case 'image/x-png':
 			return 'png';
-			break;
+		break;
 	}
 
 	return false;
@@ -496,7 +496,7 @@ function image_save($id, $params, &$error = null){
 
 				return false;
 			}
-			break;
+		break;
 		case 'crop':
 			$image = ['image' => $params['in'], 'thumb' => $params['out'] . $id . '.' . $params['ext']];
 			if (is_array($params['size'])){
@@ -515,7 +515,7 @@ function image_save($id, $params, &$error = null){
 					return false;
 				}
 			}
-			break;
+		break;
 		case 'store':
 			$image = ['temp' => $params['in'], 'file' => $params['out'] . $id, 'ext' => $params['ext']];
 			if (is_array($params['size'])){
@@ -534,7 +534,7 @@ function image_save($id, $params, &$error = null){
 					return false;
 				}
 			}
-			break;
+		break;
 		default:
 			$error = 'You must specify an image save type.';
 
@@ -547,7 +547,7 @@ function image_save($id, $params, &$error = null){
 function image_store_init(&$p, &$error){
 	$p['file+ext'] = $p['file'] . '.' . $p['ext'];
 	// if theres no width or height specified we just save it straight away
-	if (!$p['height'] and !$p['width']){
+	if (empty($p['height']) && empty($p['width'])){
 		$copy = true;
 	}
 	else {
@@ -611,16 +611,16 @@ function image_create($p, &$error = null){
 	switch ($p['img-type']){
 		case 'image/gif':
 			$image_resource = imagecreatefromgif($p['temp']);
-			break;
+		break;
 		case 'image/pjpeg':
 		case 'image/jpeg':
 		case 'image/jpg':
 			$image_resource = imagecreatefromjpeg($p['temp']);
-			break;
+		break;
 		case 'image/png':
 		case 'image/x-png':
 			$image_resource = imagecreatefrompng($p['temp']);
-			break;
+		break;
 	}
 	if (empty($image_resource)){
 		$error = 'The image could not be processed, please try another image. If the error only occurs with one image (or set of similar images) your file(s) may be corrupted. Try opening it in an image editor and saving a new version.';
@@ -660,7 +660,7 @@ function image_store($p, &$error){
 
 				return false;
 			}
-			break;
+		break;
 		case 'image/pjpeg':
 		case 'image/jpeg':
 		case 'image/jpg':
@@ -674,7 +674,7 @@ function image_store($p, &$error){
 
 				return false;
 			}
-			break;
+		break;
 		case 'image/png':
 		case 'image/x-png':
 			if (!imagealphablending($image_resized, false)){
@@ -702,7 +702,7 @@ function image_store($p, &$error){
 
 				return false;
 			}
-			break;
+		break;
 	}
 	if (!file_exists($p['file+ext'])){
 		$error = 'The resized file was created but could not be found at ' . $p['file+ext'] . '.';
@@ -789,18 +789,18 @@ function image_watermark(&$p, &$error = null){
 	switch ($p['img-type']){
 		case 'image/gif':
 			imagegif($image, $p['file']);
-			break;
+		break;
 		case 'image/pjpeg':
 		case 'image/jpeg':
 		case 'image/jpg':
 			imagejpeg($image, $p['file'], 75);
-			break;
+		break;
 		case 'image/png':
 		case 'image/x-png':
 			imagealphablending($image, false);
 			imagesavealpha($image, true);
 			imagepng($image, $p['file']);
-			break;
+		break;
 	}
 	imagedestroy($image);
 	imagedestroy($watermark_resized);

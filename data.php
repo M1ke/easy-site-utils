@@ -162,7 +162,7 @@ function validate($validate, &$p = null, &$errors = null, $type = null, $clear =
 		if (!isset($p[$input]) and empty($valid['func'])){
 			// copying and checking null still doesn't avoid requirement for need
 			// as sometimes we can end up with a function returning blank which is good, otehr times bad
-			// we either need to ensure all validation checks the variables in play first, 
+			// we either need to ensure all validation checks the variables in play first,
 			// or we need to specify need for items that might not be submitted
 			if (!empty($valid['need'])){
 				$copy = $p;
@@ -220,7 +220,7 @@ function validate_input_array($valid, &$val, &$errors){
 // need to write a more robust way of handling array input in the form creation stage, link to validator, avoid '[]'
 function validate_input($valid, &$p, &$error){
 	$error = null;
-    $val = '';
+	$val = '';
 	if (($valid['type']??0)!=='func'){
 		if (is_array($p)){
 			$val =& $p[$valid['_input']];
@@ -384,8 +384,8 @@ function validate_input($valid, &$p, &$error){
 			$val = serialize($extra);
 		break;
 		case 'html':
-			$val = make_html($val, $valid['tags'], !empty($valid['multi_byte']) ? true : false);
-			if ($valid['length']>0){
+			$val = make_html($val, $valid['tags'] ?? null, !empty($valid['multi_byte']) ? true : false);
+			if (($valid['length'] ?? null)>0){
 				if (strlen($val)<$valid['length']){
 					$error = !empty($valid['msg']) ? $valid['msg'] : 'You must enter a value at least '.($valid['length']==1 ? '1 character' : $valid['length'].' characters').' long';
 				}

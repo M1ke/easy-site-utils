@@ -334,7 +334,7 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 		return $return;
 	}
 	$return['head'] = [];
-    $order = [];
+	$order = [];
 	if (isset($request['sort'])){
 		$order = explode('|', str_replace('%7C', '|', $request['sort']));
 	}
@@ -355,7 +355,7 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 				$default = ($head['pfx']??'').$head['order'].' '.strtoupper($head['sort']);
 			}
 			else {
-				$sort_next = $head['sort'];
+				$sort_next = $head['sort'] ?? null;
 			}
 			if (!empty($base_url) && empty($head['no'])){
 				$query_string = $request;
@@ -371,7 +371,7 @@ function make_table_head(array $table, $base_url = '', array $request = [], arra
 			continue;
 		}
 		if (!$header_link){
-			$head['title'] = '<span>'.$head['title'].'</span>';
+			$head['title'] = '<span>'.($head['title'] ?? '').'</span>';
 		}
 		if (empty($extra['sep'])){
 			$attrs = array_pull($head, ['class', 'hover', 'colspan']);
