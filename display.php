@@ -3,6 +3,7 @@ function form_regenerate($p, $dimension = [], $key = null){
 	if (!is_null($key)){
 		$dimension[] = $key;
 	}
+	$form = '';
 	foreach ($p as $key => $val){
 		if (is_array($val)){
 			$form .= form_regenerate($val, $dimension, $key);
@@ -280,11 +281,11 @@ function make_options_($arr, $current_value = null, $vals = null, $order = false
 	foreach ($arr as $key => $name){
 		$selected = $disabled = $class = $data = false;
 		if (is_array($name)){
-			$data = $name['data'];
-			$class = $name['class'];
+			$data = $name['data'] ?? null;
+			$class = $name['class'] ?? null;
 			$disabled = !empty($name['disabled']);
 			$selected = !empty($name['selected']);
-			$name = $name['name']; // must be last if we add others
+			$name = $name['name'] ?? null; // must be last if we add others
 		}
 		if (is_array($vals)){
 			$val = $vals[$key];
