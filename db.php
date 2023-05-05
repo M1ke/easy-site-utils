@@ -153,7 +153,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 							case 'type':
 							case 'default':
 							case 'choices':
-								$old_field_val = $old_field[$new_field_param];
+								$old_field_val = $old_field[$new_field_param] ?? null;
 								if ($new_field_param==='length' && is_null($old_field_val)){
 									break;
 								}
