@@ -176,7 +176,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 			// 		$queries[]="ALTER TABLE `".$new_table['title']."` DROP `".$old_field_title."`";
 			// 	}
 			// }
-			if (is_array($new_table['index'])){
+			if (is_array($new_table['index']??null)){
 				foreach ($new_table['index'] as $index){
 					$index_fields = explode(',', $index);
 					$index_name = $index_fields[0];
@@ -193,7 +193,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 					}
 				}
 			}
-			if (is_array($old[$new_table['title']]['index'])){
+			if (is_array($old[$new_table['title']]['index']??null)){
 				foreach ($old[$new_table['title']]['index'] as $index){
 					$index_name = explode(',', $index);
 					$index_name = $index_name[0];
