@@ -124,7 +124,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 				if (isset($new_field['db'])){
 					$new_field = $new_field['db'];
 				}
-				if (!is_array($old_fields[$new_field_title])){
+				if (!is_array($old_fields[$new_field_title]??null)){
 					$alter = false;
 					if (is_array($new_field['prev'])){
 						foreach ($new_field['prev'] as $old_field_title){
