@@ -220,6 +220,7 @@ class pointLocation {
 				return true;
 			}
 		}
+		return null;
 	}
 	function pointStringToCoordinates($pointString){
 		$coordinates=explode(" ",$pointString);

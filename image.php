@@ -296,6 +296,7 @@ class oneImage {
 	}
 
 	function store($options){
+		$copy = null;
 		if (empty($options['height']) and empty($options['width'])){
 			$copy = true;
 		}

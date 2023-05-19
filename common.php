@@ -68,6 +68,7 @@ function csv_array_parse($parsed, $check = false, $start = 1){
 function csv_array_string($string, $check = false, $delimiter = ',', $start = 1){
 	$string = trim($string);
 	$string = preg_split("/\r\n|\n|\r/", $string);
+	$parsed = [];
 	foreach ($string as $line){
 		$parsed[] = str_getcsv($line, $delimiter);
 	}
@@ -168,6 +169,7 @@ function is_coord($lat,$lng){
 }
 
 function is_mobile($agent=null,$session=true,$make_mobile=false){
+	$mobile = null;
 	if ($make_mobile){
 		log_file('made mobile');
 		$_SESSION['S_mobile']=true;

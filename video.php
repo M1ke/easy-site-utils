@@ -1,13 +1,15 @@
 <?php
 function make_video($url,$protocol='http'){
 	$parse=parse_url_imp($url);
+	$html='';
 	if (empty($parse)){
 		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
 	}
 	switch ($parse['domain']){
 		case 'youtube.':
 			// creates the variable $v. if YouTube ever change url scheme for 'watch' this will need altering
-			parse_str($parse['arg']);
+			parse_str($parse['arg'], $parse_output);
+			$v = $parse_output['v']??null;
 			$html.='<object type="application/x-shockwave-flash" style="width:480px; height:385px;" data="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"><param name="movie" value="'.$protocol.'://www.youtube.com/v/'.$v.'&color1=0x006699&color2=0x54abd6"/></object>';
 		break;
 		default:
@@ -24,6 +26,7 @@ function make_youtube_video($url,$params){
 	$width=isset($params['width'])?$params['width']:'480';
 	$height=isset($params['height'])?$params['height']:'385';
 	$parse=parse_url_imp($url);
+	$html='';
 	if (empty($parse)){
 		$html.='<!-- this link would not parse and is invalid : '.$url.'-->';
 	}

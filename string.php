@@ -130,6 +130,8 @@ function custom_number($num, $sep = ','){
 }
 
 function data_template($string, $keys, $vals){
+	$find = [];
+	$replace = [];
 	foreach ($keys as $key){
 		$find[] = '['.$key.']';
 		$replace[] = $vals[$key];
@@ -198,9 +200,7 @@ function first_word($string){
 function forename_split($name){
 	$name = strtolower($name);
 	$names = explode(',', $name);
-	$forename .= ucfirst($names[0]).' '.ucfirst($names[1]);
-
-	return $forename;
+	return ucfirst($names[0]).' '.ucfirst($names[1]);
 }
 
 function in_string($needle, $haystack, $multiple_and = false){
@@ -499,7 +499,8 @@ function mb_replace($search, $replace, $subject, &$count = 0){
 	if (is_array($subject)){
 		// call mb_replace for each single string in $subject
 		foreach ($subject as &$string){
-			$string = &mb_replace($search, $replace, $string, $c);
+			$mb_replace = mb_replace($search, $replace, $string, $c);
+			$string = &$mb_replace;
 			$count += $c;
 		}
 	}
@@ -695,6 +696,8 @@ function phone_international($phone, $code = '44'){
 
 function plural(){
 	$args = func_get_args();
+	$int = null;
+	$string = null;
 	foreach ($args as $arg){
 		switch (true){
 			case is_numeric($arg):
@@ -742,6 +745,7 @@ function salt_string($string, $salt = 'abcdef123456789', $chars = null){
 
 function select_array($array, $key = null, $chars = null, $string = ' selected'){
 	$n = 0;
+	$select = '';
 	foreach ($array as $item){
 		if ($n==$key){
 			$item = string_insert($item, $chars, $string);
@@ -755,6 +759,7 @@ function select_array($array, $key = null, $chars = null, $string = ' selected')
 
 function select_options($array, $options = ['string' => ' selected']){
 	$n = 0;
+	$select = '';
 	foreach ($array as $item){
 		$values = explode('~', $item);
 		$select .= '<option';
@@ -791,6 +796,7 @@ function shorten($string, $length = 20, $nospan = null){
 function split_name($string, $full = true){
 	$parts = explode(' ', $string);
 	$count = count($parts);
+	$name = [];
 	if (($count<2) and ($full)){
 		error('This is not a full name - at least one forename and a surname must be provided.');
 	}
@@ -871,6 +877,8 @@ function string_compare($str1, $str2){
 }
 
 function string_data($data, $string){
+	$find = [];
+	$replace = [];
 	foreach ($data as $key => $val){
 		if (!is_numeric($key)){
 			$find[] = '['.$key.']';
@@ -910,6 +918,7 @@ function string_replace_last($find, $replace, $string){
 
 function string_replace_once($needle, $replace, $haystack){
 	$pos = strpos($haystack, $needle);
+	$newstring = null;
 	if ($pos!==false){
 		$newstring = substr_replace($haystack, $replace, $pos, strlen($needle));
 	}
@@ -1149,6 +1158,7 @@ function worldpay_address($string){
 	if (strpos($string, ",")!==false){
 		$address_separator = ",";
 	}
+	$address = '';
 	if (!empty($address_separator)){
 		$string = explode($address_separator, $string);
 		$i = 0;
