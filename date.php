@@ -643,9 +643,9 @@ function month_limits($month, $year, $months = 1){
 function months_between($start_date, $end_date, $both_ends_included = false, $round = true){
 	$start_stamp = strtotime($start_date);
 	$end_stamp = strtotime($end_date);
-	$years = date('Y', $end_stamp)-date('Y', $start_stamp);
-	$months = date('n', $end_stamp)-date('n', $start_stamp);
-	$days = date('j', $end_stamp)-date('j', $start_stamp)+($both_ends_included ? 1 : 0);
+	$years = ((int)date('Y', $end_stamp))-((int)date('Y', $start_stamp));
+	$months = ((int)date('n', $end_stamp))-((int)date('n', $start_stamp));
+	$days = ((int)date('j', $end_stamp))-((int)date('j', $start_stamp))+($both_ends_included ? 1 : 0);
 
 	$total_months = $years * 12+$months+($days / (arr_month_days()[date('n', $end_stamp)]));
 

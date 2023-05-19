@@ -90,6 +90,7 @@ function create_field(array $field, bool $null_default = false): string{
 }
 
 function create_table(&$table, &$error, $engine = 'MyISAM'){
+	$fields = [];
 	if (is_array($table['fields'])){
 		foreach ($table['fields'] as $title => $field){
 			if ($field['db']??''){
@@ -116,6 +117,7 @@ function create_table(&$table, &$error, $engine = 'MyISAM'){
 }
 
 function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
+	$queries = [];
 	foreach ($new as $new_table_title => $new_table){
 		$new_table['title'] = $new_table_title;
 		if (is_array($old[$new_table_title]??null)){
@@ -305,6 +307,8 @@ function need_table($table){
 }
 
 function query_insert(array $arr, $exc = [], $repeat = false){
+	$fields = [];
+	$vals = [];
 	foreach ($arr as $key => $val){
 		if ($val!==false and strpos($key, '-')===false and !in_array($key, $exc) and !is_array($val)){
 			$fields[] = "`$key`";
@@ -318,18 +322,19 @@ function query_insert(array $arr, $exc = [], $repeat = false){
 
 function query_insert_make(array $fields, array $vals, $repeat = false){
 	$vals = "(".implode(',', $vals).")";
+	$vals_arr = [];
 	if (!empty($repeat)){
 		for ($n = 0; $n<$repeat; $n++){
 			$vals_arr[] = $vals;
 		}
 		$vals = implode(',', $vals_arr);
 	}
-	$query = "(".implode(',', $fields).") VALUES $vals";
-
-	return $query;
+	return "(".implode(',', $fields).") VALUES $vals";
 }
 
 function query_insert_inc(array $arr, array $inc, $repeat = false){
+	$fields = [];
+	$vals = [];
 	foreach ($arr as $key => $val){
 		if (in_array($key, $inc) and $val!==false and !is_null($val)){
 			$fields[] = "`$key`";
@@ -342,27 +347,25 @@ function query_insert_inc(array $arr, array $inc, $repeat = false){
 }
 
 function query_update($arr, $exc = []){
+	$query = [];
 	foreach ($arr as $key => $val){
 		if ($val!==false and strpos($key, '-')===false and !in_array($key, $exc) and !is_array($val)){
 			$val = sql_slashes($val);
 			$query[] = "`$key`='$val'";
 		}
 	}
-	$query = implode(',', $query);
-
-	return $query;
+	return implode(',', $query);
 }
 
 function query_update_inc($arr, $inc){
+	$query = [];
 	foreach ($arr as $key => $val){
 		if (in_array($key, $inc) and $val!==false and !is_null($val)){
 			$val = sql_slashes($val);
 			$query[] = "`$key`='$val'";
 		}
 	}
-	$query = implode(',', $query);
-
-	return $query;
+	return implode(',', $query);
 }
 
 function table_array($table){

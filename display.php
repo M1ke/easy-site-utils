@@ -4,6 +4,7 @@ function form_regenerate($p, $dimension = [], $key = null){
 		$dimension[] = $key;
 	}
 	$form = '';
+	$name = '';
 	foreach ($p as $key => $val){
 		if (is_array($val)){
 			$form .= form_regenerate($val, $dimension, $key);
@@ -32,6 +33,7 @@ function form_regenerate($p, $dimension = [], $key = null){
 
 function gen_select($db = ['id' => '', 'select' => '', 'db' => '', 'where' => '', 'order' => '', 'limit' => ''], $id = null, $permalink = null, &$found = null){
 	$records = query("SELECT ".$db['id']."_id,".$db['select']." FROM ".$db['db']." WHERE ".$db['where']." ORDER BY ".$db['order'], '2d');
+	$select = '';
 	foreach ($records as $record){
 		if ($permalink){
 			$ident = $record['permalink'];
@@ -223,6 +225,7 @@ function make_calendar($options = []){
 	$n = 0;
 	$calendar = [];
 	$end_day = $start_day>1 ? $start_day-1 : 7;
+	$complete = null;
 	while (!$complete){
 		if (date('N', $cal_date)==$start_day){
 			$week = [];
@@ -247,6 +250,8 @@ function make_calendar_html($calendar = [], $options = []){
 	if (empty($calendar)){
 		$calendar = make_calendar($options);
 	}
+	$tbody = '';
+	$thead = '';
 	foreach ($calendar as $week){
 		$row = '<tr>';
 		foreach ($week as $date => $day){
@@ -263,14 +268,13 @@ function make_calendar_html($calendar = [], $options = []){
 	}
 	$tbody = '<tbody>'.$tbody.'</tbody>';
 	$days = arr_day();
-	for ($n = $start_day; $i<7; $i++){
+	$n = $start_day;
+	for ($i = 0; $i<7; $i++){
 		$thead .= '<th>'.$days[$n].'</th>';
 		$n = $n==7 ? 1 : $n+1;
 	}
 	$thead = '<thead><tr class="head">'.$thead.'</tr></thead>'; // we use the class `head` here for legacy compatability
-	$html = '<table class="calendar">'.$thead.$tbody.'</table>';
-
-	return $html;
+	return '<table class="calendar">'.$thead.$tbody.'</table>';
 }
 
 function make_options_($arr, $current_value = null, $vals = null, $order = false){
