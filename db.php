@@ -128,7 +128,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 				}
 				if (!is_array($old_fields[$new_field_title]??null)){
 					$alter = false;
-					if (is_array($new_field['prev'])){
+					if (is_array($new_field['prev']??null)){
 						foreach ($new_field['prev'] as $old_field_title){
 							if (is_array($old_fields[$old_field_title])){
 								$new_field['title'] = $new_field_title;
@@ -190,7 +190,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 							continue 2;
 						}
 					}
-					if (!@in_array($index_name, $old[$new_table['title']]['index'])){
+					if (!in_array($index_name, $old[$new_table['title']]['index']??[])){
 						$queries[] = "ALTER TABLE `{$new_table['title']}` ADD INDEX (`$index`)";
 					}
 				}
@@ -199,7 +199,7 @@ function db_update($new, $old, &$out = null, $echo = null, $engine = 'MyISAM'){
 				foreach ($old[$new_table['title']]['index'] as $index){
 					$index_name = explode(',', $index);
 					$index_name = $index_name[0];
-					if (!@in_array($index_name, $new_table['index_names'])){
+					if (!in_array($index_name, $new_table['index_names']??[])){
 						$queries[] = "ALTER TABLE `{$new_table['title']}` DROP INDEX `$index`";
 					}
 				}
